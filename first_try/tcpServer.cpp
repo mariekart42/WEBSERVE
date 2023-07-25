@@ -48,7 +48,7 @@ int tcpServer::startServer()
 
 	// SOCK_STREAM  indicates a TCP socket
 	// socket function returns file descriptor representing the socket -> mySocket
-	mySocket = socket(AF_INET, SOCK_STREAM, 0);
+	mySocket = socket(AF_INET, SOCK_STREAM, 0);	 //domain, type, protocol
 	if (mySocket < 0)
 	{
 		exitWithError("Cannot create socket");
