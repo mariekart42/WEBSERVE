@@ -10,9 +10,19 @@
 #include <sstream>
 #include <unistd.h>
 #include <netinet/in.h>
+#include <netdb.h>		// for addrinfo struct
 
 #define FAILURE -69
 #define SUCCESS 0
+
+// Colour shit
+# define RED   "\x1B[31m"
+# define GRN   "\x1B[32m"
+# define YEL   "\x1B[33m"
+# define BLU   "\x1B[34m"
+# define MAG   "\x1B[35m"
+# define CYN   "\x1B[36m"
+# define RESET "\x1B[0m"
 
 class tcpServer
 {
@@ -22,8 +32,10 @@ class tcpServer
 		int mySocket;		// fd that represents the socket
 		int myNewSocket;
 		long myIncomingMessage;
-		struct sockaddr_in mySocketAddress;
-        unsigned int mySocketAddressLen;
+		// struct sockaddr_in mySocketAddress; // fuggu we change to addrinfo struct lol
+		struct addrinfo mySocketAddress;
+
+        // unsigned int mySocketAddressLen;
         std::string myServerMessage;
 
 		std::string buildResponse();
@@ -36,9 +48,7 @@ class tcpServer
 		int startServer();
 		void startServerError();
 
-
-		void startListen();
-
+		int startListen();
 };
 
 void logg(const std::string &);

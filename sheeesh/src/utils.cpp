@@ -1,4 +1,4 @@
-#include "tcpServer.hpp"
+#include "../header/tcpServer.hpp"
 
 void logg(const std::string &message)
 {
@@ -7,7 +7,7 @@ void logg(const std::string &message)
 
 void exitWithError(const std::string &msg)
 {
-	logg("ERROR: " + msg);
+	logg(RED"ERROR: " + msg + RESET);
 	exit(1);
 }
 
