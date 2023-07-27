@@ -19,6 +19,8 @@ tcpServer::tcpServer(std::string ipAddress, int port):
 	else
 		startServerError();
 
+	// std::cout << 
+	buildResponse();
 	// just here so it compiles
 	myIncomingMessage = 0;
 }
@@ -128,15 +130,18 @@ int tcpServer::startListen()
 		return FAILURE;
 	}
 	std::cout << "Received " << bytes_received << " bytes" << std::endl;
+// with recv we get HTTP Request Line  (HTTP method (GET, POST, ..), requested URL and HTTP version)
+	std::cout << "Received data:\n";
+	printf(GRN"%s\n", request);
+
 
 	std::cout << YEL " . . . Sending Response" RESET << std::endl;
-	const char* response = "HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Type: text/plain\r\n\r\nLocal time is: ";
-	int bytes_sent = send(socketClient, response, strlen(response), 0);
-	std::cout << "Sent " << bytes_sent << " of " << strlen(response) << " bytes" << std::endl;
+	std::string response = "HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Type: text/plain\r\n\r\nLocal time is: ";
+	int bytes_sent = send(socketClient, response.c_str(), strlen(response.c_str()), 0);
+	std::cout << "Sent " << bytes_sent << " of " << strlen(response.c_str()) << " bytes" << std::endl;
 	// printf("Sent %d of %d bytes.\n", bytes_sent, (int)strlen(response));
 
-
-	time_t timer;
+time_t timer;
 time(&timer);
 char *time_msg = ctime(&timer);
 bytes_sent = send(socketClient, time_msg, strlen(time_msg), 0);
@@ -151,12 +156,12 @@ close(socketClient);
 
 
 
-
+±
 std::string tcpServer::buildResponse()
 {
 	std::string htmlFile = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello from your Server :) </p></body></html>";
 	std::ostringstream ss;
-	ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << htmlFile.size() << "\n\n"
+	ss << BLU"HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: \x1B[0m" << htmlFile.size() << "\n\n"
 		<< htmlFile;
 
 	return ss.str();
