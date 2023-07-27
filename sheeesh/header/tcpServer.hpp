@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <netinet/in.h>
 #include <netdb.h>		// for addrinfo struct
+#include <fstream>      // for infile stream
 
 #define FAILURE -69
 #define SUCCESS 0
@@ -31,19 +32,24 @@ class tcpServer
 		int myPort;
 		int mySocket;		// fd that represents the socket
 		int myNewSocket;
-		long myIncomingMessage;
+//		long myIncomingMessage;
 		// struct sockaddr_in mySocketAddress; // fuggu we change to addrinfo struct lol
 		struct addrinfo mySocketAddress;
+
+        struct addrinfo *bindAddress;
 
         // unsigned int mySocketAddressLen;
         std::string myServerMessage;
 
-		std::string buildResponse();
+		static std::string buildResponse();
+        int initMySocket();
 
 	public:
 		tcpServer();
-		tcpServer(std::string, int);
+		tcpServer(std::string &, int);
 		~tcpServer();
+
+        static std::string readFile(const std::string&);
 
 		int startServer();
 		void startServerError();

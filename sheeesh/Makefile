@@ -6,6 +6,7 @@ HEADER_DIR = ./header
 SRC_DIR = ./src/
 OBJ_DIR = ./.build/
 LIBS = -lm
+RM = rm -rf
 
 SRC = main.cpp tcpServer.cpp utils.cpp
 

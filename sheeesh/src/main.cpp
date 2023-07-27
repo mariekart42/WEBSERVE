@@ -2,8 +2,10 @@
 
 int main()
 {
-	tcpServer obj("0.0.0.0", 8080);
+    std::string IPAddress = "0.0.0.0";
+	tcpServer obj(IPAddress, 8080);
 	obj.startListen();
+
 
 	std::cout << "main something" << std::endl;
 }

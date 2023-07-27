@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Colorful Boxes Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 800px;
+        }
+
+        .box {
+            width: 200px;
+            height: 150px;
+            margin: 10px;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .box-1 {
+            background-color: #ff6384;
+            color: #fff;
+        }
+
+        .box-2 {
+            background-color: #36a2eb;
+            color: #fff;
+        }
+
+        .box-3 {
+            background-color: #ffce56;
+            color: #333;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #333;
+            color: #fff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: #444;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="box box-1">
+        <h2>Hello, World!</h2>
+        <p>This is a colorful box with some text of my choice.</p>
+        <a class="button" href="#">Click Me</a>
+    </div>
+
+    <div class="box box-2">
+        <h2>Welcome to Colorful Boxes Website</h2>
+        <p>Enjoy the vibrant colors and simple design.</p>
+        <button class="button">Press Me</button>
+    </div>
+
+    <div class="box box-3">
+        <h2>Have Fun!</h2>
+        <p>Experiment with different colors and styles.</p>
+        <input type="button" class="button" value="Submit">
+    </div>
+</div>
+</body>
+</html>

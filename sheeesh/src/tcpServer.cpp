@@ -1,13 +1,22 @@
 #include "../header/tcpServer.hpp"
 
-tcpServer::tcpServer(){}
+tcpServer::tcpServer():
+	myIpAddress("0.0.0.0"),
+	myPort(8080),
+	mySocket(),
+	myNewSocket(),
+	mySocketAddress(),
+	// mySocketAddressLen(sizeof(mySocketAddress)),
+	myServerMessage(buildResponse())
+{
+    std::cout << "default constructor" << std::endl;
+}
 
-tcpServer::tcpServer(std::string ipAddress, int port):
+tcpServer::tcpServer(std::string &ipAddress, int port):
 	myIpAddress(ipAddress),
 	myPort(port),
 	mySocket(),
 	myNewSocket(),
-	myIncomingMessage(),
 	mySocketAddress(),
 	// mySocketAddressLen(sizeof(mySocketAddress)),
 	myServerMessage(buildResponse())
@@ -20,9 +29,8 @@ tcpServer::tcpServer(std::string ipAddress, int port):
 		startServerError();
 
 	// std::cout << 
-	buildResponse();
+//	buildResponse();
 	// just here so it compiles
-	myIncomingMessage = 0;
 }
 
 
@@ -41,7 +49,7 @@ void tcpServer::startServerError()
 	logg(ss.str());
 }
 
-int tcpServer::startServer()
+int tcpServer::initMySocket()
 {
 	memset(&mySocketAddress, 0, sizeof(mySocketAddress));
 
@@ -54,12 +62,8 @@ int tcpServer::startServer()
 	// AI_PASSIVE  tells getaddrinfo() that we wanna set up the address to any available network interface
 	mySocketAddress.ai_flags = AI_PASSIVE;
 
-
 	// getaddrinfo() generates address thats suitable for bind()
-	struct addrinfo *bindAddress;
 	getaddrinfo(0, std::to_string(myPort).c_str(), &mySocketAddress, &bindAddress);  // prolly generates leak -> use of freeaddrinfo
-
-// /*DEBUG*/ std::cout << "\tai_family: " << bindAddress->ai_family << "\n\tai_sockettype: " << bindAddress->ai_socktype << "\n\tai_protocol: " << bindAddress->ai_protocol << std::endl;
 
 	std::cout << YEL " . . . Creating Socket" RESET << std::endl;
 	// socket function returns file descriptor representing the socket -> mySocket
@@ -69,18 +73,27 @@ int tcpServer::startServer()
 		exitWithError("Cannot create socket");
 		return FAILURE;
 	}
+    return SUCCESS;
+}
 
-	std::cout << YEL " . . . Binding socket to local address" RESET << std::endl;
-	// bind  specify the address and port that the server socket will listen on for incoming connections
-	if (bind(mySocket, bindAddress->ai_addr, bindAddress->ai_addrlen) < 0)
-	{
-		// bind() fails if port is already used
-		// ->  close program that uses that port or change port number
-		exitWithError("Cannot connect socket to address");
-		return FAILURE;
-	}
-	freeaddrinfo(bindAddress);
-	return SUCCESS;
+
+int tcpServer::startServer()
+{
+    if (initMySocket() == SUCCESS)
+    {
+        std::cout << YEL " . . . Binding socket to local address" RESET << std::endl;
+        // bind  specify the address and port that the server socket will listen on for incoming connections
+        if (bind(mySocket, bindAddress->ai_addr, bindAddress->ai_addrlen) < 0)
+        {
+            // bind() fails if port is already used
+            // ->  close program that uses that port or change port number
+            exitWithError("Cannot connect socket to address");
+            return FAILURE;
+        }
+        freeaddrinfo(bindAddress);
+	    return SUCCESS;
+    }
+    return FAILURE;
 }
 
 
@@ -98,7 +111,7 @@ int tcpServer::startListen()
 //!!// LATER PUT ALL DIS IN CLIENT CLASS
 
 	std::cout << YEL " . . . Waiting for connection" RESET << std::endl;
-	struct sockaddr_storage clientAddress; 
+	struct sockaddr_storage clientAddress = {};
 	socklen_t clientLen = sizeof(clientAddress);
 
 	// accept() makes program sleep/stop until it finds connection
@@ -136,33 +149,57 @@ int tcpServer::startListen()
 
 
 	std::cout << YEL " . . . Sending Response" RESET << std::endl;
-	std::string response = "HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Type: text/plain\r\n\r\nLocal time is: ";
+
+    std::string responsePre = readFile("/Users/mmensing/Desktop/42CODE/WEBSHIT/sheeesh/images.html");
+
+	std::string response = "HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Type: text/html\r\n\r\nLocal time is: ";
 	int bytes_sent = send(socketClient, response.c_str(), strlen(response.c_str()), 0);
 	std::cout << "Sent " << bytes_sent << " of " << strlen(response.c_str()) << " bytes" << std::endl;
-	// printf("Sent %d of %d bytes.\n", bytes_sent, (int)strlen(response));
+//	std::string response2 = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello from your Server :) </p></body></html>";
+    send(socketClient, responsePre.c_str(), strlen(responsePre.c_str()), 0);
 
-time_t timer;
-time(&timer);
-char *time_msg = ctime(&timer);
-bytes_sent = send(socketClient, time_msg, strlen(time_msg), 0);
-printf("Sent %d of %d bytes.\n", bytes_sent, (int)strlen(time_msg));
-printf("Closing connection...\n");
-close(socketClient);
 
-	return SUCCESS;
+    printf("Closing connection...\n");
+    close(socketClient);
+
+    return SUCCESS;
 	// MAIN LOOP SHIT STARTS HERE
 }
 
 
 
 
-±
+
 std::string tcpServer::buildResponse()
 {
-	std::string htmlFile = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello from your Server :) </p></body></html>";
 	std::ostringstream ss;
+	std::string htmlFile = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello from your Server :) </p></body></html>";
 	ss << BLU"HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: \x1B[0m" << htmlFile.size() << "\n\n"
 		<< htmlFile;
 
 	return ss.str();
+}
+
+std::string tcpServer::readFile(const std::string &fileName)
+{
+    std::ifstream inputFile(fileName);
+
+    std::cout << "DIS IS FILE: " << fileName << std::endl;
+
+    if (!inputFile.is_open())
+    {
+        exitWithError("Unable to open File");
+        exit(FAILURE);
+    }
+
+    // Use a stringstream to store the content of the file.
+    std::stringstream buffer;
+    buffer << inputFile.rdbuf();
+
+    inputFile.close();
+
+    std::cout << buffer.str() << std::endl;
+
+    // Return the content as a string.
+    return buffer.str();
 }
