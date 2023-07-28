@@ -1,10 +1,11 @@
-#include "../header/tcpServer.hpp"
+#include "../header/main.hpp"
 
 int main()
 {
+    int PortNumber = 8080;      // !!! // all PortNumbers below 1024 are RESERVED (choose higher one)
     std::string IPAddress = "0.0.0.0";
-	tcpServer obj(IPAddress, 8080);
-	obj.startListen();
+	setServer obj(IPAddress, PortNumber);
+
 
 
 	std::cout << "main something" << std::endl;

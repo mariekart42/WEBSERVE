@@ -1,4 +1,4 @@
-#include "../header/tcpServer.hpp"
+#include "../header/main.hpp"
 
 void logg(const std::string &message)
 {
@@ -18,4 +18,25 @@ std::string ipv4ToString(uint32_t addr)
     ss << (addr >> 24 & 0xFF) << "." << (addr >> 16 & 0xFF)
        << "." << (addr >> 8 & 0xFF) << "." << (addr & 0xFF);
     return ss.str();
+}
+
+std::string readFile(const std::string &fileName)
+{
+    std::ifstream inputFile(fileName);
+
+    std::cout << "DIS IS FILE: " << fileName << std::endl;
+
+    if (!inputFile.is_open())
+        exitWithError("Unable to open File");
+
+    // Use a stringstream to store the content of the file.
+    std::stringstream buffer;
+    buffer << inputFile.rdbuf();
+
+    inputFile.close();
+
+    std::cout << buffer.str() << std::endl;
+
+    // Return the content as a string.
+    return buffer.str();
 }

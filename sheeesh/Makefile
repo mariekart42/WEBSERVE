@@ -8,7 +8,7 @@ OBJ_DIR = ./.build/
 LIBS = -lm
 RM = rm -rf
 
-SRC = main.cpp tcpServer.cpp utils.cpp
+SRC = main.cpp utils.cpp setServer.cpp client.cpp
 
 OBJ = $(SRC:.cpp=.o)
 OBJ_PREF := $(addprefix $(OBJ_DIR), $(OBJ))
