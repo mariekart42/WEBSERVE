@@ -1,23 +1,23 @@
 #include "../header/setServer.hpp"
 
-setServer::setServer(void):
-        myIpAddress("0.0.0.0"),
-        myPort(8080)
+setServer::setServer() : myPort(), mySocket(), mySocketAddress(), bindAddress()
 {
     std::cout << "default constructor" << std::endl;
-}
-
-setServer::setServer(std::string &ipAddress, int port):
-        myIpAddress(ipAddress),
-        myPort(port)
-{
     initServerSocket();
     bindSocket();
     startListen();
     Client client(mySocket);
 }
 
-setServer::~setServer(void)
+//setServer::setServer(std::string &ipAddress, int port)
+//{
+//    initServerSocket();
+//    bindSocket();
+//    startListen();
+//    Client client(mySocket);
+//}
+
+setServer::~setServer()
 {
     close(mySocket);
 //    close(myNewSocket);
@@ -59,6 +59,9 @@ void setServer::startListen()
     //	  (second arg: how many client connections allowed to queue up)
     if (listen(mySocket, 10) < 0)
         exitWithError("Socket listen failed");
+
+
+
 }
 
 

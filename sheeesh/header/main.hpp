@@ -9,6 +9,7 @@
 #include <sstream>
 
 #include "setServer.hpp"
+#include "main.hpp"
 
 #define FAILURE -69
 #define SUCCESS 0

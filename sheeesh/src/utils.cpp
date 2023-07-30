@@ -24,19 +24,16 @@ std::string readFile(const std::string &fileName)
 {
     std::ifstream inputFile(fileName);
 
-    std::cout << "DIS IS FILE: " << fileName << std::endl;
-
     if (!inputFile.is_open())
         exitWithError("Unable to open File");
 
-    // Use a stringstream to store the content of the file.
     std::stringstream buffer;
     buffer << inputFile.rdbuf();
 
     inputFile.close();
 
-    std::cout << buffer.str() << std::endl;
+//    std::cout << "DIS IS FILE: " << fileName << std::endl;
+//    std::cout << buffer.str() << std::endl;
 
-    // Return the content as a string.
     return buffer.str();
 }

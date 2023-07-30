@@ -30,7 +30,7 @@ private:
 
 public:
     setServer();
-    setServer(std::string &, int);
+//    setServer(std::string &, int);
     ~setServer();
 
 };
