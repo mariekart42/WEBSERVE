@@ -35,7 +35,10 @@ class Client
         void initClientSocket(int);
         void initFdList(int);
         void loop();
+        void connectClient();
 };
+
+
 
 void TESTWEBSITE(int);
 #endif

@@ -32,9 +32,9 @@ void setServer::initServerSocket()
     mySocketAddress.ai_flags = AI_PASSIVE;      // any available network interface
 
     // getaddrinfo() generates address that's suitable for bind()
-    getaddrinfo(0, std::to_string(myPort).c_str(), &mySocketAddress, &bindAddress);
+    getaddrinfo(0, std::to_string(PORT).c_str(), &mySocketAddress, &bindAddress);
 
-    std::cout << YEL " . . . Creating Socket" RESET << std::endl;
+    std::cout << YEL " . . . Creating Socket" RESET << myPort << std::endl;
 
     mySocket = socket(bindAddress->ai_family, bindAddress->ai_socktype, bindAddress->ai_protocol);	 // domain, type, protocol
     if (mySocket < 0)

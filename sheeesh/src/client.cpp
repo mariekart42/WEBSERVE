@@ -6,6 +6,7 @@ clientAddressLen(sizeof(clientAddress)), clientSocket(), fdList()
     initFdList(serverSocket);
     loop();
     initClientSocket(serverSocket);
+    std::cout << clientAddressLen << std::endl;
 }
 
 
@@ -29,6 +30,12 @@ void Client::initFdList(int serverSocket)
     fdList[0].events = POLLIN;
 }
 
+void Client::connectClient()
+{
+    std::cout << "poll returned above 0, handle now?" << std::endl;
+    
+}
+
 void Client::loop()
 {
     while (true)
@@ -36,8 +43,13 @@ void Client::loop()
         switch (poll(fdList, MAX_USERS, -1))
         {
             case -1:
-
-
+                exitWithError("Failed to poll [EXIT]");
+                break;
+            case 0:
+                std::cout << "poll returned 0, how to handle??" << std::endl;
+                break;
+            default:
+                connectClient();
         }
     }
 }
@@ -56,7 +68,7 @@ void Client::initClientSocket(int serverSocket)
     hints.ai_socktype = SOCK_STREAM; // TCP socket
     hints.ai_protocol = 0;          // Any protocol
 
-    if (getaddrinfo("127.0.0.1", "8090", &hints, &serverInfo) != 0)
+    if (getaddrinfo(IP, PORT_STR, &hints, &serverInfo) != 0)
         exitWithError("Error getting address information");
 
     // Try to connect to the first available address from the serverInfo list

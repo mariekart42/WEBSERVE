@@ -11,6 +11,9 @@
 //#include <stdlib.h>
 //#include <string>
 
+#define IP "127.0.0.1"
+#define PORT 8090
+#define PORT_STR "8090"
 
 //#include <netinet/in.h>
 
