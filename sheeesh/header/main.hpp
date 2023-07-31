@@ -14,6 +14,8 @@
 #define FAILURE -69
 #define SUCCESS 0
 
+#define MY_PORT
+
 // Colour shit
 # define RED   "\x1B[31m"
 # define GRN   "\x1B[32m"

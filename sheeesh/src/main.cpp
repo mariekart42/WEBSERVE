@@ -1,14 +1,20 @@
 #include "../header/main.hpp"
 
-int main()
+int main(int ac, char **av)
 {
-//    int PortNumber = 8080;      // !!! // all PortNumbers below 1024 are RESERVED (choose higher one)
-//    std::string IPAddress = "0.0.0.0";
-//	setServer obj(IPAddress, PortNumber);
-std::cout << "Putin is gay" << std::endl;
-    setServer server1;
+    std::cout << "Putin is gay" << std::endl;
+
+    if (ac == 2)
+    {
+        int port = atoi(av[1]);
+        std::cout << "PORT: " << port << std::endl;
+
+        SetServer obj(port);
+        obj.setUpServer();
+
+    }
+    else
+        exitWithError("./a.out <PORT>");
 
 
-
-	std::cout << "main something" << std::endl;
 }

@@ -32,8 +32,5 @@ std::string readFile(const std::string &fileName)
 
     inputFile.close();
 
-//    std::cout << "DIS IS FILE: " << fileName << std::endl;
-//    std::cout << buffer.str() << std::endl;
-
     return buffer.str();
 }

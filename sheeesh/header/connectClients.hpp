@@ -2,6 +2,7 @@
 #define CLIENT_HPP
 
 #include "setServer.hpp"
+#include "serverResponse.hpp"
 #include "main.hpp"
 
 
@@ -16,28 +17,34 @@
 #include <fstream>      // for infile stream
 #include <sstream>
 #include <poll.h>
+#include <vector>
 
 #define MAX_USERS 1024
 
-class Client
+class ConnectClients
 {
     private:
-//        struct sockaddr_storage clientAddress;
+        int _clientSocket;
+        socklen_t  _clientAddressLen;
+
         struct addrinfo clientAddress;
-        socklen_t  clientAddressLen;
-        int clientSocket;
-        struct pollfd fdList[MAX_USERS];
+        pollfd pollFds;
+
+        std::vector<pollfd> v_fdList;
 
 
     public:
-        Client(int);
-        ~Client();
-        void initClientSocket(int);
-        void initFdList(int);
-        void loop();
-        void connectClient();
-};
+        ConnectClients();
+        ~ConnectClients();
 
+        void clientResponded(int);
+
+//        void initClientSocket(int);
+        void initFdList(int);
+
+//        void loop(int);
+        void connectClients(int);
+};
 
 
 void TESTWEBSITE(int);

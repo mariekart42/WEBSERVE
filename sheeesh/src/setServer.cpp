@@ -1,67 +1,61 @@
 #include "../header/setServer.hpp"
 
-setServer::setServer() : myPort(), mySocket(), mySocketAddress(), bindAddress()
-{
-    std::cout << "default constructor" << std::endl;
-    initServerSocket();
-    bindSocket();
-    startListen();
-    Client client(mySocket);
-}
+SetServer::SetServer(int port):
+    _port(port), _serverSocket(), _socketAddress(), _bindAddress()
+{}
 
-//setServer::setServer(std::string &ipAddress, int port)
-//{
-//    initServerSocket();
-//    bindSocket();
-//    startListen();
-//    Client client(mySocket);
-//}
-
-setServer::~setServer()
+SetServer::~SetServer()
 {
-    close(mySocket);
-//    close(myNewSocket);
+    close(_serverSocket);
     exit(0);
 }
 
-void setServer::initServerSocket()
+
+void SetServer::initServerSocket()
 {
-    memset(&mySocketAddress, 0, sizeof(mySocketAddress));
-    mySocketAddress.ai_family = AF_INET;        // communicate over IPv4
-    mySocketAddress.ai_socktype = SOCK_STREAM;  // TCP socket
-    mySocketAddress.ai_flags = AI_PASSIVE;      // any available network interface
+    memset(&_socketAddress, 0, sizeof(_socketAddress));
+    _socketAddress.ai_family = AF_INET;        // communicate over IPv4
+    _socketAddress.ai_socktype = SOCK_STREAM;  // TCP socket
+    _socketAddress.ai_flags = AI_PASSIVE;      // any available network interface
 
     // getaddrinfo() generates address that's suitable for bind()
-    getaddrinfo(0, std::to_string(PORT).c_str(), &mySocketAddress, &bindAddress);
+    getaddrinfo(0, std::to_string(_port).c_str(), &_socketAddress, &_bindAddress);
 
-    std::cout << YEL " . . . Creating Socket" RESET << myPort << std::endl;
+    std::cout << YEL " . . . Creating Socket" RESET << std::endl;
 
-    mySocket = socket(bindAddress->ai_family, bindAddress->ai_socktype, bindAddress->ai_protocol);	 // domain, type, protocol
-    if (mySocket < 0)
+    _serverSocket = socket(_bindAddress->ai_family, _bindAddress->ai_socktype, _bindAddress->ai_protocol);	 // domain, type, protocol
+    if (_serverSocket < 0)
         exitWithError("Cannot create socket");
 }
 
-void setServer::bindSocket()
+void SetServer::bindSocket()
 {
     std::cout << YEL " . . . Binding socket to local address" RESET << std::endl;
 
     // binds specify address and port to "mySocket"
-    if (bind(mySocket, bindAddress->ai_addr, bindAddress->ai_addrlen) < 0)
+    if (bind(_serverSocket, _bindAddress->ai_addr, _bindAddress->ai_addrlen) < 0)
         exitWithError("Cannot connect socket to address, Port already in use");
-    freeaddrinfo(bindAddress);
+    freeaddrinfo(_bindAddress);
 }
 
-void setServer::startListen()
+void SetServer::startListen() const
 {
     std::cout << YEL " . . . Listening" RESET << std::endl;
     // listen function puts created socket into a passive listening state
     // -> allows server to accept() incoming client connections
     //	  (second arg: how many client connections allowed to queue up)
-    if (listen(mySocket, 10) < 0)
+    if (listen(_serverSocket, 10) < 0)
         exitWithError("Socket listen failed");
+}
 
 
-
+void SetServer::setUpServer()
+{
+    initServerSocket();
+    bindSocket();
+    startListen();
+    ConnectClients obj;
+    obj.connectClients(_serverSocket);
 }
 
 

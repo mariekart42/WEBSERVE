@@ -8,7 +8,7 @@ OBJ_DIR = ./.build/
 LIBS = -lm
 RM = rm -rf
 
-SRC = main.cpp utils.cpp setServer.cpp client.cpp
+SRC = main.cpp utils.cpp setServer.cpp connectClients.cpp serverResponse.cpp
 
 OBJ = $(SRC:.cpp=.o)
 OBJ_PREF := $(addprefix $(OBJ_DIR), $(OBJ))
@@ -30,6 +30,5 @@ fclean: clean
 	@echo "Success, directory cleaned"
 
 re: fclean all
-
 
 .PHONY: all clean fclean re
