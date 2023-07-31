@@ -1,5 +1,5 @@
-#ifndef CLIENT_HPP
-#define CLIENT_HPP
+#ifndef CONNECTCLIENTS_HPP
+#define CONNECTCLIENTS_HPP
 
 #include "setServer.hpp"
 #include "serverResponse.hpp"
