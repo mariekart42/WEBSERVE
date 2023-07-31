@@ -27,7 +27,6 @@ void ConnectClients::clientResponded(int serverSocket)
     // At least one file descriptor has an event
     for (size_t i = 0; i < MAX_USERS; ++i)
     {
-
         if (v_fdList[i].revents & POLLIN)
         {
             std::cout << YEL " . . . Accepting Connection from Client" RESET << std::endl;
@@ -48,7 +47,9 @@ void ConnectClients::clientResponded(int serverSocket)
                 // 'buffer' contains the received data, and 'bytesRead' is the number of bytes received
                 // For example, you can process the data, send a response back to the client, etc.
                 serverResponse obj(buffer, _clientSocket);
-            } else if (bytesRead == 0)
+                close(_clientSocket);
+            }
+            else if (bytesRead == 0)
             {
                 std::cout << "Connection closed by client, handle here!!" << std::endl;
 //                // Connection closed by the client
@@ -56,16 +57,11 @@ void ConnectClients::clientResponded(int serverSocket)
                 close(v_fdList[i].fd);
                 v_fdList.erase(v_fdList.begin() + i);
                 --i; // To compensate for the element removed from the vector
-            } else
-            {
-                exitWithError("error while reading data from client with read()");
             }
+            else
+                exitWithError("error while reading data from client with read()");
         }
-
     }
-
-//    exitWithError("DEBUG: end of connectClient()");
-    
 }
 
 void TESTWEBSITE(int clientSocket)
