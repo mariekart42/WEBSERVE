@@ -28,7 +28,8 @@ class ConnectClients
         socklen_t  _clientAddressLen;
 
         struct addrinfo clientAddress;
-        pollfd pollFds;
+        struct pollfd _fdList[MAX_USERS];
+
 
         std::vector<pollfd> v_fdList;
 

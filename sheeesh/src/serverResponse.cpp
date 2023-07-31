@@ -4,11 +4,13 @@ serverResponse::serverResponse(const std::string &clientResponse, int clientSock
     _clientResponse(clientResponse),
     _clientSocket(clientSocket)
 {
-    std::cout << "SERVER RESPONSE CONSTRUCTOR" << std::endl;
-    parseResponse();
+//    std::cout << "SERVER RESPONSE CONSTRUCTOR" << std::endl;
+//    parseResponse();
 }
 
-serverResponse::~serverResponse(){}
+serverResponse::~serverResponse()
+{
+}
 
 void serverResponse::initHTTPMethod()
 {
@@ -69,4 +71,10 @@ void serverResponse::parseResponse()
         std::cout << "DELETE method!" << std::endl;
     else
         exitWithError("unexpected Error: couldn't read HTTP Method");
+}
+
+
+void serverResponse::sendResponse()
+{
+    parseResponse();
 }

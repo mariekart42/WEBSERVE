@@ -13,14 +13,32 @@ ConnectClients::~ConnectClients()
 }
 
 
+//void ConnectClients::initFdList(int serverSocket)
+//{
+//    pollFds.fd = serverSocket;
+//    pollFds.events = POLLIN; // Monitoring for incoming data (readable)
+//    v_fdList.push_back(pollFds);
+//}
+
 void ConnectClients::initFdList(int serverSocket)
 {
-    pollFds.fd = serverSocket;
-    pollFds.events = POLLIN; // Monitoring for incoming data (readable)
-    v_fdList.push_back(pollFds);
+    int i = 0;
+
+    for (; i < MAX_USERS; i++) {
+        _fdList[i].fd = -1;// File descriptor
+        _fdList[i].events = 0;// Set of events to monitor
+        _fdList[i].revents = 0;// Ready Event Set of Concerned Descriptors
+    }
+    i = 0;
+    for (; i < MAX_USERS; i++) {
+        if (_fdList[i].fd == -1)
+        {
+            _fdList[i].fd = serverSocket;
+            _fdList[i].events = POLLIN;// Concern about Read-Only Events
+            break;
+        }
+    }
 }
-
-
 
 void ConnectClients::clientResponded(int serverSocket)
 {
@@ -47,7 +65,10 @@ void ConnectClients::clientResponded(int serverSocket)
                 // 'buffer' contains the received data, and 'bytesRead' is the number of bytes received
                 // For example, you can process the data, send a response back to the client, etc.
                 serverResponse obj(buffer, _clientSocket);
-                close(_clientSocket);
+                obj.sendResponse();
+
+//                free(buffer);
+//                close(_clientSocket);
             }
             else if (bytesRead == 0)
             {
@@ -64,18 +85,17 @@ void ConnectClients::clientResponded(int serverSocket)
     }
 }
 
-void TESTWEBSITE(int clientSocket)
-{
-
-    std::string responsePre = readFile("/Users/mmensing/Desktop/42CODE/WEBSHIT/sheeesh/images.html");
-
-    std::string response = "HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Type: text/html\r\n\r\nLocal time is: ";
-    int bytes_sent = send(clientSocket, response.c_str(), strlen(response.c_str()), 0);
-    std::cout << "Sent " << bytes_sent << " of " << strlen(response.c_str()) << " bytes" << std::endl;
-//	std::string response2 = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello from your Server :) </p></body></html>";
-    send(clientSocket, responsePre.c_str(), strlen(responsePre.c_str()), 0);
-
-}
+//void TESTWEBSITE(int clientSocket)
+//{
+//
+//    std::string responsePre = readFile("/Users/mmensing/Desktop/42CODE/WEBSHIT/sheeesh/images.html");
+//
+//    std::string response = "HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Type: text/html\r\n\r\nLocal time is: ";
+//    int bytes_sent = send(clientSocket, response.c_str(), strlen(response.c_str()), 0);
+//    std::cout << "Sent " << bytes_sent << " of " << strlen(response.c_str()) << " bytes" << std::endl;
+////	std::string response2 = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello from your Server :) </p></body></html>";
+//    send(clientSocket, responsePre.c_str(), strlen(responsePre.c_str()), 0);
+//}
 
 void ConnectClients::connectClients(int serverSocket)
 {
@@ -83,7 +103,7 @@ void ConnectClients::connectClients(int serverSocket)
 
     while (true)
     {
-        switch (poll(v_fdList.data(), MAX_USERS, -1))
+        switch (poll(&v_fdList[0], MAX_USERS, -1))
         {
             case -1:
                 exitWithError("Failed to poll [EXIT]");
@@ -93,6 +113,8 @@ void ConnectClients::connectClients(int serverSocket)
                 break;
             default:
                 clientResponded(serverSocket);
+                break;
+//                v_fdList.erase(v_fdList.begin() + 0);
         }
     }
 
