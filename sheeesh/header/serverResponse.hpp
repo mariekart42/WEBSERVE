@@ -6,7 +6,8 @@
 #include "setServer.hpp"
 
 #define defaultHTMLPath "/Users/mmensing/Desktop/42CODE/WEBSHIT/sheeesh/images.html"
-#define preResponseHardcode "HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Type: text/plain\r\n\r\n"
+#define preResponseHardcode "HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Type: text/html\r\n\r\n"
+#define defaultWebpage "/Users/mmensing/Desktop/42CODE/WEBSHIT/sheeesh/defaultWebpage.html"
 
 class serverResponse
 {

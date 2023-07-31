@@ -9,7 +9,7 @@ ConnectClients::ConnectClients():
 ConnectClients::~ConnectClients()
 {
     printf("Closing client connection...\n");
-    close(_clientSocket);
+//    close(_clientSocket);
 }
 
 

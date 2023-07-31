@@ -44,9 +44,13 @@ void serverResponse::handleGET()
     if (_url.size() == 1 && _url == "/")
     {
         std::cout << "DIS IS DEFAULT URL" << std::endl;
-        std::string file = readFile(defaultHTMLPath);
+        std::string file = readFile(defaultWebpage);
+
         send(_clientSocket, preResponseHardcode, strlen(preResponseHardcode), 0);
         send(_clientSocket, file.c_str(), file.size(), 0);
+
+        // CHECK header message, CONTENT LEN
+        // and also special characters at the very end (i think /n/r)
     }
     else
         std::cout << "DIS IS MORE THEN DEFAULT URL" << std::endl;
