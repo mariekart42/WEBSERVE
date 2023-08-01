@@ -50,9 +50,6 @@ void serverResponse::handleGET()
 
         send(_clientSocket, preResponseHardcode, strlen(preResponseHardcode), 0);
         send(_clientSocket, file.c_str(), file.size(), 0);
-
-        // CHECK header message, CONTENT LEN
-        // and also special characters at the very end (i think /n/r)
     }
     else
         std::cout << "DIS IS MORE THEN DEFAULT URL" << std::endl;

@@ -1,8 +1,8 @@
 #include "../header/connectClients.hpp"
 
 ConnectClients::ConnectClients():
-    _clientSocket(), _clientAddressLen(sizeof(clientAddress)),
-    clientAddress(), pollFds(), v_fdList()
+    _clientSocket(), _clientAddress(),
+    _clientAddressLen(sizeof(_clientAddress)), _fdList()
 {}
 
 
@@ -13,28 +13,21 @@ ConnectClients::~ConnectClients()
 }
 
 
-//void ConnectClients::initFdList(int serverSocket)
-//{
-//    pollFds.fd = serverSocket;
-//    pollFds.events = POLLIN; // Monitoring for incoming data (readable)
-//    v_fdList.push_back(pollFds);
-//}
-
 void ConnectClients::initFdList(int serverSocket)
 {
     int i = 0;
 
     for (; i < MAX_USERS; i++) {
-        _fdList[i].fd = -1;// File descriptor
-        _fdList[i].events = 0;// Set of events to monitor
-        _fdList[i].revents = 0;// Ready Event Set of Concerned Descriptors
+        _fdList[i].fd = -1;         // File descriptor
+        _fdList[i].events = 0;      // Set of events to monitor
+        _fdList[i].revents = 0;     // Ready Event Set of Concerned Descriptors
     }
     i = 0;
     for (; i < MAX_USERS; i++) {
         if (_fdList[i].fd == -1)
         {
             _fdList[i].fd = serverSocket;
-            _fdList[i].events = POLLIN;// Concern about Read-Only Events
+            _fdList[i].events = POLLIN;     // Concern about Read-Only Events
             break;
         }
     }
@@ -42,80 +35,56 @@ void ConnectClients::initFdList(int serverSocket)
 
 void ConnectClients::clientResponded(int serverSocket)
 {
-    // At least one file descriptor has an event
     for (size_t i = 0; i < MAX_USERS; ++i)
     {
-        if (v_fdList[i].revents & POLLIN)
+        if (_fdList[i].revents & POLLIN)
         {
             std::cout << YEL " . . . Accepting Connection from Client" RESET << std::endl;
-            _clientSocket = accept(serverSocket, (struct sockaddr *) &clientAddress, &_clientAddressLen);
+            _clientSocket = accept(serverSocket, (struct sockaddr *) &_clientAddress, &_clientAddressLen);
             if (_clientSocket < 0)
                 exitWithError("Failed to init client Socket [EXIT]");
 
-            // Data is available for reading on the corresponding file descriptor
-            char buffer[MAX_USERS]; // Adjust the buffer size according to your needs
-            ssize_t bytesRead = read(_clientSocket, buffer, sizeof(buffer));
-//            ssize_t bytesRead = read(v_fdList[i].fd, buffer, sizeof(buffer));
-
+            char clientsResponse[MAX_USERS];
+            ssize_t bytesRead = read(_clientSocket, clientsResponse, sizeof(clientsResponse));
             if (bytesRead > 0)
             {
-                std::cout << "DATA [" << bytesRead << "] from Client: \n" GRN << buffer << RESET<< std::endl;
+                std::cout << "DATA [" << bytesRead << "] from Client: \n" GRN << clientsResponse << RESET<< std::endl;
 
-                // Handle the received data here
-                // 'buffer' contains the received data, and 'bytesRead' is the number of bytes received
-                // For example, you can process the data, send a response back to the client, etc.
-                serverResponse obj(buffer, _clientSocket);
+                serverResponse obj(clientsResponse, _clientSocket);
                 obj.sendResponse();
-
-//                free(buffer);
-//                close(_clientSocket);
+                close(_clientSocket);
             }
             else if (bytesRead == 0)
             {
-                std::cout << "Connection closed by client, handle here!!" << std::endl;
-//                // Connection closed by the client
-//                // Handle the disconnection if needed
-                close(v_fdList[i].fd);
-                v_fdList.erase(v_fdList.begin() + i);
-                --i; // To compensate for the element removed from the vector
+                std::cout << "Connection closed by client" << std::endl;
+                close(_fdList[i].fd);
+                _fdList[i].fd = -1;
             }
             else
-                exitWithError("error while reading data from client with read()");
+                exitWithError("unexpected error while reading data from client with read()");
         }
     }
 }
 
-//void TESTWEBSITE(int clientSocket)
-//{
-//
-//    std::string responsePre = readFile("/Users/mmensing/Desktop/42CODE/WEBSHIT/sheeesh/images.html");
-//
-//    std::string response = "HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Type: text/html\r\n\r\nLocal time is: ";
-//    int bytes_sent = send(clientSocket, response.c_str(), strlen(response.c_str()), 0);
-//    std::cout << "Sent " << bytes_sent << " of " << strlen(response.c_str()) << " bytes" << std::endl;
-////	std::string response2 = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello from your Server :) </p></body></html>";
-//    send(clientSocket, responsePre.c_str(), strlen(responsePre.c_str()), 0);
-//}
 
 void ConnectClients::connectClients(int serverSocket)
 {
     initFdList(serverSocket);
 
-    while (true)
+    while (69)
     {
-        switch (poll(&v_fdList[0], MAX_USERS, -1))
+        switch (poll(_fdList, MAX_USERS, -1))
         {
             case -1:
                 exitWithError("Failed to poll [EXIT]");
                 break;
             case 0:
-                std::cout << "poll returned 0, how to handle??" << std::endl;
+                exitWithError("poll returned 0, how to handle??");
+//                std::cout << "poll returned 0, how to handle??" << std::endl;
                 break;
             default:
                 clientResponded(serverSocket);
                 break;
-//                v_fdList.erase(v_fdList.begin() + 0);
         }
     }
-
 }

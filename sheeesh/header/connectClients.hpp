@@ -25,25 +25,16 @@ class ConnectClients
 {
     private:
         int _clientSocket;
+        struct addrinfo _clientAddress;
         socklen_t  _clientAddressLen;
-
-        struct addrinfo clientAddress;
         struct pollfd _fdList[MAX_USERS];
-
-
-        std::vector<pollfd> v_fdList;
-
 
     public:
         ConnectClients();
         ~ConnectClients();
 
         void clientResponded(int);
-
-//        void initClientSocket(int);
         void initFdList(int);
-
-//        void loop(int);
         void connectClients(int);
 };
 
