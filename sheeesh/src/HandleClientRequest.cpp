@@ -33,6 +33,10 @@ void HandleClientRequest::folderExists() const {
     {
         // error
             std::cout << "FUCKK File/Folder doesnt exists" << std::endl;
+        std::string file = readFile("site/error/404.html");
+        send(_clientSocket, preResponseHardcode, strlen(preResponseHardcode), 0);
+        send(_clientSocket, file.c_str(), file.size(), 0);
+
     }
 }
 
@@ -51,8 +55,8 @@ void HandleClientRequest::handleGET() const
     if (_url == INDEX_PAGE)
     {
         std::cout << "DIS IS DEFAULT URL" << std::endl;
-        std::string file = readFile(defaultWebpage);
 
+        std::string file = readFile(defaultWebpage);
         send(_clientSocket, preResponseHardcode, strlen(preResponseHardcode), 0);
         send(_clientSocket, file.c_str(), file.size(), 0);
     }

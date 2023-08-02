@@ -5,13 +5,12 @@
 #include <sys/stat.h>
 //#include <io.h>
 
-#define INDEX_PAGE "/"
+#define INDEX_PAGE ""
 #define DATA_FOLDER "site/" // folder in which all folders for client are stored
 
 #define defaultHTMLPath "/Users/mmensing/Desktop/42CODE/WEBSHIT/sheeesh/images.html"
-#define preResponseHardcode "HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Type: text/html\r\nContent-Length: 661\r\n\r\n"
-#define defaultWebpage "/Users/mmensing/Desktop/42CODE/WEBSHIT/sheeesh/defaultWebpage.html"
-
+#define preResponseHardcode "HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Type: text/html\r\nContent-Length: 1074\r\n\r\n"
+#define defaultWebpage "defaultWebpage.html"
 class HandleClientRequest
 {
     private:
