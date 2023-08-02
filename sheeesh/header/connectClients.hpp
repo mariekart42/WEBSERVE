@@ -2,7 +2,7 @@
 #define CONNECTCLIENTS_HPP
 
 #include "setServer.hpp"
-#include "serverResponse.hpp"
+#include "HandleClientRequest.hpp"
 #include "main.hpp"
 
 
@@ -33,7 +33,7 @@ class ConnectClients
         ConnectClients();
         ~ConnectClients();
 
-        void clientResponded(int);
+        void clientConnected(int);
         void initFdList(int);
         void connectClients(int);
 };

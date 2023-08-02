@@ -33,7 +33,7 @@ void ConnectClients::initFdList(int serverSocket)
     }
 }
 
-void ConnectClients::clientResponded(int serverSocket)
+void ConnectClients::clientConnected(int serverSocket)
 {
     for (size_t i = 0; i < MAX_USERS; ++i)
     {
@@ -44,14 +44,14 @@ void ConnectClients::clientResponded(int serverSocket)
             if (_clientSocket < 0)
                 exitWithError("Failed to init client Socket [EXIT]");
 
-            char clientsResponse[MAX_USERS];
-            ssize_t bytesRead = read(_clientSocket, clientsResponse, sizeof(clientsResponse));
+            char clientsRequest[MAX_USERS];
+            ssize_t bytesRead = read(_clientSocket, clientsRequest, sizeof(clientsRequest));
             if (bytesRead > 0)
             {
-                std::cout << "DATA [" << bytesRead << "] from Client: \n" GRN << clientsResponse << RESET<< std::endl;
+                std::cout << "DATA [" << bytesRead << "] from Client: \n" GRN << clientsRequest << RESET<< std::endl;
 
-                serverResponse obj(clientsResponse, _clientSocket);
-                obj.sendResponse();
+                HandleClientRequest client(clientsRequest, _clientSocket);
+                client.handleRequest();
                 close(_clientSocket);
             }
             else if (bytesRead == 0)
@@ -83,7 +83,7 @@ void ConnectClients::connectClients(int serverSocket)
 //                std::cout << "poll returned 0, how to handle??" << std::endl;
                 break;
             default:
-                clientResponded(serverSocket);
+                clientConnected(serverSocket);
                 break;
         }
     }
