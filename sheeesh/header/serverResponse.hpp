@@ -10,15 +10,19 @@
 class serverResponse
 {
     private:
-        std::string _clientRequest;
-        int _clientSocket;
+        int _statusCode;
+        std::string contentType;
+        int contentLength;
+        std::string _respondFile;
+
+//        std::string _clientRequest;
+//        int _clientSocket;
 
 
     public:
-        serverResponse(const std::string &, int);
+        serverResponse();
         ~serverResponse();
 
-        void sendResponse();
 };
 
 #endif

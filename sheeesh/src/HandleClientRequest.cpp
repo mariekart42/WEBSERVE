@@ -17,11 +17,25 @@ void HandleClientRequest::folderExists() const {
         {
             // it's a directory
             std::cout << "SHEEESH its a directory" << std::endl;
+
         }
         else if (s.st_mode & S_IFREG)
         {
             // it's a file
             std::cout << "SHEEESH its a file" << std::endl;
+
+//            if (_url == "error/404.html")
+//            {
+//                std::string file = readFile(DATA_FOLDER + _url);
+//                send(_clientSocket, HCError404, strlen(HCError404), 0);
+//                send(_clientSocket, file.c_str(), file.size(), 0);
+//
+//            }
+//            _respondFile = readFile(DATA_FOLDER + _url);
+//            std::string respondFile = readFile(DATA_FOLDER + _url);
+            _respondFile = readFile(DATA_FOLDER + _url);
+//            send(_clientSocket, preResponseHardcode, strlen(preResponseHardcode), 0);
+//            send(_clientSocket, respondFile.c_str(), respondFile.size(), 0);
         }
         else
         {
@@ -40,13 +54,6 @@ void HandleClientRequest::folderExists() const {
     }
 }
 
-//void HandleClientRequest::findFolder()
-//{
-//    if (folderExists(_url) == true)
-//            std::cout << "SHEEESH File exists" << std::endl;
-//    else
-//            std::cout << "FUCKK File doesnt exists" << std::endl;
-//}
 
 
 void HandleClientRequest::handleGET() const

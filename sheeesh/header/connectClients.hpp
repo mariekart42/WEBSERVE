@@ -28,6 +28,7 @@ class ConnectClients
         struct addrinfo _clientAddress;
         socklen_t  _clientAddressLen;
         struct pollfd _fdList[MAX_USERS];
+        int _statusCode;
 
     public:
         ConnectClients();
