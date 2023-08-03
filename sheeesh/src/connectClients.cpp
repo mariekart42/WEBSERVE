@@ -44,14 +44,20 @@ void ConnectClients::clientConnected(int serverSocket)
             if (_clientSocket < 0)
                 exitWithError("Failed to init client Socket [EXIT]");
 
-            char clientsRequest[MAX_USERS];
-            ssize_t bytesRead = read(_clientSocket, clientsRequest, sizeof(clientsRequest));
+            char data[BUFFER_SIZE];
+            ssize_t bytesRead = read(_clientSocket, data, sizeof(data));
             if (bytesRead > 0)
             {
-                std::cout << "DATA [" << bytesRead << "] from Client: \n" GRN << clientsRequest << RESET<< std::endl;
+                std::cout << "DATA [" << bytesRead << "] from Client: \n" GRN << data << RESET<< std::endl;
 
-                HandleClientRequest client(clientsRequest, _clientSocket);
-                client.handleRequest();
+
+                // TEST REQUEST AND DO RESPONSE AFTERWARDS
+                Request request(data, _clientSocket);
+                Response response(request.getHTTPMethod(), request.getURL(), request.getBody());
+
+                //response = new response(request.method, request.url, request.body);
+                //response.handle();
+
                 close(_clientSocket);
             }
             else if (bytesRead == 0)

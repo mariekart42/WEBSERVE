@@ -53,7 +53,7 @@ void SetServer::setUpServer()
 {
     initServerSocket();
     bindSocket();
-    startListen();
+    startListen(); //init
     ConnectClients obj;
     obj.connectClients(_serverSocket);
 }

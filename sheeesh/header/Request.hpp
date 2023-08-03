@@ -1,11 +1,11 @@
-#ifndef HANDLECLIENTREQUEST_HPP
-#define HANDLECLIENTREQUEST_HPP
+#ifndef REQUEST_HPP
+#define REQUEST_HPP
 
 #include "main.hpp"
+#include "Response.hpp"
 #include <sys/stat.h>
-//#include <io.h>
 
-#define INDEX_PAGE ""
+//#define INDEX_PAGE ""
 #define DATA_FOLDER "site/" // folder in which all folders for client are stored
 
 #define defaultHTMLPath "/Users/mmensing/Desktop/42CODE/WEBSHIT/sheeesh/images.html"
@@ -13,25 +13,28 @@
 #define defaultWebpage "defaultWebpage.html"
 #define HCError404 "HTTP/1.1 404 BITCH\r\nConnection: close\r\nContent-Type: text/html\r\nContent-Length: 1074\r\n\r\n"
 
-class HandleClientRequest
+class Request
 {
     private:
-        std::string _clientRequest;
-        std::string _url;
+        char *_data;
         int _clientSocket;
-        std::string _respondFile;
 
-        void handleHTTPMethod();
-        void handleGET() const;
-        void initURL();
-//        void findFolder();
-    void folderExists() const;
+
+//        std::string _url;
+//        std::string _respondFile;
+//        void handleHTTPMethod();
+//        void handleGET() const;
+//        void initURL();
+////        void findFolder();
+//    void folderExists() const;
+
 
     public:
-        HandleClientRequest(const std::string&, int);
-        ~HandleClientRequest();
-        void handleRequest();
-
+        Request(char *, int);
+        ~Request();
+        std::string getHTTPMethod();
+        std::string getURL();
+        char *getBody();
 };
 
 #endif

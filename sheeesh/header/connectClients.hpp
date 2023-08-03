@@ -2,7 +2,7 @@
 #define CONNECTCLIENTS_HPP
 
 #include "setServer.hpp"
-#include "HandleClientRequest.hpp"
+#include "Request.hpp"
 #include "main.hpp"
 
 
@@ -20,6 +20,7 @@
 #include <vector>
 
 #define MAX_USERS 1024
+#define BUFFER_SIZE 8000
 
 class ConnectClients
 {
@@ -28,7 +29,7 @@ class ConnectClients
         struct addrinfo _clientAddress;
         socklen_t  _clientAddressLen;
         struct pollfd _fdList[MAX_USERS];
-        int _statusCode;
+//        int _statusCode;
 
     public:
         ConnectClients();
