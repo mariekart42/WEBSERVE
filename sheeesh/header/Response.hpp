@@ -1,34 +1,55 @@
 #ifndef RESPONSE_HPP
 #define RESPONSE_HPP
 
-#include "main.hpp"
-#include "connectClients.hpp"
-#include "setServer.hpp"
+#include "Request.hpp"
+#include "Error.hpp"
 
-#include <iostream>
+#define preResponseHardcode "HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Type: text/html\r\nContent-Length: 909\r\n\r\n"
+#define HCError404 "HTTP/1.1 404 BITCH\r\nConnection: close\r\nContent-Type: text/html\r\nContent-Length: 1074\r\n\r\n"
 
+
+// ALL OF THESE MACROS NEED TO BE DEFINED LATER AS VARIABLES FROM CONFIGFILE!!
+#define PATH_DEFAULTWEBSITE "site/defaultWebpage.html"
+#define PATH_500_ERRORWEBSITE "site/error/500.html"
+#define PATH_404_ERRORWEBSITE "site/error/404.html"
+#define INDEX_PAGE ""   // can have a name I guess (host_name??)
+#define SITE_FOLDER "site/" // folder in which all folders for client are stored
+#define PATH_HANDLEFOLDERSLATER "site/handleFoldersLater.html"
+
+
+class Request;
 class Response
 {
     private:
-        std::string _HTTPMethod;
+        httpMethod _HTTPMethod;
         std::string _url;
-        char *_body;
-//        int _clientSocket;
-//        int _statusCode;
-//        std::string _contentType;
-//        int _contentLength;
-//        std::string _respondFile; //data
+        int _clientSocket;
 
-//        std::string _clientRequest;
-//        int _clientSocket;
+        int _statusCode;
+        std::string _contentType;
+        char *_body;
+        char *_responseFile;
+        std::string _header;
 
 
     public:
-        Response(const std::string&, const std::string&, char*);
+        Response(const Request&, int);
+        Response();
         ~Response();
 
-//        void sendResponse(int, std::string, std::string);
-
+        std::string getContentType();
+        void sendResponse();
+        void sendHeader();
+        void sendBody();
+        void sendDefaultWebpage() const;
+    httpMethod HTTPMethod();
+        void GETResponse();
+        void POSTResponse();
+        void DELETEResponse();
+        void sendRequestedFile();
 };
+
+
+std::string getHeader(int statusCode, const std::string& contentType, int contentLength);
 
 #endif

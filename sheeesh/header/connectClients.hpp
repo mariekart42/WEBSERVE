@@ -1,23 +1,11 @@
 #ifndef CONNECTCLIENTS_HPP
 #define CONNECTCLIENTS_HPP
 
-#include "setServer.hpp"
-#include "Request.hpp"
-#include "main.hpp"
-
+#include "Response.hpp"
 
 #include <netdb.h>		// addrinfo struct
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <iostream>
-#include <cstdio>
-#include <unistd.h>
-#include <fstream>      // for infile stream
-#include <sstream>
-#include <poll.h>
-#include <vector>
+#include <poll.h>       // pollfd struct
+
 
 #define MAX_USERS 1024
 #define BUFFER_SIZE 8000

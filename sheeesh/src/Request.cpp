@@ -1,9 +1,9 @@
 #include "../header/Request.hpp"
 
-Request::Request(char *data, int clientSocket):
-    _data(data), _clientSocket(clientSocket)
+Request::Request(char *clientData):
+        _clientData(clientData)
 {
-
+    _statusCode = 200;
 }
 
 
@@ -11,26 +11,26 @@ Request::~Request() {}
 
 
 
-std::string Request::getHTTPMethod()
+httpMethod Request::getHTTPMethod() const
 {
     std::string tmp;
-    tmp = _data;
+    tmp = _clientData;
 
     if (tmp.compare(0, 3, "GET") == 0)
-        return ("GET");
+        return M_GET;
     else if (tmp.compare(0, 4, "POST") == 0)
-        return ("POST");
+        return M_POST;
     else if (tmp.compare(0, 6, "DELETE") == 0)
-        return ("DELETE");
+        return M_DELETE;
     else
-        return (exitWithError("unexpected Error, unable to get HTTP Method [EXIT]"), "SHIT");
+        return M_error;
 }
 
 
-std::string Request::getURL()
+std::string Request::getURL() const
 {
     std::string tmp;
-    tmp = _data;
+    tmp = _clientData;
 
     size_t startPos = tmp.find('/', 0) + 1;
     size_t endPos = tmp.find(' ', startPos);
@@ -41,78 +41,45 @@ std::string Request::getURL()
         return (tmp.substr(startPos));
 }
 
-char *Request::getBody()
+
+// DIS SHOULD NOY BE CLIENT DATA BUT SERVER DATA
+char *Request::getBody() const
 {
     std::string tmp;
-    tmp = _data;
+    tmp = _clientData;
 
     std::string test;
 
-    size_t startPos = tmp.find("\r\n\r\n");
+    std::cout << "_clientData:\n["RED << _clientData << RESET"]"<<std::endl;
+
+    size_t startPos = tmp.find("\r\n\r\n") + 4;
     size_t endPos = tmp.size();
 
     if (endPos != std::string::npos)
         test = (tmp.substr(startPos, endPos - (startPos)));
     else
         test = (tmp.substr(startPos));
-    std::cout << "BODY: " << test << std::endl;
+    std::cout << "BODY:\n[" << test<<"]" << std::endl;
 
-// THIS NOT CORRECT YET
-    return (const_cast<char*>(test.c_str()));
+    char* bodyPtr = new char[test.size() + 1];
+    std::strcpy(bodyPtr, test.c_str());
+
+    return bodyPtr; // !1!1! // NEED TO DELETE SOMEWHERE
+}
+
+int Request::getStatusCode() const {
+    return _statusCode;
 }
 
 
 
-//
-//void Request::folderExists() const
-//{
-//    struct stat s = {};
-//
-//    std::string respondFile;
-//    serverResponse serverObj(_clientSocket);
-//    if (stat((DATA_FOLDER + _url).c_str(), &s) == 0)
-//    {
-//        if (s.st_mode & S_IFDIR)
-//        {
-//            // it's a directory
-//            std::cout << "SHEEESH its a directory\nCant handle jet, do if config parser is done" << std::endl;
-//            respondFile = readFile("site/handleLaterFolders.html");
-//
-//        }
-//        else if (s.st_mode & S_IFREG)
-//        {
-//            // it's a file
-//            std::cout << "SHEEESH its a file" << std::endl;
-//
-////            if (_url == "error/404.html")
-////            {
-////                std::string file = readFile(DATA_FOLDER + _url);
-////                send(_clientSocket, HCError404, strlen(HCError404), 0);
-////                send(_clientSocket, file.c_str(), file.size(), 0);
-////            }
-////            _respondFile = readFile(DATA_FOLDER + _url);
-////            std::string respondFile = readFile(DATA_FOLDER + _url);
-//            respondFile = readFile(DATA_FOLDER + _url);
-////            send(_clientSocket, preResponseHardcode, strlen(preResponseHardcode), 0);
-////            send(_clientSocket, respondFile.c_str(), respondFile.size(), 0);
-//            serverObj.sendResponse(69, "html", respondFile);
-//        }
-//        else
-//        {
-//            // something else
-//            exitWithError("failed to check if Folder/File exists [EXIT]");
-//        }
-//    }
-//    else
-//    {
-//        // error
-//            std::cout << "FUCKK File/Folder doesnt exists" << std::endl;
-//        std::string file = readFile("site/error/404.html");
-//        send(_clientSocket, preResponseHardcode, strlen(preResponseHardcode), 0);
-//        send(_clientSocket, file.c_str(), file.size(), 0);
-//    }
-//}
-//
+
+
+
+
+
+
+
 //
 //
 //void Request::handleGET() const

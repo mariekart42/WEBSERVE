@@ -1,11 +1,7 @@
 #ifndef SETSERVER_HPP
 #define SETSERVER_HPP
 
-#include "main.hpp"
 #include "connectClients.hpp"
-
-#include <netdb.h>		// addrinfo struct
-
 
 class SetServer
 {

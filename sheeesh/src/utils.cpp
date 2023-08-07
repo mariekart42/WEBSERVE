@@ -1,4 +1,4 @@
-#include "../header/main.hpp"
+#include "../header/utils.h"
 
 void logg(const std::string &message)
 {
@@ -20,17 +20,21 @@ std::string ipv4ToString(uint32_t addr)
     return ss.str();
 }
 
-std::string readFile(const std::string &fileName)
+char *readFile(const std::string &fileName)
 {
-    std::ifstream inputFile(fileName);
+    std::ifstream file(fileName, std::ios::binary);
+    if (!file.is_open())
+        return nullptr;
 
-    if (!inputFile.is_open())
-        exitWithError("Unable to open File");
+    // Get the file content as a string
+    std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 
-    std::stringstream buffer;
-    buffer << inputFile.rdbuf();
+    // Allocate memory for the content
+    char* returnContent = new char[content.size() + 1]; // +1 for null-terminator
 
-    inputFile.close();
+    // Copy the content to the allocated buffer
+    std::copy(content.begin(), content.end(), returnContent);
+    returnContent[content.size()] = '\0';
 
-    return buffer.str();
+    return returnContent;
 }

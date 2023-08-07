@@ -1,5 +1,6 @@
 #include "../header/connectClients.hpp"
 
+
 ConnectClients::ConnectClients():
     _clientSocket(), _clientAddress(),
     _clientAddressLen(sizeof(_clientAddress)), _fdList()
@@ -33,6 +34,8 @@ void ConnectClients::initFdList(int serverSocket)
     }
 }
 
+
+
 void ConnectClients::clientConnected(int serverSocket)
 {
     for (size_t i = 0; i < MAX_USERS; ++i)
@@ -44,24 +47,24 @@ void ConnectClients::clientConnected(int serverSocket)
             if (_clientSocket < 0)
                 exitWithError("Failed to init client Socket [EXIT]");
 
-            char data[BUFFER_SIZE];
-            ssize_t bytesRead = read(_clientSocket, data, sizeof(data));
+            char clientData[BUFFER_SIZE];
+            ssize_t bytesRead = read(_clientSocket, clientData, sizeof(clientData));
             if (bytesRead > 0)
             {
-                std::cout << "DATA [" << bytesRead << "] from Client: \n" GRN << data << RESET<< std::endl;
+                clientData[bytesRead] = '\0';
+                std::cout << "clientData [" << bytesRead << "] from Client: \n" GRN << clientData << RESET<< std::endl;
 
 
-                // TEST REQUEST AND DO RESPONSE AFTERWARDS
-                Request request(data, _clientSocket);
-                Response response(request.getHTTPMethod(), request.getURL(), request.getBody());
+                Request request(clientData);
+                Response response(request, _clientSocket);
+                response.sendResponse();
 
-                //response = new response(request.method, request.url, request.body);
-                //response.handle();
 
                 close(_clientSocket);
             }
             else if (bytesRead == 0)
             {
+                // DO I HAVE TO RESPONSE ANYTHING?
                 std::cout << "Connection closed by client" << std::endl;
                 close(_fdList[i].fd);
                 _fdList[i].fd = -1;

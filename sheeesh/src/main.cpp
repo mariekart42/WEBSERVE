@@ -9,6 +9,7 @@ int main(int ac, char **av)
         int port = atoi(av[1]);
         std::cout << "PORT: " << port << std::endl;
 
+    // DIS IN A LOOP IF MULTIPLE SERVER ARE REQUIRED
         SetServer obj(port);
         obj.setUpServer();
 
