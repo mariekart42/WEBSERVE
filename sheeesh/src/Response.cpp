@@ -59,10 +59,6 @@ std::string Response::getContentType()
 
 
 
-//void sendResponse
-
-
-
 
 std::string getHeader(int statusCode, const std::string& contentType, int contentLength)
 {

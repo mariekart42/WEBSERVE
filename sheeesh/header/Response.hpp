@@ -42,7 +42,7 @@ class Response
         void sendHeader();
         void sendBody();
         void sendDefaultWebpage() const;
-    httpMethod HTTPMethod();
+        httpMethod HTTPMethod();
         void GETResponse();
         void POSTResponse();
         void DELETEResponse();
