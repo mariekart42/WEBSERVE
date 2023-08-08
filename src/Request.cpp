@@ -42,7 +42,6 @@ std::string Request::getURL() const
 }
 
 
-// DIS SHOULD NOY BE CLIENT DATA BUT SERVER DATA
 char *Request::getBody() const
 {
     std::string tmp;
@@ -50,7 +49,7 @@ char *Request::getBody() const
 
     std::string test;
 
-    std::cout << "_clientData:\n["RED << _clientData << RESET"]"<<std::endl;
+//    std::cout << "_clientData:\n["RED << _clientData << RESET"]"<<std::endl;
 
     size_t startPos = tmp.find("\r\n\r\n") + 4;
     size_t endPos = tmp.size();

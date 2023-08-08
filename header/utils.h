@@ -9,6 +9,7 @@
 #include <sys/socket.h>     // send()
 #include <sys/stat.h>       // stat struct -> check for File/Folder
 
+#define MAX_CLIENTCONTENT 4000
 
 // Colour shit
 # define RED   "\x1B[31m"
@@ -20,6 +21,6 @@
 # define RESET "\x1B[0m"
 
 void exitWithError(const std::string &);
-char *readFile(const std::string &fileName);
+//char *readFile(const std::string &fileName);
 
 #endif

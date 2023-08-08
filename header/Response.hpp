@@ -4,6 +4,8 @@
 #include "Request.hpp"
 #include "Error.hpp"
 
+#include <vector>
+
 #define preResponseHardcode "HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Type: text/html\r\nContent-Length: 909\r\n\r\n"
 #define HCError404 "HTTP/1.1 404 BITCH\r\nConnection: close\r\nContent-Type: text/html\r\nContent-Length: 1074\r\n\r\n"
 
@@ -26,14 +28,14 @@ class Response
         int _clientSocket;
 
         int _statusCode;
+        std::vector<uint8_t> _file;
         std::string _contentType;
         char *_body;
-        char *_responseFile;
         std::string _header;
 
 
     public:
-        Response(const Request&, int);
+        Response(const Request &, int);
         Response();
         ~Response();
 
@@ -41,12 +43,14 @@ class Response
         void sendResponse();
         void sendHeader();
         void sendBody();
-        void sendDefaultWebpage() const;
+        void sendDefaultWebpage();
         httpMethod HTTPMethod();
         void GETResponse();
         void POSTResponse();
         void DELETEResponse();
         void sendRequestedFile();
+//        int getContentLen();
+        static std::vector<uint8_t> readFile(const std::string&);
 };
 
 
