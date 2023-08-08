@@ -51,6 +51,7 @@ class Response
         void sendRequestedFile();
 //        int getContentLen();
         static std::vector<uint8_t> readFile(const std::string&);
+        static std::string contentType(const std::string&);
 };
 
 
