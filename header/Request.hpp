@@ -14,16 +14,13 @@ class Request
 {
     private:
         char *_clientData;
-        int _statusCode;
-
 
     public:
         Request(char *);
         ~Request();
-    httpMethod getHTTPMethod() const;
+        httpMethod getHTTPMethod() const;
         std::string getURL() const;
         char *getBody() const;
-        int getStatusCode() const;
 };
 
 #endif

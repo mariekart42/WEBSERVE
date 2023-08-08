@@ -6,8 +6,13 @@
 
 #include <vector>
 
-#define preResponseHardcode "HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Type: text/html\r\nContent-Length: 909\r\n\r\n"
-#define HCError404 "HTTP/1.1 404 BITCH\r\nConnection: close\r\nContent-Type: text/html\r\nContent-Length: 1074\r\n\r\n"
+
+#define DEFAULTWEBPAGE 69
+#define OK 200
+#define IS_FOLDER (s.st_mode & S_IFDIR)
+#define IS_FILE (s.st_mode & S_IFREG)
+#define FAILURE "FAILURE"
+
 
 
 // ALL OF THESE MACROS NEED TO BE DEFINED LATER AS VARIABLES FROM CONFIGFILE!!
@@ -27,11 +32,9 @@ class Response
         std::string _url;
         int _clientSocket;
 
-        int _statusCode;
         std::vector<uint8_t> _file;
         std::string _contentType;
         char *_body;
-        std::string _header;
 
 
     public:
@@ -41,20 +44,14 @@ class Response
 
         std::string getContentType();
         void sendResponse();
-        void sendHeader();
-        void sendBody();
         void sendDefaultWebpage();
-        httpMethod HTTPMethod();
-        void GETResponse();
         void POSTResponse();
         void DELETEResponse();
         void sendRequestedFile();
-//        int getContentLen();
         static std::vector<uint8_t> readFile(const std::string&);
-        static std::string contentType(const std::string&);
+        void mySend(int);
+        std::string getHeader(int statusCode);
 };
 
-
-std::string getHeader(int statusCode, const std::string& contentType, int contentLength);
 
 #endif

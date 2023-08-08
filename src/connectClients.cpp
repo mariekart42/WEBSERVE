@@ -51,7 +51,7 @@ void ConnectClients::clientConnected(int serverSocket)
             if (bytesRead > 0)
             {
                 clientData[bytesRead] = '\0';
-                std::cout << "clientData [" << bytesRead << "] from Client: \n" GRN << clientData << RESET<< std::endl;
+                std::cout << "\n=== " << bytesRead << " bytes REQUEST: \n" GRN << clientData << RESET << std::endl;
 
 
                 Request request(clientData);
