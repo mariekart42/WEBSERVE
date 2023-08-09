@@ -3,16 +3,17 @@
 
 #include "Request.hpp"
 #include "Error.hpp"
-
+#include <dirent.h>
 
 
 #define DEFAULTWEBPAGE 69
 #define OK 200
-#define FILE_SAVED 200
-#define FILE_NOT_SAVED 500
+#define FILE_SAVED 2001
+#define FILE_NOT_SAVED 5001
 #define IS_FOLDER (s.st_mode & S_IFDIR)
 #define IS_FILE (s.st_mode & S_IFREG)
 #define FAILURE "FAILURE"
+#define FILE_ALREADY_EXISTS 2002
 
 
 #define MAX_REQUESTSIZE 4000000
@@ -28,7 +29,7 @@
 #define PATH_HANDLEFOLDERSLATER "site/handleFoldersLater.html"
 #define PATH_FILE_NOT_SAVED "site/error/500_FILE_NOT_SAVED.html"
 #define PATH_FILE_SAVED "site/FILE_SAVED.html"
-
+#define PATH_FILE_ALREADY_EXISTS "site/PATH_FILE_AREADY_EXISTS.html"
 
 class Request;
 class Response
@@ -59,6 +60,8 @@ class Response
         void mySend(int);
         std::string getHeader(int statusCode);
         void saveRequestToFile();
+
+        bool fileExistsInDirectory(std::string);
 };
 
 

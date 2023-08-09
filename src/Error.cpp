@@ -9,9 +9,11 @@ ErrorResponse::~ErrorResponse() {}
 
 void ErrorResponse::initializeErrorMessages()
 {
+    errorMessages[69] = "default Webpage";
     errorMessages[200] = "OK";
     errorMessages[400] = "Bad Request";
     errorMessages[404] = "Not Found";
+    errorMessages[409] = "Conflict";
     errorMessages[500] = "Internal Server Error";
 }
 

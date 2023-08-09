@@ -65,6 +65,11 @@ void ConnectClients::clientConnected(int serverSocket)
                 }
                 std::cout << std::endl;
 
+
+                // CHECK HERE FOR MULTI CHUNK SHIT, if so loop till end of content len
+
+
+
 //exit(0);
                 Request request(clientData);
                 Response response(request, _clientSocket);

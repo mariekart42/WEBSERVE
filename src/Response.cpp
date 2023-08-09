@@ -43,16 +43,27 @@ std::string Response::getContentType()
 // if statusCode 200, _file NEEDS so be initialized!!
 void Response::mySend(int statusCode)
 {
-    if (statusCode == FILE_SAVED)
-        _file = readFile(PATH_FILE_SAVED);
-    // WRITE FUNCTION THAT RETURNS FILE SPECIFIED ON STATUS CODE
-    if (statusCode != 200)
+    if (statusCode != 200)     // WRITE FUNCTION THAT RETURNS FILE SPECIFIED ON STATUS CODE
     {
         _contentType = "text/html";
-        if (statusCode == DEFAULTWEBPAGE)
-            _file = readFile(PATH_DEFAULTWEBSITE);
+
+        if (statusCode == FILE_SAVED)
+        {
+            statusCode = 200;
+            _file = readFile(PATH_FILE_SAVED);
+        }
         else if (statusCode == FILE_NOT_SAVED)
+        {
+            statusCode = 500;
             _file = readFile(PATH_FILE_NOT_SAVED);
+        }
+        else if (statusCode == FILE_ALREADY_EXISTS)
+        {
+            statusCode = 409;
+            _file = readFile(PATH_FILE_ALREADY_EXISTS);
+        }
+        else if (statusCode == DEFAULTWEBPAGE)
+            _file = readFile(PATH_DEFAULTWEBSITE);
         else if (statusCode == 500)
             _file = readFile(PATH_500_ERRORWEBSITE);
         else if (statusCode == 404)
@@ -73,7 +84,12 @@ void Response::mySend(int statusCode)
             mySend(404);
     }
     std::string header = getHeader(statusCode);
+
+    std::cout << "Response Hedaer:\n"GRN<<header<<""RESET<<std::endl;
+    std::cout << "Response Body:\n"GRN<<(_file.data())<<""RESET<<std::endl;
+
     send(_clientSocket, header.c_str(), header.size(), 0);
+//    send(_clientSocket, static_cast<const void*>(_file.data()), _file.size(), 0);
     send(_clientSocket, static_cast<const void*>(_file.data()), _file.size(), 0);
 }
 
@@ -198,18 +214,48 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
 
 void Response::saveRequestToFile()
 {
-    std::string filename = "ShSHshrek.jpeg";
+    std::string filename = "nnnew.jpeg";
+
+    if (fileExistsInDirectory(filename) == true)
+    {
+        std::cout << RED"FILE ALREADY EXISTS" RESET<< std::endl;
+        mySend(FILE_ALREADY_EXISTS);
+        return;
+    }
     std::ofstream outputFile(UPLOAD_FOLDER+filename , std::ios::binary);
     if (outputFile)
     {
         outputFile.write(reinterpret_cast<const char*>(_body.data()), _body.size());
         outputFile.close();
         std::cout << "Request bytes saved to file: " << UPLOAD_FOLDER+filename << std::endl;
-//        mySend(FILE_SAVED);
+        mySend(FILE_SAVED);
     }
     else
     {
-        std::cerr << "Failed to open or write to the file." << std::endl;
-//        mySend(FILE_NOT_SAVED);
+        std::cout << RED"Failed to open or write to the file." RESET<< std::endl;
+        mySend(FILE_NOT_SAVED);
     }
+}
+
+
+bool Response::fileExistsInDirectory(std::string filename)
+{
+
+
+    DIR* dir = opendir(UPLOAD_FOLDER);
+    if (dir == nullptr) {
+        std::cerr << "Error opening directory: " << strerror(errno) << std::endl;
+        return false;
+    }
+
+    struct dirent* entry;
+    while ((entry = readdir(dir)) != nullptr) {
+        if (strcmp(entry->d_name, filename.c_str()) == 0) {
+            closedir(dir);
+            return true;
+        }
+    }
+
+    closedir(dir);
+    return false;
 }

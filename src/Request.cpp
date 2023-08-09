@@ -48,9 +48,9 @@ std::vector<uint8_t> Request::getBody() const
         bodyVector.insert(bodyVector.end(), _tmp.begin() + startPos, _tmp.end());
 
     // Print the contents of the vector (numeric values)
-//    for (size_t i = 0; i < bodyVector.size(); ++i) {
-//        std::cout <<GRN ""<< static_cast<int>(bodyVector[i]) << " "RESET;
-//    }
+    for (size_t i = 0; i < bodyVector.size(); ++i) {
+        std::cout <<GRN ""<< static_cast<int>(bodyVector[i]) << " "RESET;
+    }
 
     return bodyVector;
 }
