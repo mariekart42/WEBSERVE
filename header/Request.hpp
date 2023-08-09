@@ -2,6 +2,7 @@
 #define REQUEST_HPP
 
 #include "utils.h"
+#include <vector>
 
 enum httpMethod{
     M_GET,
@@ -13,14 +14,15 @@ enum httpMethod{
 class Request
 {
     private:
-        char *_clientData;
+        std::vector<uint8_t> _clientData;
+        std::string _tmp;
 
     public:
-        Request(char *);
+        Request(const std::vector<uint8_t>&);
         ~Request();
         httpMethod getHTTPMethod() const;
         std::string getURL() const;
-        char *getBody() const;
+        std::vector<uint8_t> getBody() const;
 };
 
 #endif

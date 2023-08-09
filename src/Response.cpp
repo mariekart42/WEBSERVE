@@ -6,10 +6,8 @@ Response::Response(const Request &request, int clientSocket) :
         _body(request.getBody())
 {}
 
-Response::~Response() {
-    delete _body;
-}
-Response::Response() {}
+Response::~Response() {}
+//Response::Response() {}
 
 
 
@@ -45,12 +43,16 @@ std::string Response::getContentType()
 // if statusCode 200, _file NEEDS so be initialized!!
 void Response::mySend(int statusCode)
 {
+    if (statusCode == FILE_SAVED)
+        _file = readFile(PATH_FILE_SAVED);
     // WRITE FUNCTION THAT RETURNS FILE SPECIFIED ON STATUS CODE
     if (statusCode != 200)
     {
         _contentType = "text/html";
         if (statusCode == DEFAULTWEBPAGE)
             _file = readFile(PATH_DEFAULTWEBSITE);
+        else if (statusCode == FILE_NOT_SAVED)
+            _file = readFile(PATH_FILE_NOT_SAVED);
         else if (statusCode == 500)
             _file = readFile(PATH_500_ERRORWEBSITE);
         else if (statusCode == 404)
@@ -91,7 +93,18 @@ std::string Response::getHeader(int statusCode)
 
 
 // TODO: INIT LATER IF GET IS DONE
-void Response::POSTResponse() {std::cout << RED "POSTResponse not working now!"RESET<<std::endl;}
+void Response::POSTResponse()
+{
+    std::cout << RED "POST Response!"RESET<<std::endl;
+
+//    saveFile();
+//_file = readFile(PATH_500_ERRORWEBSITE);
+    saveRequestToFile();
+//    mySend(500);
+}
+
+
+
 void Response::DELETEResponse() {std::cout << RED "DELETEResponse not working now!"RESET<<std::endl;}
 
 
@@ -179,4 +192,24 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
     );
 
     return content;
+}
+
+
+
+void Response::saveRequestToFile()
+{
+    std::string filename = "ShSHshrek.jpeg";
+    std::ofstream outputFile(UPLOAD_FOLDER+filename , std::ios::binary);
+    if (outputFile)
+    {
+        outputFile.write(reinterpret_cast<const char*>(_body.data()), _body.size());
+        outputFile.close();
+        std::cout << "Request bytes saved to file: " << UPLOAD_FOLDER+filename << std::endl;
+//        mySend(FILE_SAVED);
+    }
+    else
+    {
+        std::cerr << "Failed to open or write to the file." << std::endl;
+//        mySend(FILE_NOT_SAVED);
+    }
 }

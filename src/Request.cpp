@@ -1,7 +1,9 @@
+
 #include "../header/Request.hpp"
 
-Request::Request(char *clientData):
-        _clientData(clientData)
+Request::Request(const std::vector<uint8_t>& clientData):
+        _clientData(clientData),
+        _tmp(std::string(_clientData.begin(), _clientData.end()))
 {}
 
 Request::~Request() {}
@@ -10,14 +12,11 @@ Request::~Request() {}
 
 httpMethod Request::getHTTPMethod() const
 {
-    std::string tmp;
-    tmp = _clientData;
-
-    if (tmp.compare(0, 3, "GET") == 0)
+    if (_tmp.compare(0, 3, "GET") == 0)
         return M_GET;
-    else if (tmp.compare(0, 4, "POST") == 0)
+    else if (_tmp.compare(0, 4, "POST") == 0)
         return M_POST;
-    else if (tmp.compare(0, 6, "DELETE") == 0)
+    else if (_tmp.compare(0, 6, "DELETE") == 0)
         return M_DELETE;
     else
         return M_error;
@@ -26,38 +25,33 @@ httpMethod Request::getHTTPMethod() const
 
 std::string Request::getURL() const
 {
-    std::string tmp;
-    tmp = _clientData;
-
-    size_t startPos = tmp.find('/', 0) + 1;
-    size_t endPos = tmp.find(' ', startPos);
+    size_t startPos = _tmp.find('/', 0) + 1;
+    size_t endPos = _tmp.find(' ', startPos);
 
     if (endPos != std::string::npos)
-        return (tmp.substr(startPos, endPos - (startPos)));
+        return (_tmp.substr(startPos, endPos - (startPos)));
     else
-        return (tmp.substr(startPos));
+        return (_tmp.substr(startPos));
 }
 
 
-char *Request::getBody() const
+std::vector<uint8_t> Request::getBody() const
 {
-    std::string tmp;
-    tmp = _clientData;
+    std::vector<uint8_t> bodyVector;
 
-    std::string test;
-
-    size_t startPos = tmp.find("\r\n\r\n") + 4;
-    size_t endPos = tmp.size();
+    size_t startPos = _tmp.find("\r\n\r\n") + 4;
+    size_t endPos = _tmp.size();
 
     if (endPos != std::string::npos)
-        test = (tmp.substr(startPos, endPos - (startPos)));
+        bodyVector.insert(bodyVector.end(), _tmp.begin() + startPos, _tmp.begin() + endPos);
     else
-        test = (tmp.substr(startPos));
-    std::cout << "== REQUEST body:    [interesting for POST and DELETE]\n["BLU << test<< RESET"]\n" << std::endl;
+        bodyVector.insert(bodyVector.end(), _tmp.begin() + startPos, _tmp.end());
 
-    char* bodyPtr = new char[test.size() + 1];
-    std::strcpy(bodyPtr, test.c_str());
+    // Print the contents of the vector (numeric values)
+//    for (size_t i = 0; i < bodyVector.size(); ++i) {
+//        std::cout <<GRN ""<< static_cast<int>(bodyVector[i]) << " "RESET;
+//    }
 
-    return bodyPtr; // !1!1! // NEED TO DELETE SOMEWHERE
+    return bodyVector;
 }
 

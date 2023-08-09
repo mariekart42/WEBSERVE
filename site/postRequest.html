@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome to Image Upload</title>
+</head>
+<body>
+<h1>Welcome to Image Upload</h1>
+<p>Please select a JPEG image to upload:</p>
+
+<form action="/upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="image" accept="image/jpeg" required>
+    <br>
+    <button type="submit">Upload</button>
+</form>
+</body>
+</html>

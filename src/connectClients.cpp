@@ -46,14 +46,26 @@ void ConnectClients::clientConnected(int serverSocket)
             if (_clientSocket < 0)
                 exitWithError("Failed to init client Socket [EXIT]");
 
-            char clientData[BUFFER_SIZE];
-            ssize_t bytesRead = read(_clientSocket, clientData, sizeof(clientData));
+            std::vector<uint8_t> clientData;
+            ssize_t bufferSize = MAX_REQUESTSIZE;
+            std::vector<uint8_t> buffer(bufferSize);
+
+            ssize_t bytesRead = read(_clientSocket, buffer.data(), buffer.size());
+
+
             if (bytesRead > 0)
             {
-                clientData[bytesRead] = '\0';
-                std::cout << "\n=== " << bytesRead << " bytes REQUEST: \n" GRN << clientData << RESET << std::endl;
+                clientData.insert(clientData.end(), buffer.begin(), buffer.begin() + bytesRead);
+//                clientData[bytesRead] = '\0';
+//                std::cout << "\n=== " << bytesRead << " bytes REQUEST: \n" GRN << clientData << RESET << std::endl;
 
+                std::cout << "\n=== " << bytesRead << " bytes REQUEST: \n";
+                for (size_t i = 0; i < clientData.size(); ++i) {
+                    std::cout << static_cast<char>(clientData[i]); // Print the byte as a character
+                }
+                std::cout << std::endl;
 
+//exit(0);
                 Request request(clientData);
                 Response response(request, _clientSocket);
                 response.sendResponse();
