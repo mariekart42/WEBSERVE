@@ -7,7 +7,7 @@
 #include <poll.h>       // pollfd struct
 
 
-#define MAX_USERS 1024
+#define MAX_USERS 10
 #define BUFFER_SIZE 8000
 
 class ConnectClients

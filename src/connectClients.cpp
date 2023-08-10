@@ -59,11 +59,13 @@ void ConnectClients::clientConnected(int serverSocket)
 //                clientData[bytesRead] = '\0';
 //                std::cout << "\n=== " << bytesRead << " bytes REQUEST: \n" GRN << clientData << RESET << std::endl;
 
-                std::cout << "\n=== " << bytesRead << " bytes REQUEST: \n";
-                for (size_t i = 0; i < clientData.size(); ++i) {
-                    std::cout << static_cast<char>(clientData[i]); // Print the byte as a character
-                }
-                std::cout << std::endl;
+                    std::string debug(clientData.begin(), clientData.end()) ;
+//
+//                std::cout << "\n=== " << bytesRead << " bytes REQUEST: \n";
+//                for (size_t i = 0; i < clientData.size(); ++i) {
+//                    debug.append(reinterpret_cast<const char *>(clientData[i])); // Print the byte as a character
+//                }
+//                std::cout << std::endl;
 
 
                 // CHECK HERE FOR MULTI CHUNK SHIT, if so loop till end of content len

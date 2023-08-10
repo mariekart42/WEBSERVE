@@ -16,7 +16,7 @@
 #define FILE_ALREADY_EXISTS 2002
 
 
-#define MAX_REQUESTSIZE 4000000
+#define MAX_REQUESTSIZE 4000
 // ALL OF THESE MACROS NEED TO BE DEFINED LATER AS VARIABLES FROM CONFIGFILE!!
 //#define PATH_DEFAULTWEBSITE "site/defaultWebpage.html"
 #define PATH_DEFAULTWEBSITE "site/postRequest.html"
@@ -38,6 +38,15 @@ class Response
         httpMethod _HTTPMethod;
         std::string _url;
         int _clientSocket;
+
+        struct postInfo
+        {
+            std::string _filename;
+            size_t _bytesLeft;
+        };
+        std::map<int, postInfo> _postMap;
+        std::map<int, std::ofstream> _fileStreams;
+
 
         std::vector<uint8_t> _file;
         std::string _contentType;
@@ -62,7 +71,11 @@ class Response
         void saveRequestToFile();
 
         bool fileExistsInDirectory(std::string);
+
+        std::string getFileName();
+        size_t getContentLen();
 };
+
 
 
 #endif

@@ -3,10 +3,17 @@
 Response::Response(const Request &request, int clientSocket) :
         _HTTPMethod(request.getHTTPMethod()),
         _url(request.getURL()), _clientSocket(clientSocket),
+        _file(request.getFile()),
         _body(request.getBody())
 {}
 
-Response::~Response() {}
+Response::~Response()
+{
+    for (std::map<int, std::ofstream>::iterator it = _fileStreams.begin(); it != _fileStreams.end(); ++it)
+    {
+        it->second.close();
+    }
+}
 //Response::Response() {}
 
 
@@ -108,42 +115,6 @@ std::string Response::getHeader(int statusCode)
 
 
 
-// TODO: INIT LATER IF GET IS DONE
-void Response::POSTResponse()
-{
-    std::cout << RED "POST Response!"RESET<<std::endl;
-
-//    saveFile();
-//_file = readFile(PATH_500_ERRORWEBSITE);
-    saveRequestToFile();
-//    mySend(500);
-}
-
-
-
-void Response::DELETEResponse() {std::cout << RED "DELETEResponse not working now!"RESET<<std::endl;}
-
-
-
-void Response::sendResponse()
-{
-    switch (_HTTPMethod)
-    {
-        case M_GET:
-            sendRequestedFile();
-            break;
-        case M_POST:
-            POSTResponse();
-            break;
-        case M_DELETE:
-            DELETEResponse();
-            break;
-        default:
-            mySend(500);
-            exitWithError("unexpected Error: sendResponse can't identifies HTTPMethod [EXIT]");
-    }
-}
-
 void Response::sendDefaultWebpage()
 {
     _file = readFile(PATH_DEFAULTWEBSITE);
@@ -212,29 +183,157 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
 
 
 
+
+void Response::DELETEResponse() {std::cout << RED "DELETEResponse not working now!"RESET<<std::endl;}
+
+
+
+// ^ ^ ^  GET   ^ ^ ^
+
+// --- --- --- --- ---
+
+// v v v  POST  v v v
+
+
+
+void Response::sendResponse()
+{
+    switch (_HTTPMethod)
+    {
+        case M_GET:
+            sendRequestedFile();
+            break;
+        case M_POST:
+            POSTResponse();
+            break;
+        case M_DELETE:
+            DELETEResponse();
+            break;
+        default:
+            mySend(500);
+            exitWithError("unexpected Error: sendResponse can't identifies HTTPMethod [EXIT]");
+    }
+}
+
+
+// TODO: INIT LATER IF GET IS DONE
+void Response::POSTResponse()
+{
+    std::cout << RED "POST Response!"RESET<<std::endl;
+
+//    saveFile();
+//_file = readFile(PATH_500_ERRORWEBSITE);
+    saveRequestToFile();
+//    mySend(500);
+}
+
+
+std::string Response::getFileName()
+{
+    std::string tmp(_file.begin(), _file.end());
+    size_t foundPos = tmp.find("filename=");
+
+    if (foundPos != std::string::npos)
+    {
+        size_t endPos = tmp.find("\"", foundPos);
+        if (endPos != std::string::npos)
+        {
+            std::string requestedName = tmp.substr(foundPos + 15, endPos - foundPos - 15);
+
+            std::cout << GRN"DEBUG: filename: " << requestedName << ""RESET<< std::endl;
+            return requestedName;
+        }
+    }
+    exitWithError("unexpected Error: unable to find filename of pos request");
+    return "SHIT";
+}
+
+
+
+size_t Response::getContentLen()
+{
+    std::string tmp(_file.begin(), _file.end());
+
+    size_t foundPos = tmp.find("Content-Length: ");
+
+    if (foundPos != std::string::npos)
+    {
+        size_t endPos = tmp.find("\n", foundPos);
+        if (endPos != std::string::npos)
+        {
+            std::string requestLenStr = tmp.substr(foundPos + 15, endPos - foundPos - 15);
+            size_t requestLen = static_cast<size_t>(std::strtol(requestLenStr.c_str(), nullptr, 10));
+
+            std::cout << GRN"DEBUG: Content-Length: " << requestLen << ""RESET<< std::endl;
+            return requestLen;
+        }
+    }
+
+    exitWithError("unexpected error: unable do get Content-Lenght from post request");
+    return -1;  // error
+}
+
+
+
+
+
 void Response::saveRequestToFile()
 {
-    std::string filename = "nnnew.jpeg";
 
-    if (fileExistsInDirectory(filename) == true)
+    // INIT _POSTMAP
+    std::map<int, postInfo>::iterator it = _postMap.find(_clientSocket);
+    if (it == _postMap.end())   // IF NOT INITTED YET
     {
-        std::cout << RED"FILE ALREADY EXISTS" RESET<< std::endl;
-        mySend(FILE_ALREADY_EXISTS);
-        return;
+        // Entry with key 3 is not present, initialize it
+        postInfo newPostInfo;
+        newPostInfo._filename = getFileName();
+        newPostInfo._bytesLeft = getContentLen() - _file.size();
+        _postMap[_clientSocket] = newPostInfo;
+        _fileStreams[_clientSocket].open((UPLOAD_FOLDER + newPostInfo._filename).c_str(), std::ios::binary);
+        _fileStreams[_clientSocket].write(reinterpret_cast<const char*>(&_file[0]), _file.size());
+        _fileStreams[_clientSocket].close();
+        if (newPostInfo._bytesLeft <= 0)
+        {
+            std::cout << RED"DEBUG: done writing to file [FIRST CALL]"RESET<<std::endl;
+        }
     }
-    std::ofstream outputFile(UPLOAD_FOLDER+filename , std::ios::binary);
-    if (outputFile)
+    else if (it->second._bytesLeft > 0) // already used and initted before
     {
-        outputFile.write(reinterpret_cast<const char*>(_body.data()), _body.size());
-        outputFile.close();
-        std::cout << "Request bytes saved to file: " << UPLOAD_FOLDER+filename << std::endl;
-        mySend(FILE_SAVED);
+        _fileStreams[_clientSocket].open((UPLOAD_FOLDER + it->second._filename).c_str(), std::ios::binary | std::ios::app);
+        it->second._bytesLeft -= _file.size();
+        _fileStreams[_clientSocket].write(reinterpret_cast<const char*>(&_file[0]), _file.size());
+        _fileStreams[_clientSocket].close();
+        if (it->second._bytesLeft <= 0)
+        {
+            std::cout << RED"DEBUG: done writing to file [AFTER FIRST CALL]"RESET<<std::endl;
+        }
     }
-    else
-    {
-        std::cout << RED"Failed to open or write to the file." RESET<< std::endl;
-        mySend(FILE_NOT_SAVED);
-    }
+
+
+
+
+
+//    std::string filename = "nnnew.jpeg";
+//
+//    if (fileExistsInDirectory(filename) == true)
+//    {
+//        std::cout << RED"FILE ALREADY EXISTS" RESET<< std::endl;
+//        mySend(FILE_ALREADY_EXISTS);
+//        return;
+//    }
+//    std::ofstream outputFile(UPLOAD_FOLDER+filename , std::ios::binary);
+//    if (outputFile)
+//    {
+//        outputFile.write(reinterpret_cast<const char*>(_body.data()), _body.size());
+//        outputFile.close();
+//        std::cout << "Request bytes saved to file: " << UPLOAD_FOLDER+filename << std::endl;
+//        mySend(FILE_SAVED);
+//    }
+//    else
+//    {
+//        std::cout << RED"Failed to open or write to the file." RESET<< std::endl;
+//        mySend(FILE_NOT_SAVED);
+//    }
 }
 
 

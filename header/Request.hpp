@@ -23,6 +23,8 @@ class Request
         httpMethod getHTTPMethod() const;
         std::string getURL() const;
         std::vector<uint8_t> getBody() const;
+
+        std::vector<uint8_t> getFile() const;
 };
 
 #endif

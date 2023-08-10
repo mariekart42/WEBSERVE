@@ -55,3 +55,7 @@ std::vector<uint8_t> Request::getBody() const
     return bodyVector;
 }
 
+std::vector<uint8_t> Request::getFile() const
+{
+    return (_clientData);
+}
