@@ -8,6 +8,17 @@
 #include <unistd.h>         // read()
 #include <sys/socket.h>     // send()
 #include <sys/stat.h>       // stat struct -> check for File/Folder
+#include <fcntl.h>          // nonblock macro
+
+
+#include <iostream>
+#include <vector>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <poll.h>
+
 
 
 // Colour shit

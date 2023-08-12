@@ -3,8 +3,8 @@
 Response::Response(const Request &request, int clientSocket) :
         _HTTPMethod(request.getHTTPMethod()),
         _url(request.getURL()), _clientSocket(clientSocket),
-        _file(request.getFile()),
-        _body(request.getBody())
+        _file(request.getFile())
+//        _body(request.getBody())
 {}
 
 Response::~Response()
@@ -202,16 +202,16 @@ void Response::sendResponse()
     {
         case M_GET:
             sendRequestedFile();
-            break;
-        case M_POST:
-            POSTResponse();
-            break;
-        case M_DELETE:
-            DELETEResponse();
-            break;
-        default:
-            mySend(500);
-            exitWithError("unexpected Error: sendResponse can't identifies HTTPMethod [EXIT]");
+//            break;
+//        case M_POST:
+//            POSTResponse();
+//            break;
+//        case M_DELETE:
+//            DELETEResponse();
+//            break;
+//        default:
+//            mySend(500);
+//            exitWithError("unexpected Error: sendResponse can't identifies HTTPMethod [EXIT]");
     }
 }
 
@@ -228,24 +228,31 @@ void Response::POSTResponse()
 }
 
 
-std::string Response::getFileName()
+std::string Response::getFileName(const Response::postInfo& info)
 {
-    std::string tmp(_file.begin(), _file.end());
-    size_t foundPos = tmp.find("filename=");
-
-    if (foundPos != std::string::npos)
+    std::string debug(_file.begin(), _file.end());
+    std::cout << "POST request:\n"RED <<  debug << RESET""<<std::endl;
+    if (info._filename.empty() || info._filename.compare(0, 16, ("tmpFileForSocket_")) == 0)
     {
-        size_t endPos = tmp.find("\"", foundPos);
-        if (endPos != std::string::npos)
-        {
-            std::string requestedName = tmp.substr(foundPos + 15, endPos - foundPos - 15);
+        std::string tmp(_file.begin(), _file.end());
+        size_t foundPos = tmp.find("filename=");
 
-            std::cout << GRN"DEBUG: filename: " << requestedName << ""RESET<< std::endl;
-            return requestedName;
+        if (foundPos != std::string::npos)
+        {
+            size_t endPos = tmp.find("\"", foundPos);
+            if (endPos != std::string::npos)
+            {
+                std::string requestedName = tmp.substr(foundPos + 10, endPos - foundPos + 10);  // NOT SURE ABOUT NUMBER
+
+                std::cout << GRN"DEBUG: filename: " << requestedName << ""RESET<< std::endl;
+                return requestedName;
+            }
         }
+        std::cout << "DEBUG: no filename found in POST request" << std::endl;
+        return ("tmpFileForSocket_" + std::to_string(_clientSocket));
     }
-    exitWithError("unexpected Error: unable to find filename of pos request");
-    return "SHIT";
+    else
+        return info._filename;
 }
 
 
@@ -286,9 +293,9 @@ void Response::saveRequestToFile()
     {
         // Entry with key 3 is not present, initialize it
         postInfo newPostInfo;
-        newPostInfo._filename = getFileName();
         newPostInfo._bytesLeft = getContentLen() - _file.size();
         _postMap[_clientSocket] = newPostInfo;
+        newPostInfo._filename = getFileName(newPostInfo);
         _fileStreams[_clientSocket].open((UPLOAD_FOLDER + newPostInfo._filename).c_str(), std::ios::binary);
         _fileStreams[_clientSocket].write(reinterpret_cast<const char*>(&_file[0]), _file.size());
         _fileStreams[_clientSocket].close();
@@ -299,6 +306,7 @@ void Response::saveRequestToFile()
     }
     else if (it->second._bytesLeft > 0) // already used and initted before
     {
+        it->second._filename = getFileName(it->second);
         _fileStreams[_clientSocket].open((UPLOAD_FOLDER + it->second._filename).c_str(), std::ios::binary | std::ios::app);
         it->second._bytesLeft -= _file.size();
         _fileStreams[_clientSocket].write(reinterpret_cast<const char*>(&_file[0]), _file.size());

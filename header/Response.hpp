@@ -16,7 +16,10 @@
 #define FILE_ALREADY_EXISTS 2002
 
 
-#define MAX_REQUESTSIZE 4000
+#define POLL_TIMEOUT 200
+#define MAX_REQUESTSIZE 5000
+
+
 // ALL OF THESE MACROS NEED TO BE DEFINED LATER AS VARIABLES FROM CONFIGFILE!!
 //#define PATH_DEFAULTWEBSITE "site/defaultWebpage.html"
 #define PATH_DEFAULTWEBSITE "site/postRequest.html"
@@ -51,7 +54,7 @@ class Response
         std::vector<uint8_t> _file;
         std::string _contentType;
 
-        std::vector<uint8_t> _body;
+//        std::vector<uint8_t> _body;
 
 
     public:
@@ -72,7 +75,7 @@ class Response
 
         bool fileExistsInDirectory(std::string);
 
-        std::string getFileName();
+        std::string getFileName(const Response::postInfo&);
         size_t getContentLen();
 };
 

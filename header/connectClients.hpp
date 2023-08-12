@@ -16,7 +16,7 @@ class ConnectClients
         int _clientSocket;
         struct addrinfo _clientAddress;
         socklen_t  _clientAddressLen;
-        struct pollfd _fdList[MAX_USERS];
+    std::vector<pollfd> _fdList;
 //        int _statusCode;
 
     public:

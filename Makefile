@@ -1,6 +1,6 @@
 NAME = webshit
 CXX = c++
-CXXFLAGS = -Wall -Werror -Wextra -g -std=c++98
+CXXFLAGS = -g -std=c++98# -Wall -Werror -Wextra
 
 HEADER_DIR = ./header
 SRC_DIR = ./src/

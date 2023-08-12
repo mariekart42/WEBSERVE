@@ -1,0 +1,21 @@
+POST /upload HTTP/1.1
+Host: 127.0.0.1:9999
+Connection: keep-alive
+Content-Length: 35278
+Cache-Control: max-age=0
+sec-ch-ua: "Not.A/Brand";v="8", "Chromium";v="114", "Google Chrome";v="114"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "macOS"
+Upgrade-Insecure-Requests: 1
+Origin: http://127.0.0.1:9999
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryvJTe2logRZsvB9ba
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Referer: http://127.0.0.1:9999/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7
+
