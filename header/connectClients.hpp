@@ -13,11 +13,10 @@
 class ConnectClients
 {
     private:
-        int _clientSocket;
         struct addrinfo _clientAddress;
         socklen_t  _clientAddressLen;
-    std::vector<pollfd> _fdList;
-//        int _statusCode;
+        std::vector<pollfd> _fdList;
+
 
     public:
         ConnectClients();
@@ -26,6 +25,13 @@ class ConnectClients
         void clientConnected(int);
         void initFdList(int);
         void connectClients(int);
+
+        void initNewConnection(int serverSocket);
+
+        void initClientInfo(int, const std::vector<uint8_t>&);
+
+
+        std::map<int, clientInfo> _clientInfo;
 };
 
 

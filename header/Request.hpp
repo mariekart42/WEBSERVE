@@ -14,17 +14,21 @@ enum httpMethod{
 class Request
 {
     private:
-        std::vector<uint8_t> _clientData;
         std::string _tmp;
+        int _statusCode;
 
     public:
         Request(const std::vector<uint8_t>&);
         ~Request();
-        httpMethod getHTTPMethod() const;
-        std::string getURL() const;
-        std::vector<uint8_t> getBody() const;
+        httpMethod getHTTPMethod();
+        std::string getURL();
+        std::string getFileContentType(const std::string&);
+        int getStatusCode() const;
+        std::string getContentType();
+        size_t getBytesLeft(const std::string&);
+        std::string getFileName(const std::string&, const std::string&);
+//        std::vector<uint8_t> getFile() const;
 
-        std::vector<uint8_t> getFile() const;
 };
 
 #endif

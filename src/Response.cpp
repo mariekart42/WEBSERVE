@@ -1,11 +1,12 @@
 #include "../header/Response.hpp"
 
-Response::Response(const Request &request, int clientSocket) :
-        _HTTPMethod(request.getHTTPMethod()),
-        _url(request.getURL()), _clientSocket(clientSocket),
-        _file(request.getFile())
-//        _body(request.getBody())
-{}
+
+Response::Response(const clientInfo &info):
+        _info(info)
+
+{
+
+}
 
 Response::~Response()
 {
@@ -21,30 +22,30 @@ Response::~Response()
 
 
 
-std::string Response::getContentType()
-{
-    if (_url.find('.') != std::string::npos)
-    {
-        size_t startPos = _url.find_last_of('.');
-        size_t endPos = _url.size();
-
-        // from found till end next space:
-        std::string fileExtension;
-
-        if (endPos != std::string::npos)
-            fileExtension = (_url.substr(startPos + 1, endPos - (startPos)));
-        else
-            fileExtension = (_url.substr(startPos));
-        std::string contentType = comparerContentType(fileExtension);
-        if (contentType == "FAILURE")
-            mySend(404);
-        return (contentType);
-    }
-
-
-    std::cout << RED"ERROR: is File but can't detect file extension"RESET<<std::endl;
-    return FAILURE;
-}
+//std::string Response::getContentType()
+//{
+//    if (_url.find('.') != std::string::npos)
+//    {
+//        size_t startPos = _url.find_last_of('.');
+//        size_t endPos = _url.size();
+//
+//        // from found till end next space:
+//        std::string fileExtension;
+//
+//        if (endPos != std::string::npos)
+//            fileExtension = (_url.substr(startPos + 1, endPos - (startPos)));
+//        else
+//            fileExtension = (_url.substr(startPos));
+//        std::string contentType = comparerContentType(fileExtension);
+//        if (contentType == "FAILURE")
+//            mySend(404);
+//        return (contentType);
+//    }
+//
+//
+//    std::cout << RED"ERROR: is File but can't detect file extension"RESET<<std::endl;
+//    return FAILURE;
+//}
 
 
 // if statusCode 200, _file NEEDS so be initialized!!
@@ -52,7 +53,7 @@ void Response::mySend(int statusCode)
 {
     if (statusCode != 200)     // WRITE FUNCTION THAT RETURNS FILE SPECIFIED ON STATUS CODE
     {
-        _contentType = "text/html";
+        _info._fileContentType = "text/html";
 
         if (statusCode == FILE_SAVED)
         {
@@ -85,9 +86,9 @@ void Response::mySend(int statusCode)
     }
     else
     {
-        // can't find file extension
-        _contentType = getContentType();
-        if (_contentType == FAILURE)
+//        // can't find file extension
+//        _info._fileContent = getContentType();
+        if (_info._fileContentType == FAILURE)
             mySend(404);
     }
     std::string header = getHeader(statusCode);
@@ -95,9 +96,9 @@ void Response::mySend(int statusCode)
     std::cout << "Response Hedaer:\n"GRN<<header<<""RESET<<std::endl;
     std::cout << "Response Body:\n"GRN<<(_file.data())<<""RESET<<std::endl;
 
-    send(_clientSocket, header.c_str(), header.size(), 0);
+    send(_info._clientSocket, header.c_str(), header.size(), 0);
 //    send(_clientSocket, static_cast<const void*>(_file.data()), _file.size(), 0);
-    send(_clientSocket, static_cast<const void*>(_file.data()), _file.size(), 0);
+    send(_info._clientSocket, static_cast<const void*>(_file.data()), _file.size(), 0);
 }
 
 
@@ -107,7 +108,7 @@ std::string Response::getHeader(int statusCode)
 
     header = "HTTP/1.1 " + std::to_string(statusCode) + " " +
             ErrorResponse::getErrorMessage(statusCode) + "\r\nConnection: close\r\n"
-                                                         "Content-Type: "+_contentType+"\r\n"
+                                                         "Content-Type: "+_info._fileContentType+"\r\n"
                                                                                            "Content-Length: " + std::to_string(_file.size()) + "\r\n\r\n";
     return header;
 }
@@ -130,13 +131,13 @@ void Response::sendDefaultWebpage()
 
 void Response::sendRequestedFile()
 {
-    if (_url == INDEX_PAGE)
+    if (_info._url == INDEX_PAGE)
         return (sendDefaultWebpage());
 
     struct stat s = {};
     int statusCode = OK;
 
-    if (stat((SITE_FOLDER + _url).c_str(), &s) == 0)
+    if (stat((SITE_FOLDER + _info._url).c_str(), &s) == 0)
     {
         if (IS_FOLDER)  //-> LATER if config is parsed
         {
@@ -145,7 +146,7 @@ void Response::sendRequestedFile()
         }
         else if (IS_FILE)
         {
-            _file = readFile(SITE_FOLDER + _url);
+            _file = readFile(SITE_FOLDER + _info._url);
             if (_file.empty())   // if file doesn't exist
                 statusCode = 404;
         }
@@ -198,20 +199,20 @@ void Response::DELETEResponse() {std::cout << RED "DELETEResponse not working no
 
 void Response::sendResponse()
 {
-    switch (_HTTPMethod)
+    switch (_info._myHTTPMethod)
     {
         case M_GET:
             sendRequestedFile();
-//            break;
-//        case M_POST:
-//            POSTResponse();
-//            break;
-//        case M_DELETE:
-//            DELETEResponse();
-//            break;
-//        default:
-//            mySend(500);
-//            exitWithError("unexpected Error: sendResponse can't identifies HTTPMethod [EXIT]");
+            break;
+        case M_POST:
+            POSTResponse();
+            break;
+        case M_DELETE:
+            DELETEResponse();
+            break;
+        default:
+            mySend(500);
+            exitWithError("unexpected Error: sendResponse can't identifies HTTPMethod [EXIT]");
     }
 }
 
@@ -228,57 +229,57 @@ void Response::POSTResponse()
 }
 
 
-std::string Response::getFileName(const Response::postInfo& info)
-{
-    std::string debug(_file.begin(), _file.end());
-    std::cout << "POST request:\n"RED <<  debug << RESET""<<std::endl;
-    if (info._filename.empty() || info._filename.compare(0, 16, ("tmpFileForSocket_")) == 0)
-    {
-        std::string tmp(_file.begin(), _file.end());
-        size_t foundPos = tmp.find("filename=");
+//std::string Response::getFileName(const Response::postInfo& info)
+//{
+//    std::string debug(_file.begin(), _file.end());
+//    std::cout << "POST request:\n"RED <<  debug << RESET""<<std::endl;
+//    if (info._filename.empty() || info._filename.compare(0, 16, ("tmpFileForSocket_")) == 0)
+//    {
+//        std::string tmp(_file.begin(), _file.end());
+//        size_t foundPos = tmp.find("filename=");
+//
+//        if (foundPos != std::string::npos)
+//        {
+//            size_t endPos = tmp.find("\"", foundPos);
+//            if (endPos != std::string::npos)
+//            {
+//                std::string requestedName = tmp.substr(foundPos + 10, endPos - foundPos + 10);  // NOT SURE ABOUT NUMBER
+//
+//                std::cout << GRN"DEBUG: filename: " << requestedName << ""RESET<< std::endl;
+//                return requestedName;
+//            }
+//        }
+//        std::cout << "DEBUG: no filename found in POST request" << std::endl;
+//        return ("tmpFileForSocket_" + std::to_string(_clientSocket));
+//    }
+//    else
+//        return info._filename;
+//}
 
-        if (foundPos != std::string::npos)
-        {
-            size_t endPos = tmp.find("\"", foundPos);
-            if (endPos != std::string::npos)
-            {
-                std::string requestedName = tmp.substr(foundPos + 10, endPos - foundPos + 10);  // NOT SURE ABOUT NUMBER
-
-                std::cout << GRN"DEBUG: filename: " << requestedName << ""RESET<< std::endl;
-                return requestedName;
-            }
-        }
-        std::cout << "DEBUG: no filename found in POST request" << std::endl;
-        return ("tmpFileForSocket_" + std::to_string(_clientSocket));
-    }
-    else
-        return info._filename;
-}
 
 
-
-size_t Response::getContentLen()
-{
-    std::string tmp(_file.begin(), _file.end());
-
-    size_t foundPos = tmp.find("Content-Length: ");
-
-    if (foundPos != std::string::npos)
-    {
-        size_t endPos = tmp.find("\n", foundPos);
-        if (endPos != std::string::npos)
-        {
-            std::string requestLenStr = tmp.substr(foundPos + 15, endPos - foundPos - 15);
-            size_t requestLen = static_cast<size_t>(std::strtol(requestLenStr.c_str(), nullptr, 10));
-
-            std::cout << GRN"DEBUG: Content-Length: " << requestLen << ""RESET<< std::endl;
-            return requestLen;
-        }
-    }
-
-    exitWithError("unexpected error: unable do get Content-Lenght from post request");
-    return -1;  // error
-}
+//size_t Response::getContentLen()
+//{
+//    std::string tmp(_file.begin(), _file.end());
+//
+//    size_t foundPos = tmp.find("Content-Length: ");
+//
+//    if (foundPos != std::string::npos)
+//    {
+//        size_t endPos = tmp.find("\n", foundPos);
+//        if (endPos != std::string::npos)
+//        {
+//            std::string requestLenStr = tmp.substr(foundPos + 15, endPos - foundPos - 15);
+//            size_t requestLen = static_cast<size_t>(std::strtol(requestLenStr.c_str(), nullptr, 10));
+//
+//            std::cout << GRN"DEBUG: Content-Length: " << requestLen << ""RESET<< std::endl;
+//            return requestLen;
+//        }
+//    }
+//
+//    exitWithError("unexpected error: unable do get Content-Lenght from post request");
+//    return -1;  // error
+//}
 
 
 
@@ -286,36 +287,36 @@ size_t Response::getContentLen()
 
 void Response::saveRequestToFile()
 {
-
-    // INIT _POSTMAP
-    std::map<int, postInfo>::iterator it = _postMap.find(_clientSocket);
-    if (it == _postMap.end())   // IF NOT INITTED YET
-    {
-        // Entry with key 3 is not present, initialize it
-        postInfo newPostInfo;
-        newPostInfo._bytesLeft = getContentLen() - _file.size();
-        _postMap[_clientSocket] = newPostInfo;
-        newPostInfo._filename = getFileName(newPostInfo);
-        _fileStreams[_clientSocket].open((UPLOAD_FOLDER + newPostInfo._filename).c_str(), std::ios::binary);
-        _fileStreams[_clientSocket].write(reinterpret_cast<const char*>(&_file[0]), _file.size());
-        _fileStreams[_clientSocket].close();
-        if (newPostInfo._bytesLeft <= 0)
+//
+//    // INIT _POSTMAP
+//    std::map<int, postInfo>::iterator it = _postMap.find(_info._clientSocket);
+//    if (it == _postMap.end())   // IF NOT INITTED YET
+//    {
+//        // Entry with key 3 is not present, initialize it
+////        postInfo newPostInfo;
+////        newPostInfo._bytesLeft = getContentLen() - _file.size();
+////        _postMap[_info._clientSocket] = newPostInfo;
+//        _info._filename = getFileName(_info);
+        _fileStreams[_info._clientSocket].open((UPLOAD_FOLDER + _info._filename).c_str(), std::ios::binary);
+        _fileStreams[_info._clientSocket].write(reinterpret_cast<const char*>(&_file[0]), _file.size());
+        _fileStreams[_info._clientSocket].close();
+        if (_info._bytesLeft <= 0)
         {
             std::cout << RED"DEBUG: done writing to file [FIRST CALL]"RESET<<std::endl;
         }
-    }
-    else if (it->second._bytesLeft > 0) // already used and initted before
-    {
-        it->second._filename = getFileName(it->second);
-        _fileStreams[_clientSocket].open((UPLOAD_FOLDER + it->second._filename).c_str(), std::ios::binary | std::ios::app);
-        it->second._bytesLeft -= _file.size();
-        _fileStreams[_clientSocket].write(reinterpret_cast<const char*>(&_file[0]), _file.size());
-        _fileStreams[_clientSocket].close();
-        if (it->second._bytesLeft <= 0)
-        {
-            std::cout << RED"DEBUG: done writing to file [AFTER FIRST CALL]"RESET<<std::endl;
-        }
-    }
+//    }
+//    else if (it->second._bytesLeft > 0) // already used and initted before
+//    {
+//        it->second._filename = getFileName(it->second);
+//        _fileStreams[_info._clientSocket].open((UPLOAD_FOLDER + it->second._filename).c_str(), std::ios::binary | std::ios::app);
+//        it->second._bytesLeft -= _file.size();
+//        _fileStreams[_info._clientSocket].write(reinterpret_cast<const char*>(&_file[0]), _file.size());
+//        _fileStreams[_info._clientSocket].close();
+//        if (it->second._bytesLeft <= 0)
+//        {
+//            std::cout << RED"DEBUG: done writing to file [AFTER FIRST CALL]"RESET<<std::endl;
+//        }
+//    }
 
 
 
@@ -345,24 +346,28 @@ void Response::saveRequestToFile()
 }
 
 
-bool Response::fileExistsInDirectory(std::string filename)
-{
+//bool Response::fileExistsInDirectory(std::string filename)
+//{
+//
+//
+//    DIR* dir = opendir(UPLOAD_FOLDER);
+//    if (dir == nullptr) {
+//        std::cerr << "Error opening directory: " << strerror(errno) << std::endl;
+//        return false;
+//    }
+//
+//    struct dirent* entry;
+//    while ((entry = readdir(dir)) != nullptr) {
+//        if (strcmp(entry->d_name, filename.c_str()) == 0) {
+//            closedir(dir);
+//            return true;
+//        }
+//    }
+//
+//    closedir(dir);
+//    return false;
+//}
 
 
-    DIR* dir = opendir(UPLOAD_FOLDER);
-    if (dir == nullptr) {
-        std::cerr << "Error opening directory: " << strerror(errno) << std::endl;
-        return false;
-    }
 
-    struct dirent* entry;
-    while ((entry = readdir(dir)) != nullptr) {
-        if (strcmp(entry->d_name, filename.c_str()) == 0) {
-            closedir(dir);
-            return true;
-        }
-    }
 
-    closedir(dir);
-    return false;
-}

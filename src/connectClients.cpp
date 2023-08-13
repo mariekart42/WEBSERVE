@@ -2,7 +2,7 @@
 
 
 ConnectClients::ConnectClients():
-    _clientSocket(), _clientAddress(),
+    _clientAddress(),
     _clientAddressLen(sizeof(_clientAddress)), _fdList()
 {}
 
@@ -13,26 +13,75 @@ ConnectClients::~ConnectClients()
 }
 
 
-//void ConnectClients::initFdList(int serverSocket)
+void ConnectClients::initFdList(int serverSocket)
+{
+    pollfd initialServerSocket = {};
+    initialServerSocket.fd = serverSocket;
+    initialServerSocket.events = POLLIN;
+    initialServerSocket.revents = 0;
+    _fdList.push_back(initialServerSocket);
+}
+
+
+void ConnectClients::initNewConnection(int serverSocket)
+{
+    clientInfo tmp;
+
+    std::cout << YEL " . . . Accepting Connection from Client" RESET << std::endl;
+    tmp._clientSocket = accept(serverSocket, (struct sockaddr *) &_clientAddress, &_clientAddressLen);
+    if (tmp._clientSocket < 0)
+        exitWithError("Failed to init client Socket [EXIT]");
+    tmp._bytesLeft = 0;
+    tmp._statusCode = 200;
+    _clientInfo[tmp._clientSocket] = tmp;
+
+    pollfd newClientSocket = {};
+    newClientSocket.fd = tmp._clientSocket;
+    newClientSocket.events = POLLIN;
+    newClientSocket.revents = 0;
+    _fdList.push_back(newClientSocket);
+}
+
+
+//httpMethod ConnectClients::getHTTPMethod() const
 //{
-//    int i = 0;
-//
-//    for (; i < MAX_USERS; i++) {
-//        _fdList[i].fd = -1;         // File descriptor
-//        _fdList[i].events = 0;      // Set of events to monitor
-//        _fdList[i].revents = 0;     // Ready Event Set of Concerned Descriptors
-//    }
-//    i = 0;
-//    for (; i < MAX_USERS; i++) {
-//        if (_fdList[i].fd == -1)
-//        {
-//            _fdList[i].fd = serverSocket;
-//            _fdList[i].events = POLLIN;     // Concern about Read-Only Events
-//            break;
-//        }
-//    }
+//    if (_tmp.compare(0, 3, "GET") == 0)
+//        return M_GET;
+//    else if (_tmp.compare(0, 4, "POST") == 0)
+//        return M_POST;
+//    else if (_tmp.compare(0, 6, "DELETE") == 0)
+//        return M_DELETE;
+//    else
+//        return M_error;
 //}
 
+void ConnectClients::initClientInfo(int _clientSocket, const std::vector<uint8_t>& input)
+{
+    std::map<int, clientInfo>::iterator it = _clientInfo.find(_clientSocket);
+    if (it == _clientInfo.end())   // IF NOT INITTED YET
+    {
+        clientInfo initNewInfo;
+        Request request(input);
+        initNewInfo._input = input;
+        initNewInfo._clientSocket = _clientSocket;
+        initNewInfo._myHTTPMethod = request.getHTTPMethod();
+        initNewInfo._url = request.getURL();
+        initNewInfo._fileContentType = request.getFileContentType(initNewInfo._url);
+        initNewInfo._contentType = request.getContentType();
+        initNewInfo._bytesLeft = request.getBytesLeft(initNewInfo._contentType);
+        initNewInfo._filename = request.getFileName(initNewInfo._contentType, initNewInfo._filename);
+        initNewInfo._statusCode = request.getStatusCode();
+        _clientInfo[_clientSocket] = initNewInfo;
+    }
+    else
+    {
+        Request request(input);
+        it->second._input = input;
+        it->second._bytesLeft = request.getBytesLeft(it->second._contentType);
+        it->second._filename = request.getFileName(it->second._contentType, it->second._filename);
+        it->second._statusCode = request.getStatusCode();
+    }
+}
 
 
 void ConnectClients::clientConnected(int serverSocket)
@@ -43,15 +92,7 @@ void ConnectClients::clientConnected(int serverSocket)
         {
             if (_fdList[i].fd == serverSocket)
             {
-                std::cout << YEL " . . . Accepting Connection from Client" RESET << std::endl;
-                _clientSocket = accept(serverSocket, (struct sockaddr *) &_clientAddress, &_clientAddressLen);
-                if (_clientSocket < 0)
-                    exitWithError("Failed to init client Socket [EXIT]");
-                pollfd newClientSocket;
-                newClientSocket.fd = _clientSocket;
-                newClientSocket.events = POLLIN;
-                newClientSocket.revents = 0;
-                _fdList.push_back(newClientSocket);
+                initNewConnection(serverSocket);
             }
             else
             {
@@ -59,7 +100,6 @@ void ConnectClients::clientConnected(int serverSocket)
                 char clientData[MAX_REQUESTSIZE];
                 memset(clientData, 0, MAX_REQUESTSIZE);
                 ssize_t bytesRead = recv(_fdList[i].fd, clientData, sizeof(clientData), O_NONBLOCK);
-
 
                 std::cout << "Received Data [" << bytesRead << "] \n"<<clientData<<std::endl;
 
@@ -71,17 +111,19 @@ void ConnectClients::clientConnected(int serverSocket)
                     std::vector<uint8_t> byteVector;
                     byteVector.reserve(charArraySize); // Reserve space to avoid reallocations
 
-                    for (size_t i = 0; i < charArraySize; ++i) {
+                    for (i = 0; i < charArraySize; ++i) {
                         byteVector.push_back(static_cast<uint8_t>(clientData[i]));
                     }
 
+                    initClientInfo(_fdList[i].fd, byteVector);
+                    std::map<int, clientInfo>::const_iterator it = _clientInfo.find(_fdList[i].fd);
+//                    Request request(byteVector);
 
-                    Request request(byteVector);
-                    Response response(request, _clientSocket);
+                    Response response(it->second);
                     response.sendResponse();
 
                     if (strncmp(clientData, "GET", 3) == 0)
-                        close(_clientSocket);
+                        close(_fdList[i].fd);
                 }
                 else if (bytesRead == 0)
                 {
@@ -99,14 +141,11 @@ void ConnectClients::clientConnected(int serverSocket)
 }
 
 
+
 void ConnectClients::connectClients(int serverSocket)
 {
-//    initFdList(serverSocket);
-    pollfd initialServerSocket;
-    initialServerSocket.fd = serverSocket;
-    initialServerSocket.events = POLLIN;
-    initialServerSocket.revents = 0;
-    _fdList.push_back(initialServerSocket);
+    initFdList(serverSocket);
+
     while (69)
     {
         switch (poll(&_fdList[0], _fdList.size(), -1))

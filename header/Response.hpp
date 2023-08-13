@@ -2,7 +2,9 @@
 #define RESPONSE_HPP
 
 #include "Request.hpp"
+//#include "connectClients.hpp"
 #include "Error.hpp"
+//#include "uti.hpp"
 #include <dirent.h>
 
 
@@ -12,7 +14,7 @@
 #define FILE_NOT_SAVED 5001
 #define IS_FOLDER (s.st_mode & S_IFDIR)
 #define IS_FILE (s.st_mode & S_IFREG)
-#define FAILURE "FAILURE"
+
 #define FILE_ALREADY_EXISTS 2002
 
 
@@ -35,34 +37,37 @@
 #define PATH_FILE_ALREADY_EXISTS "site/PATH_FILE_AREADY_EXISTS.html"
 
 class Request;
+
+struct clientInfo
+{
+    int _clientSocket;// initted
+
+    httpMethod _myHTTPMethod;// initted
+    std::string _url;// initted
+    std::string _fileContentType;// initted
+    std::vector<uint8_t> _input;
+    std::string _filename;
+    std::string _contentType;   // only for POST
+    size_t _bytesLeft;
+    int _statusCode;// initted
+};
+
+
 class Response
 {
     private:
-        httpMethod _HTTPMethod;
-        std::string _url;
-        int _clientSocket;
-
-        struct postInfo
-        {
-            std::string _filename;
-            size_t _bytesLeft;
-        };
-        std::map<int, postInfo> _postMap;
         std::map<int, std::ofstream> _fileStreams;
-
-
         std::vector<uint8_t> _file;
-        std::string _contentType;
-
-//        std::vector<uint8_t> _body;
+        clientInfo _info;
 
 
     public:
-        Response(const Request &, int);
+        Response(const clientInfo &info);
+
 //        Response();
         ~Response();
 
-        std::string getContentType();
+//        std::string getContentType();
         void sendResponse();
         void sendDefaultWebpage();
         void POSTResponse();
@@ -73,10 +78,12 @@ class Response
         std::string getHeader(int statusCode);
         void saveRequestToFile();
 
-        bool fileExistsInDirectory(std::string);
+//        bool fileExistsInDirectory(std::string);
 
-        std::string getFileName(const Response::postInfo&);
-        size_t getContentLen();
+//        std::string getFileName(const Response::postInfo&);
+//        size_t getContentLen();
+
+//    Response(clientInfo info);
 };
 
 
