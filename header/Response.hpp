@@ -6,6 +6,7 @@
 #include "Error.hpp"
 //#include "uti.hpp"
 #include <dirent.h>
+#include <vector>
 
 
 #define DEFAULTWEBPAGE 69
@@ -41,6 +42,7 @@ class Request;
 struct clientInfo
 {
     int _clientSocket;// initted
+    bool _isMultiPart;
 
     httpMethod _myHTTPMethod;// initted
     std::string _url;// initted
@@ -62,21 +64,26 @@ class Response
 
 
     public:
-        Response(const clientInfo &info);
+        Response(const std::vector<uint8_t>&, int, const std::string&);
 
 //        Response();
         ~Response();
 
-//        std::string getContentType();
+       std::string getContentType();
         void sendResponse();
         void sendDefaultWebpage();
-        void POSTResponse();
-        void DELETEResponse();
+        // void POSTResponse();
+        // void DELETEResponse();
         void sendRequestedFile();
         static std::vector<uint8_t> readFile(const std::string&);
         void mySend(int);
         std::string getHeader(int statusCode);
         void saveRequestToFile();
+
+
+        void getResponse();
+        bool postResponse(std::string, int);
+
 
 //        bool fileExistsInDirectory(std::string);
 

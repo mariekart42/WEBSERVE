@@ -1,8 +1,8 @@
 
 #include "../header/Request.hpp"
-
+#include <vector>
 Request::Request(const std::vector<uint8_t>& clientData):
-        _tmp(std::string(clientData.begin(), clientData.end())), _statusCode()
+    _tmp(std::string(clientData.begin(), clientData.end())), _statusCode()
 {}
 
 Request::~Request() {}
@@ -10,7 +10,6 @@ Request::~Request() {}
 
 std::string Request::getFileContentType(const std::string& url)
 {
-
     if (url.find('.') != std::string::npos)
     {
         size_t startPos = url.find_last_of('.');
@@ -63,8 +62,35 @@ std::string Request::getFileName(const std::string& contentType, const std::stri
 {
     if (!prevFileName.empty() && prevFileName.compare(0, 16, "tmpFileForSocket_") != 0)
         return prevFileName;    // correct filename was already found
-    if (contentType.compare(0, 19, "multipart/form-data;") == 0)
+    // std::cout<<"multipart/form-data;"<<std::endl;
+
+    // std::string tmp = "multipart/form-data; boundary=----";
+
+
+    // std::cout << "Content Type: " << contentType << std::endl;
+    // std::cout << "Hexadecimal ASCII values of characters in the content type:" << std::endl;
+    // for (std::string::size_type i = 0; i < contentType.length(); ++i) {
+    //     char c = contentType[i];
+    //     std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(c) << " ";
+    // }
+    // std::cout << std::endl;
+
+
+    // std::cout << "Content Type: " << tmp << std::endl;
+    // std::cout << "Hexadecimal ASCII values of characters in the content type:" << std::endl;
+    // for (std::string::size_type i = 0; i < tmp.length(); ++i) {
+    //     char c = tmp[i];
+    //     std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(c) << " ";
+    // }
+    // std::cout << std::endl;
+
+
+
+
+    std::cout<<contentType<<std::endl;
+    if (contentType.compare(0, 34, "multipart/form-data; boundary=----") == 0)
     {
+        std::cout<<"IN HEEERE"<<std::endl;
         size_t foundPos = _tmp.find("filename=");
 
         if (foundPos != std::string::npos)
@@ -80,7 +106,8 @@ std::string Request::getFileName(const std::string& contentType, const std::stri
             std::cout << "DEBUG: no filename found in POST request" << std::endl;
             return (&"tmpFileForSocket_" [ random()]);
         }
-        exitWithError("unexpected error: unable do get filename");
+        // exitWithError("unexpected error: unable do get filename");
+        std::cout << "prolly first chunk of multipart, wait for filename"<<std::endl;
         return FAILURE;  // error
     }
 
@@ -99,10 +126,10 @@ std::string Request::getContentType()
 
     if (foundPos != std::string::npos)
     {
-        size_t endPos = _tmp.find("\r\n", foundPos);
+        size_t endPos = _tmp.find("\n", foundPos);
         if (endPos != std::string::npos)
         {
-            std::string contentType = _tmp.substr(foundPos + 13, endPos - foundPos + 13);
+            std::string contentType = _tmp.substr(foundPos + 14, endPos - (foundPos + 14));
 
             std::cout << GRN"DEBUG: Content-Type: " << contentType << ""RESET<< std::endl;
             return contentType;
@@ -142,25 +169,25 @@ int Request::getStatusCode() const
     return _statusCode;
 }
 
-//std::vector<uint8_t> Request::getBody() const
-//{
+// std::vector<uint8_t> Request::getBody() const
+// {
 //    std::vector<uint8_t> bodyVector;
-//
+
 //    size_t startPos = _tmp.find("\r\n\r\n") + 4;
 //    size_t endPos = _tmp.size();
-//
+
 //    if (endPos != std::string::npos)
 //        bodyVector.insert(bodyVector.end(), _tmp.begin() + startPos, _tmp.begin() + endPos);
 //    else
 //        bodyVector.insert(bodyVector.end(), _tmp.begin() + startPos, _tmp.end());
-//
+
 //    // Print the contents of the vector (numeric values)
 //    for (size_t i = 0; i < bodyVector.size(); ++i) {
 //        std::cout <<GRN ""<< static_cast<int>(bodyVector[i]) << " "RESET;
 //    }
-//
+
 //    return bodyVector;
-//}
+// }
 
 //std::vector<uint8_t> Request::getFile() const
 //{

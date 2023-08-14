@@ -9,6 +9,23 @@
 
 #define MAX_USERS 10
 #define BUFFER_SIZE 8000
+#define DATA_TO_READ (_fdList[i].revents & POLLIN)
+
+// struct clientInfo
+// {
+//     int _clientSocket;// initted
+//     bool _isMultiPart;
+
+//     httpMethod _myHTTPMethod;// initted
+//     std::string _url;// initted
+//     std::string _fileContentType;// initted
+//     std::vector<uint8_t> _input;
+//     std::string _filename;
+//     std::string _contentType;   // only for POST
+//     size_t _bytesLeft;
+//     int _statusCode;// initted
+// };
+
 
 class ConnectClients
 {
@@ -16,7 +33,9 @@ class ConnectClients
         struct addrinfo _clientAddress;
         socklen_t  _clientAddressLen;
         std::vector<pollfd> _fdList;
-
+        int _currClientSocket;
+        char _clientData[MAX_REQUESTSIZE];
+        std::vector<uint8_t> _byteVector;
 
     public:
         ConnectClients();
@@ -29,7 +48,7 @@ class ConnectClients
         void initNewConnection(int serverSocket);
 
         void initClientInfo(int, const std::vector<uint8_t>&);
-
+        int receiveData(int);
 
         std::map<int, clientInfo> _clientInfo;
 };

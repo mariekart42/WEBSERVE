@@ -1,51 +1,72 @@
 #include "../header/Response.hpp"
 
 
-Response::Response(const clientInfo &info):
-        _info(info)
-
+Response::Response(const std::vector<uint8_t>& input, int clientSocket, const std::string& url)
 {
+    std::cout << "BEFORE doing anything" << std::endl;
+    _info._input = input;
+    _info._clientSocket = clientSocket;
+    _info._statusCode = 200;
+    _info._url = url;
 
 }
 
 Response::~Response()
 {
-    for (std::map<int, std::ofstream>::iterator it = _fileStreams.begin(); it != _fileStreams.end(); ++it)
-    {
-        it->second.close();
-    }
+    // for (std::map<int, std::ofstream>::iterator it = _fileStreams.begin(); it != _fileStreams.end(); ++it)
+    // {
+    //     it->second.close();
+    // }
 }
 //Response::Response() {}
 
 
+// FOR GET:
+//  - url
+//  - contentType
+void Response::getResponse()
+{
+    sendRequestedFile();
+}
 
 
 
 
-//std::string Response::getContentType()
-//{
-//    if (_url.find('.') != std::string::npos)
-//    {
-//        size_t startPos = _url.find_last_of('.');
-//        size_t endPos = _url.size();
-//
-//        // from found till end next space:
-//        std::string fileExtension;
-//
-//        if (endPos != std::string::npos)
-//            fileExtension = (_url.substr(startPos + 1, endPos - (startPos)));
-//        else
-//            fileExtension = (_url.substr(startPos));
-//        std::string contentType = comparerContentType(fileExtension);
-//        if (contentType == "FAILURE")
-//            mySend(404);
-//        return (contentType);
-//    }
-//
-//
-//    std::cout << RED"ERROR: is File but can't detect file extension"RESET<<std::endl;
-//    return FAILURE;
-//}
+bool Response::postResponse(std::string filename, int bytesLeft)
+{
+    _info._filename = filename;
+    saveRequestToFile();
+    return _info._isMultiPart;
+}
+
+
+
+
+
+std::string Response::getContentType()
+{
+   if (_info._url.find('.') != std::string::npos)
+   {
+       size_t startPos = _info._url.find_last_of('.');
+       size_t endPos = _info._url.size();
+
+       // from found till end next space:
+       std::string fileExtension;
+
+       if (endPos != std::string::npos)
+           fileExtension = (_info._url.substr(startPos + 1, endPos - (startPos)));
+       else
+           fileExtension = (_info._url.substr(startPos));
+       std::string contentType = comparerContentType(fileExtension);
+       if (contentType == "FAILURE")
+           mySend(404);
+       return (contentType);
+   }
+
+
+   std::cout << RED"ERROR: is File but can't detect file extension"RESET<<std::endl;
+   return FAILURE;
+}
 
 
 // if statusCode 200, _file NEEDS so be initialized!!
@@ -71,7 +92,10 @@ void Response::mySend(int statusCode)
             _file = readFile(PATH_FILE_ALREADY_EXISTS);
         }
         else if (statusCode == DEFAULTWEBPAGE)
+        {
+            statusCode = 200;
             _file = readFile(PATH_DEFAULTWEBSITE);
+        }
         else if (statusCode == 500)
             _file = readFile(PATH_500_ERRORWEBSITE);
         else if (statusCode == 404)
@@ -87,18 +111,19 @@ void Response::mySend(int statusCode)
     else
     {
 //        // can't find file extension
-//        _info._fileContent = getContentType();
+       _info._fileContentType = getContentType();
         if (_info._fileContentType == FAILURE)
             mySend(404);
     }
     std::string header = getHeader(statusCode);
 
     std::cout << "Response Hedaer:\n"GRN<<header<<""RESET<<std::endl;
-    std::cout << "Response Body:\n"GRN<<(_file.data())<<""RESET<<std::endl;
+    // std::cout << "Response Body:\n"GRN<<(_file.data())<<""RESET<<std::endl;
+    std::cout << "Response Body:\n"GRN<<std::string(_file.begin(), _file.end())<<" ["<< _file.size() << "]"RESET<<std::endl;
 
     send(_info._clientSocket, header.c_str(), header.size(), 0);
 //    send(_clientSocket, static_cast<const void*>(_file.data()), _file.size(), 0);
-    send(_info._clientSocket, static_cast<const void*>(_file.data()), _file.size(), 0);
+    send(_info._clientSocket, (std::string(_file.begin(), _file.end())).c_str(), _file.size(), 0);
 }
 
 
@@ -118,13 +143,13 @@ std::string Response::getHeader(int statusCode)
 
 void Response::sendDefaultWebpage()
 {
-    _file = readFile(PATH_DEFAULTWEBSITE);
-    if (_file.empty())
-    {
-        mySend(500);
-        std::cout << RED"ERROR: unexpected Error, path to defaultWebsite wrong or no defaultWebsite provided"RESET << std::endl;   // LATER WRITE IN ERROR FILE
-        return;
-    }
+    // _file = readFile(PATH_DEFAULTWEBSITE);
+    // if (_file.empty())
+    // {
+    //     mySend(500);
+    //     std::cout << RED"ERROR: unexpected Error, path to defaultWebsite wrong or no defaultWebsite provided"RESET << std::endl;   // LATER WRITE IN ERROR FILE
+    //     return;
+    // }
     mySend(DEFAULTWEBPAGE);
 }
 
@@ -185,7 +210,7 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
 
 
 
-void Response::DELETEResponse() {std::cout << RED "DELETEResponse not working now!"RESET<<std::endl;}
+// void Response::DELETEResponse() {std::cout << RED "DELETEResponse not working now!"RESET<<std::endl;}
 
 
 
@@ -197,36 +222,36 @@ void Response::DELETEResponse() {std::cout << RED "DELETEResponse not working no
 
 
 
-void Response::sendResponse()
-{
-    switch (_info._myHTTPMethod)
-    {
-        case M_GET:
-            sendRequestedFile();
-            break;
-        case M_POST:
-            POSTResponse();
-            break;
-        case M_DELETE:
-            DELETEResponse();
-            break;
-        default:
-            mySend(500);
-            exitWithError("unexpected Error: sendResponse can't identifies HTTPMethod [EXIT]");
-    }
-}
+// void Response::sendResponse()
+// {
+//     switch (_info._myHTTPMethod)
+//     {
+//         case M_GET:
+//             sendRequestedFile();
+//             break;
+//         case M_POST:
+//             POSTResponse();
+//             break;
+//         case M_DELETE:
+//             DELETEResponse();
+//             break;
+//         default:
+//             mySend(500);
+//             exitWithError("unexpected Error: sendResponse can't identifies HTTPMethod [EXIT]");
+//     }
+// }
 
 
-// TODO: INIT LATER IF GET IS DONE
-void Response::POSTResponse()
-{
-    std::cout << RED "POST Response!"RESET<<std::endl;
+// // TODO: INIT LATER IF GET IS DONE
+// void Response::POSTResponse()
+// {
+//     std::cout << RED "POST Response!"RESET<<std::endl;
 
-//    saveFile();
-//_file = readFile(PATH_500_ERRORWEBSITE);
-    saveRequestToFile();
-//    mySend(500);
-}
+// //    saveFile();
+// //_file = readFile(PATH_500_ERRORWEBSITE);
+//     saveRequestToFile();
+// //    mySend(500);
+// }
 
 
 //std::string Response::getFileName(const Response::postInfo& info)
@@ -297,13 +322,23 @@ void Response::saveRequestToFile()
 ////        newPostInfo._bytesLeft = getContentLen() - _file.size();
 ////        _postMap[_info._clientSocket] = newPostInfo;
 //        _info._filename = getFileName(_info);
+
+
+        // WHY IS FILENAME NOT INITTED??
         _fileStreams[_info._clientSocket].open((UPLOAD_FOLDER + _info._filename).c_str(), std::ios::binary);
+        // JUST BODY!! not file
         _fileStreams[_info._clientSocket].write(reinterpret_cast<const char*>(&_file[0]), _file.size());
         _fileStreams[_info._clientSocket].close();
         if (_info._bytesLeft <= 0)
         {
             std::cout << RED"DEBUG: done writing to file [FIRST CALL]"RESET<<std::endl;
+            _info._isMultiPart = false;
+            mySend(FILE_SAVED);
         }
+        else
+            _info._isMultiPart = true;
+
+
 //    }
 //    else if (it->second._bytesLeft > 0) // already used and initted before
 //    {
@@ -367,7 +402,6 @@ void Response::saveRequestToFile()
 //    closedir(dir);
 //    return false;
 //}
-
 
 
 
