@@ -34,9 +34,9 @@ void Response::getResponse()
 
 bool Response::postResponse(std::string filename, int bytesLeft)
 {
-    _info._filename = filename;
+    _info._postInfo._filename = filename;
     saveRequestToFile();
-    return _info._isMultiPart;
+    return _info._postInfo._isMultiPart;
 }
 
 
@@ -325,18 +325,19 @@ void Response::saveRequestToFile()
 
 
         // WHY IS FILENAME NOT INITTED??
-        _fileStreams[_info._clientSocket].open((UPLOAD_FOLDER + _info._filename).c_str(), std::ios::binary);
+        _fileStreams[_info._clientSocket].open((UPLOAD_FOLDER + _info._postInfo._filename).c_str(), std::ios::binary);
         // JUST BODY!! not file
         _fileStreams[_info._clientSocket].write(reinterpret_cast<const char*>(&_file[0]), _file.size());
         _fileStreams[_info._clientSocket].close();
-        if (_info._bytesLeft <= 0)
+        if (_info._postInfo._bytesLeft <= 0)
         {
             std::cout << RED"DEBUG: done writing to file [FIRST CALL]"RESET<<std::endl;
-            _info._isMultiPart = false;
+            _info._postInfo._isMultiPart = false;
             mySend(FILE_SAVED);
         }
         else
-            _info._isMultiPart = true;
+            _info._postInfo._isMultiPart = true;
+        mySend(FILE_SAVED);
 
 
 //    }

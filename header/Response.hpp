@@ -39,19 +39,28 @@
 
 class Request;
 
+struct postInfo
+{
+
+    bool _isMultiPart;
+    size_t _bytesLeft;
+    std::string _filename;
+    std::string _contentType;
+    std::string _boundary;
+};
+
+
 struct clientInfo
 {
     int _clientSocket;// initted
-    bool _isMultiPart;
 
     httpMethod _myHTTPMethod;// initted
     std::string _url;// initted
     std::string _fileContentType;// initted
     std::vector<uint8_t> _input;
-    std::string _filename;
-    std::string _contentType;   // only for POST
-    size_t _bytesLeft;
     int _statusCode;// initted
+
+    postInfo _postInfo;
 };
 
 

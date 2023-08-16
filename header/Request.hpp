@@ -28,6 +28,7 @@ class Request
         size_t getBytesLeft(const std::string&);
         std::string getFileName(const std::string&, const std::string&);
 //        std::vector<uint8_t> getFile() const;
+        std::string getBoundary();
 
 };
 

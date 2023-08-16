@@ -9,7 +9,7 @@
 			"request": "launch",
 			"name": "Debug",
 			"program": "${workspaceFolder}/./webshit",
-			"args": ["7070"],
+			"args": ["3030"],
 			"cwd": "${workspaceFolder}"
 		}
 	]
