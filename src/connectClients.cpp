@@ -91,7 +91,7 @@ void ConnectClients::initNewConnection(int serverSocket)
 //        return M_error;
 //}
 
-void ConnectClients::initClientInfo(int _clientSocket, const std::vector<uint8_t>& input)
+void ConnectClients::initClientInfo(int _clientSocket, const std::vector<uint8_t>& input, int bytesRead)
 {
     std::map<int, clientInfo>::iterator it1 = _clientInfo.find(_clientSocket);
     if (it1 != _clientInfo.end() && it1->second._postInfo._isMultiPart == false)
@@ -112,9 +112,9 @@ void ConnectClients::initClientInfo(int _clientSocket, const std::vector<uint8_t
         if (initNewInfo._postInfo._contentType == "multipart/form-data")
         {
             initNewInfo._postInfo._isMultiPart = true;
-            initNewInfo._postInfo._bytesLeft = request.getBytesLeft(initNewInfo._postInfo._contentType);
-            initNewInfo._postInfo._filename = request.getFileName(initNewInfo._postInfo._contentType, initNewInfo._postInfo._filename);
             initNewInfo._postInfo._boundary = request.getBoundary();
+            initNewInfo._postInfo._bytesLeft = request.getBytesLeft(initNewInfo._postInfo._contentType, initNewInfo._postInfo._boundary);
+            initNewInfo._postInfo._filename = request.getFileName(initNewInfo._postInfo._contentType, initNewInfo._postInfo._filename);
         }
         else
         {
@@ -131,7 +131,7 @@ void ConnectClients::initClientInfo(int _clientSocket, const std::vector<uint8_t
     {
         Request request(input);
         it->second._input = input;
-        it->second._postInfo._bytesLeft -= it->second._input.size();
+        it->second._postInfo._bytesLeft -= bytesRead;
         it->second._postInfo._filename = request.getFileName(it->second._postInfo._contentType, it->second._postInfo._filename);
         it->second._statusCode = request.getStatusCode();
     }
@@ -142,8 +142,12 @@ int ConnectClients::receiveData(int i)
     
     memset(_clientData, 0, MAX_REQUESTSIZE);
     ssize_t bytesRead = recv(_fdList[i].fd, _clientData, sizeof(_clientData), O_NONBLOCK);
-    // if (bytesRead > 0)
-        std::cout << "Received Data [" << bytesRead << "] \n"<<_clientData<<std::endl;
+    if (bytesRead > 0)
+    {
+        // std::cout << "Received Data [" << bytesRead << "] \n"<<_clientData<<std::endl;
+        std::cout << "Received Data [" << bytesRead << "]"<<std::endl;
+
+    }
 
 
     // converting client data to vector
@@ -186,9 +190,9 @@ void ConnectClients::clientConnected(int serverSocket)
                 //     exitWithError("Failed to init client Socket [EXIT]");
 
                 int bytesRead = receiveData(i);
-                initClientInfo(_fdList[i].fd, _byteVector);
                 if (bytesRead > 0)
                 {
+                    initClientInfo(_fdList[i].fd, _byteVector, bytesRead);
                     std::map<int, clientInfo>::iterator it = _clientInfo.find(_fdList[i].fd);
                     Response response(_byteVector, _fdList[i].fd, it->second._url);
                     if (strncmp(_clientData, "GET", 3) == 0)
@@ -208,6 +212,13 @@ void ConnectClients::clientConnected(int serverSocket)
                     else
                         std::cout<<RED"unexpected Error: cant detect HTTPMethod"RESET<<std::endl;
 
+                    if (it->second._postInfo._isMultiPart == false)
+                    {
+                    close(_fdList[i].fd);
+                    _fdList.erase(_fdList.begin() + i);
+                    --i; // Compensate for erasing
+                    }
+                        // close(_fdList[i].fd);
 
 
                 }
@@ -249,4 +260,5 @@ void ConnectClients::connectClients(int serverSocket)
                 break;
         }
     }
+    exitWithError("out of poll lop!!!");
 }

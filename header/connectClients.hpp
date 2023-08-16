@@ -8,7 +8,7 @@
 
 
 #define MAX_USERS 10
-#define BUFFER_SIZE 8000
+// #define BUFFER_SIZE 8000
 #define DATA_TO_READ (_fdList[i].revents & POLLIN)
 
 // struct clientInfo
@@ -47,7 +47,7 @@ class ConnectClients
 
         void initNewConnection(int serverSocket);
 
-        void initClientInfo(int, const std::vector<uint8_t>&);
+        void initClientInfo(int, const std::vector<uint8_t>&, int);
         int receiveData(int);
 
         std::map<int, clientInfo> _clientInfo;

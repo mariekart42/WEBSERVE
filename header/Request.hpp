@@ -25,7 +25,7 @@ class Request
         std::string getFileContentType(const std::string&);
         int getStatusCode() const;
         std::string getContentType();
-        size_t getBytesLeft(const std::string&);
+        size_t getBytesLeft(const std::string&, const std::string&);
         std::string getFileName(const std::string&, const std::string&);
 //        std::vector<uint8_t> getFile() const;
         std::string getBoundary();

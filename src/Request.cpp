@@ -37,7 +37,7 @@ std::string Request::getFileContentType(const std::string& url)
 /* only for POST && multipart
  * checks for multipart and returs the difference between
  * Content-Length and size of input                     */
-size_t Request::getBytesLeft(const std::string& contentType)
+size_t Request::getBytesLeft(const std::string& contentType, const std::string& boundary)
 {
     if (contentType.compare(0, 19, "multipart/form-data") == 0)
     {
@@ -52,7 +52,12 @@ size_t Request::getBytesLeft(const std::string& contentType)
                 size_t requestLen = static_cast<size_t>(std::strtol(requestLenStr.c_str(), nullptr, 10));
 
                 std::cout << GRN"DEBUG: Content-Length: " << requestLen << ""RESET<< std::endl;
-                return requestLen - _tmp.size();
+
+                // search for end of header
+                size_t headerSize = _tmp.find("\r\n\r\n") + 4;
+
+
+                return (requestLen - (_tmp.size() - headerSize));
             }
         }
         exitWithError("unexpected error: unable do get Content-Lenght");
@@ -92,7 +97,7 @@ std::string Request::getFileName(const std::string& contentType, const std::stri
         }
         // exitWithError("unexpected error: unable do get filename");
         std::cout << "prolly first chunk of multipart, wait for filename"<<std::endl;
-        return FAILURE;  // error
+        return "not_found_yet";  // error
     }
 
     // WHAT IF POST REQUEST BUT NOT multipart/form-data?

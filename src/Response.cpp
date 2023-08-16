@@ -35,8 +35,10 @@ void Response::getResponse()
 bool Response::postResponse(std::string filename, int bytesLeft)
 {
     _info._postInfo._filename = filename;
-    saveRequestToFile();
-    return _info._postInfo._isMultiPart;
+    _info._postInfo._bytesLeft = bytesLeft;
+    // _info._postInfo._boundary // NEED LATER
+    
+    return saveRequestToFile();
 }
 
 
@@ -83,12 +85,14 @@ void Response::mySend(int statusCode)
         }
         else if (statusCode == FILE_NOT_SAVED)
         {
-            statusCode = 500;
+            // statusCode = 500;
+            statusCode = 200;
             _file = readFile(PATH_FILE_NOT_SAVED);
         }
         else if (statusCode == FILE_ALREADY_EXISTS)
         {
-            statusCode = 409;
+            // statusCode = 409;
+            statusCode = 200;
             _file = readFile(PATH_FILE_ALREADY_EXISTS);
         }
         else if (statusCode == DEFAULTWEBPAGE)
@@ -309,8 +313,43 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
 
 
 
+void Response::emptyClientPipe()
+{
+//     //TODO: MAKE LOOP STOP LOL
+//     ssize_t bytesRead = 1;
+// std::cout << GRN"in empty pipe"RESET<<std::endl;
+//     while (bytesRead > 0)
+//     {
+//         char clientData[MAX_REQUESTSIZE];
+//         memset(clientData, 0, MAX_REQUESTSIZE);
+//         bytesRead = recv(_info._clientSocket, clientData, sizeof(clientData), O_NONBLOCK);
+// std::cout << GRN"lol"RESET<<std::endl;
+//     }
+//     _info._postInfo._bytesLeft = 0;
 
-void Response::saveRequestToFile()
+ssize_t bytesRead = 0;
+    while (true)
+    {
+        uint8_t tempBuffer[MAX_REQUESTSIZE];
+        // memset(tempBuffer, 0, MAX_REQUESTSIZE);
+        bytesRead = read(_info._clientSocket, tempBuffer, sizeof(tempBuffer));
+std::cout << GRN"lol"RESET<<std::endl;
+        
+        if (bytesRead == 0) 
+        {
+            // Pipe is empty
+            break;
+        } else 
+        {
+            // Error reading from the pipe
+            break;
+        }
+    }
+    std::cout <<GRN"DEBUG: end of empty client pipe with status["<<bytesRead<<"]"RESET<<std::endl;
+}
+
+
+bool Response::saveRequestToFile()
 {
 //
 //    // INIT _POSTMAP
@@ -323,21 +362,50 @@ void Response::saveRequestToFile()
 ////        _postMap[_info._clientSocket] = newPostInfo;
 //        _info._filename = getFileName(_info);
 
+// std::cout << GRN"entered save request to file"RESET<<std::endl;
 
-        // WHY IS FILENAME NOT INITTED??
-        _fileStreams[_info._clientSocket].open((UPLOAD_FOLDER + _info._postInfo._filename).c_str(), std::ios::binary);
-        // JUST BODY!! not file
-        _fileStreams[_info._clientSocket].write(reinterpret_cast<const char*>(&_file[0]), _file.size());
-        _fileStreams[_info._clientSocket].close();
+
+    std::string convert(_info._input.begin(), _info._input.end());
+
+    if (convert.compare(0, 4, "POST") == 0)
+    {
+        if (fileExistsInDirectory(_info._postInfo._filename) == true)
+        {
+            std::cout << RED"FILE ["<<_info._postInfo._filename<<"] ALREADY EXISTS" RESET<< std::endl;
+            emptyClientPipe();
+std::cout << GRN"after empty pype"RESET<<std::endl;
+            mySend(FILE_ALREADY_EXISTS);
+            return false;
+        }
+std::cout << GRN"first call shit"RESET<<std::endl;
+
+        // only send stuff after main header
+        // is this value right? -> for new sholz 873
+        size_t startPos = convert.find("\r\n\r\n") + 4; // should search for boundary string here, but this seems more persistent
+        std::vector<uint8_t> newVector(_info._input.begin() + startPos, _info._input.end());
+        _fileStreams[_info._clientSocket].open((UPLOAD_FOLDER + _info._postInfo._filename).c_str(), std::ios::binary | std::ofstream::app);
+        _fileStreams[_info._clientSocket].write(reinterpret_cast<const char*>(newVector.data()),newVector.size());
+    }
+    else
+    {
+std::cout << GRN"in is open if"RESET<<std::endl;
+        _fileStreams[_info._clientSocket].open((UPLOAD_FOLDER + _info._postInfo._filename).c_str(), std::ios::binary | std::ofstream::app);
+        _fileStreams[_info._clientSocket].write(reinterpret_cast<const char*>(_info._input.data()),_info._input.size());
+    }
+
+
+        // _fileStreams[_info._clientSocket].close();
         if (_info._postInfo._bytesLeft <= 0)
         {
             std::cout << RED"DEBUG: done writing to file [FIRST CALL]"RESET<<std::endl;
-            _info._postInfo._isMultiPart = false;
             mySend(FILE_SAVED);
+            _fileStreams[_info._clientSocket].close();
+            close(_info._clientSocket);
+            return false;
         }
-        else
-            _info._postInfo._isMultiPart = true;
-        mySend(FILE_SAVED);
+
+std::cout << GRN"return"RESET<<std::endl;
+    return true;
 
 
 //    }
@@ -360,12 +428,6 @@ void Response::saveRequestToFile()
 
 //    std::string filename = "nnnew.jpeg";
 //
-//    if (fileExistsInDirectory(filename) == true)
-//    {
-//        std::cout << RED"FILE ALREADY EXISTS" RESET<< std::endl;
-//        mySend(FILE_ALREADY_EXISTS);
-//        return;
-//    }
 //    std::ofstream outputFile(UPLOAD_FOLDER+filename , std::ios::binary);
 //    if (outputFile)
 //    {
@@ -382,27 +444,27 @@ void Response::saveRequestToFile()
 }
 
 
-//bool Response::fileExistsInDirectory(std::string filename)
-//{
-//
-//
-//    DIR* dir = opendir(UPLOAD_FOLDER);
-//    if (dir == nullptr) {
-//        std::cerr << "Error opening directory: " << strerror(errno) << std::endl;
-//        return false;
-//    }
-//
-//    struct dirent* entry;
-//    while ((entry = readdir(dir)) != nullptr) {
-//        if (strcmp(entry->d_name, filename.c_str()) == 0) {
-//            closedir(dir);
-//            return true;
-//        }
-//    }
-//
-//    closedir(dir);
-//    return false;
-//}
+bool Response::fileExistsInDirectory(std::string filename)
+{
+
+
+   DIR* dir = opendir(UPLOAD_FOLDER);
+   if (dir == nullptr) {
+       std::cerr << "Error opening directory: " << strerror(errno) << std::endl;
+       return false;
+   }
+
+   struct dirent* entry;
+   while ((entry = readdir(dir)) != nullptr) {
+       if (strcmp(entry->d_name, filename.c_str()) == 0) {
+           closedir(dir);
+           return true;
+       }
+   }
+
+   closedir(dir);
+   return false;
+}
 
 
 

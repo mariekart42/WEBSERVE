@@ -20,7 +20,7 @@
 
 
 #define POLL_TIMEOUT 200
-#define MAX_REQUESTSIZE 5000
+#define MAX_REQUESTSIZE 8000
 
 
 // ALL OF THESE MACROS NEED TO BE DEFINED LATER AS VARIABLES FROM CONFIGFILE!!
@@ -87,14 +87,15 @@ class Response
         static std::vector<uint8_t> readFile(const std::string&);
         void mySend(int);
         std::string getHeader(int statusCode);
-        void saveRequestToFile();
+        bool saveRequestToFile();
 
+        void emptyClientPipe();
 
         void getResponse();
         bool postResponse(std::string, int);
 
 
-//        bool fileExistsInDirectory(std::string);
+       bool fileExistsInDirectory(std::string);
 
 //        std::string getFileName(const Response::postInfo&);
 //        size_t getContentLen();
