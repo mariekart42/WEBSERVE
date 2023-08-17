@@ -120,6 +120,8 @@ void ConnectClients::initClientInfo(int _clientSocket, const std::vector<uint8_t
         {
             initNewInfo._postInfo._isMultiPart = false;
             initNewInfo._postInfo._bytesLeft = 0;
+            initNewInfo._postInfo._filename = "LOL_NO_CLUE.txt";
+
             // initNewInfo._postInfo._contentType = nullptr;
             // initNewInfo._postInfo._filename = nullptr;
             // initNewInfo._postInfo._boundary = nullptr;
@@ -142,10 +144,10 @@ int ConnectClients::receiveData(int i)
     
     memset(_clientData, 0, MAX_REQUESTSIZE);
     ssize_t bytesRead = recv(_fdList[i].fd, _clientData, sizeof(_clientData), O_NONBLOCK);
-    if (bytesRead > 0)
+    if (bytesRead > 0 && strncmp(_clientData, "POST", 4) == 0)
     {
-        // std::cout << "Received Data [" << bytesRead << "] \n"<<_clientData<<std::endl;
-        std::cout << "Received Data [" << bytesRead << "]"<<std::endl;
+        std::cout << "Received Data [" << bytesRead << "] \n"<<_clientData<<std::endl;
+        // std::cout << "Received Data [" << bytesRead << "]"<<std::endl;
 
     }
 
@@ -207,7 +209,7 @@ void ConnectClients::clientConnected(int serverSocket)
                     }
                     else if (strncmp(_clientData, "POST", 4) == 0 || it->second._postInfo._isMultiPart == true)
                     {
-                        it->second._postInfo._isMultiPart = response.postResponse(it->second._postInfo._filename, it->second._postInfo._bytesLeft);
+                        it->second._postInfo._isMultiPart = response.postResponse(it->second._postInfo._filename, it->second._postInfo._bytesLeft, it->second._postInfo._contentType);
                     }
                     else
                         std::cout<<RED"unexpected Error: cant detect HTTPMethod"RESET<<std::endl;

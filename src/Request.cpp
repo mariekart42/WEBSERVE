@@ -116,7 +116,7 @@ std::string Request::getContentType()
 
     if (foundPos != std::string::npos)
     {
-        size_t endPos = _tmp.find(";", foundPos);
+        size_t endPos = _tmp.find("\r", foundPos);// CHanged from ; to \r
         if (endPos != std::string::npos)
         {
             std::string contentType = _tmp.substr(foundPos + 14, endPos - (foundPos + 14));

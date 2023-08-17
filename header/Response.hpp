@@ -25,13 +25,19 @@
 
 // ALL OF THESE MACROS NEED TO BE DEFINED LATER AS VARIABLES FROM CONFIGFILE!!
 //#define PATH_DEFAULTWEBSITE "site/defaultWebpage.html"
-#define PATH_DEFAULTWEBSITE "site/postRequest.html"
+
+// #define PATH_DEFAULTWEBSITE "site/postRequest.html"
+#define PATH_DEFAULTWEBSITE "site/subscribe.html"
+
 
 #define PATH_500_ERRORWEBSITE "site/error/500.html"
 #define PATH_404_ERRORWEBSITE "site/error/404.html"
 #define INDEX_PAGE ""   // can have a name I guess (host_name??)
 #define SITE_FOLDER "site/" // folder in which all folders for client are stored
-#define UPLOAD_FOLDER "site/upload/"
+
+// #define UPLOAD_FOLDER "site/upload/"
+#define UPLOAD_FOLDER "site/subscribe/"
+
 #define PATH_HANDLEFOLDERSLATER "site/handleFoldersLater.html"
 #define PATH_FILE_NOT_SAVED "site/error/500_FILE_NOT_SAVED.html"
 #define PATH_FILE_SAVED "site/FILE_SAVED.html"
@@ -92,11 +98,14 @@ class Response
         void emptyClientPipe();
 
         void getResponse();
-        bool postResponse(std::string, int);
+        bool postResponse(std::string, int, std::string);
 
 
        bool fileExistsInDirectory(std::string);
 
+
+        std::string decodeURL(const std::string&);
+        void urlDecodedInput();
 //        std::string getFileName(const Response::postInfo&);
 //        size_t getContentLen();
 

@@ -32,13 +32,41 @@ void Response::getResponse()
 
 
 
-bool Response::postResponse(std::string filename, int bytesLeft)
+bool Response::postResponse(std::string filename, int bytesLeft, std::string contentType)
 {
     _info._postInfo._filename = filename;
     _info._postInfo._bytesLeft = bytesLeft;
     // _info._postInfo._boundary // NEED LATER
-    
-    return saveRequestToFile();
+    std::cout<< GRN"DEBUG: postResponse: content-Type: " << contentType<<""RESET<<std::endl;
+    if (contentType == "multipart/form-data")
+        return saveRequestToFile();
+    else if (contentType == "application/x-www-form-urlencoded")
+    {
+        std::cout << GRN"DEBUG: it's application/x-www-form-urlencoded"RESET<<std::endl;
+        urlDecodedInput();
+        // std::string tmp(_info._input.begin(), _info._input.end());
+        // size_t foundPos = tmp.find("textData=");
+        // std::string testData;
+        // if (foundPos != std::string::npos)
+        // {
+        //     std::cout << "input: "<<tmp<<std::endl;
+        //     size_t endPos = tmp.find("\0", foundPos);// CHanged from ; to ' '
+        //     if (endPos != std::string::npos)
+        //     {
+        //         testData = tmp.substr(foundPos + 9, endPos - (foundPos + 9));
+
+        //         std::cout << GRN"DEBUG: Text data: " << testData << ""RESET<< std::endl;
+        //     }
+        // }
+        // std::string decodedInput = decodeURL(testData);
+        // std::cout << "filename: "<<filename<<std::endl;
+        // _fileStreams[_info._clientSocket].open((UPLOAD_FOLDER + _info._postInfo._filename).c_str(),  std::ios::binary);
+        // // _fileStreams[_info._clientSocket].write((testData.c_str()),testData.size());
+        // _fileStreams[_info._clientSocket].write((decodedInput.c_str()),strlen(decodedInput.c_str()));
+        // _fileStreams[_info._clientSocket].close();
+        // mySend(FILE_SAVED);
+    }
+    return false;
 }
 
 
@@ -397,7 +425,9 @@ std::cout << GRN"in is open if"RESET<<std::endl;
         // _fileStreams[_info._clientSocket].close();
         if (_info._postInfo._bytesLeft <= 0)
         {
+
             std::cout << RED"DEBUG: done writing to file [FIRST CALL]"RESET<<std::endl;
+            std::cout << RED"DEBUG: file path: "<<(UPLOAD_FOLDER + _info._postInfo._filename)<<""RESET<<std::endl;
             mySend(FILE_SAVED);
             _fileStreams[_info._clientSocket].close();
             close(_info._clientSocket);

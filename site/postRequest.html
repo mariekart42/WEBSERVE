@@ -6,10 +6,12 @@
 <body>
 <h1>Welcome to Image Upload</h1>
 <p>Please select a JPEG image to upload:</p>
-<form action="/upload" method="post" enctype="multipart/form-data">
-    <input type="file" name="image" accept="image/jpeg" required>
-    <br>
-    <button type="submit">Upload</button>
+<form action="/upload" method="post">
+    <label for="textData">Enter Text:</label>
+    <textarea id="textData" name="textData" rows="4" cols="50"></textarea>
+
+    <button type="submit">Submit</button>
 </form>
+
 </body>
 </html>
