@@ -7,15 +7,12 @@
 <h1>Welcome to Image Upload</h1>
 <p>Please select a JPEG image to upload:</p>
 <form action="/upload" method="post" enctype="multipart/form-data">
-    <label for="image">Upload an Image:</label>
-    <input type="file" id="image" name="image" accept="image/png">
-    
-
-    <label for="textData">Non-Image Data:</label>
-    <input type="text" id="textData" name="textData">
-
+    <input type="file" name="image" accept=".jpeg, .jpg">
+<!--    <br>-->
+<!--    <label for="textData">Enter Text:</label>-->
+<!--    <input type="text" name="textData">-->
+<!--    <br>-->
     <button type="submit">Submit</button>
 </form>
-
 </body>
 </html>

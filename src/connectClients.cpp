@@ -109,6 +109,7 @@ void ConnectClients::initClientInfo(int _clientSocket, const std::vector<uint8_t
         initNewInfo._url = request.getURL();
         initNewInfo._fileContentType = request.getFileContentType(initNewInfo._url);
         initNewInfo._postInfo._contentType = request.getContentType();
+        initNewInfo._postInfo._overwriteFile = false;
         if (initNewInfo._postInfo._contentType == "multipart/form-data")
         {
             initNewInfo._postInfo._isMultiPart = true;
@@ -209,7 +210,7 @@ void ConnectClients::clientConnected(int serverSocket)
                     }
                     else if (strncmp(_clientData, "POST", 4) == 0 || it->second._postInfo._isMultiPart == true)
                     {
-                        it->second._postInfo._isMultiPart = response.postResponse(it->second._postInfo._filename, it->second._postInfo._bytesLeft, it->second._postInfo._contentType);
+                        it->second._postInfo._isMultiPart = response.postResponse(it->second._postInfo._filename, it->second._postInfo._bytesLeft, it->second._postInfo._contentType, it->second._postInfo._boundary, bytesRead);
                     }
                     else
                         std::cout<<RED"unexpected Error: cant detect HTTPMethod"RESET<<std::endl;

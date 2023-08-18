@@ -116,7 +116,7 @@ std::string Request::getContentType()
 
     if (foundPos != std::string::npos)
     {
-        size_t endPos = _tmp.find("\r", foundPos);// CHanged from ; to \r
+        size_t endPos = _tmp.find(";", foundPos);// CHanged from ; to \r
         if (endPos != std::string::npos)
         {
             std::string contentType = _tmp.substr(foundPos + 14, endPos - (foundPos + 14));
@@ -133,14 +133,14 @@ std::string Request::getContentType()
  * extracts boundary for multipart      */
 std::string Request::getBoundary()
 {
-    size_t foundPos = _tmp.find("multipart/form-data; ");
+    size_t foundPos = _tmp.find("multipart/form-data; boundary=");
 
     if (foundPos != std::string::npos)
     {
         size_t endPos = _tmp.find("\r", foundPos);
         if (endPos != std::string::npos)
         {
-            std::string contentType = _tmp.substr(foundPos + 21, endPos - (foundPos + 21));
+            std::string contentType = _tmp.substr(foundPos + 30, endPos - (foundPos + 30));
 
             // std::cout << GRN"DEBUG: Boundary: " << contentType << RESET""<<std::endl;
             return contentType;
