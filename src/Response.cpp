@@ -43,6 +43,7 @@ bool Response::postResponse(std::string filename, int bytesLeft, std::string con
     else if (contentType == "application/x-www-form-urlencoded")
     {
         std::cout << GRN"DEBUG: it's application/x-www-form-urlencoded"RESET<<std::endl;
+        std::cout << GRN"DEBUG: filename: " << filename<<""RESET<<std::endl;
         urlDecodedInput();
         // std::string tmp(_info._input.begin(), _info._input.end());
         // size_t foundPos = tmp.find("textData=");
@@ -498,3 +499,31 @@ bool Response::fileExistsInDirectory(std::string filename)
 
 
 
+
+
+
+
+// -------------------- SOME MARIE BULLSHIT ----------------------------------------
+
+#ifdef ILLEGAL
+void sendEMail(std::string emailAddress)
+{
+    const char* sender = "schwokelbaer@gmail.com";
+    // const char* recipient = "recipient@example.com";
+
+    // Compose the command
+    std::string command = "sendmail ";
+    command += emailAddress;
+    command += " < /dev/null";
+
+    // Execute the sendmail command
+    int result = std::system(command.c_str());
+
+    if (result == 0) {
+        std::cout << "Email sent successfully." << std::endl;
+    } else {
+        std::cout << "Failed to send email." << std::endl;
+    }
+
+}
+#endif

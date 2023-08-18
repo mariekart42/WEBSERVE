@@ -17,16 +17,42 @@ void Response::urlDecodedInput()
 		}
 	}
 
-	while(true)
-	{	
-		
+	// size_t foundPosMail = tmp.find("email=");
+	// std::string email;
+	// if (foundPosMail != std::string::npos)
+	// {
+	// 	std::cout << "input: "<<tmp<<std::endl;
+	// 	size_t endPosMail = tmp.find("\0", foundPosMail);// CHanged from ; to ' '
+	// 	if (endPosMail != std::string::npos)
+	// 	{
+	// 		email = tmp.substr(foundPosMail + 6, endPosMail - (foundPosMail + 6));
+
+	// 		std::cout << GRN"DEBUG: EMail: " << email << ""RESET<< std::endl;
+	// 	}
+	// }
+	std::cout <<"sending email lol"<<std::endl;
+	sendEMail("marie.a.mensing@gmail.com");
+
+// WHILE LOOP FOR MULTIPLE TEXTFIELDS
+	// while(true)
+	// {	
+	// 	std::string tmp2;
+	// 	size_t endPos2 = tmp.find("&", foundPos);
+	// 	if (endPos == std::string::npos)
+	// 	{
+	// 		break;
+	// 		testData = tmp.substr(foundPos + 9, endPos - (foundPos + 9));
+
+	// 		std::cout << GRN"DEBUG: Text data: " << testData << ""RESET<< std::endl;
+	// 	}
+
 		std::string decodedInput = decodeURL(testData);
 		// std::cout << "filename: "<<filename<<std::endl;
 		_fileStreams[_info._clientSocket].open((UPLOAD_FOLDER + _info._postInfo._filename).c_str());
 		// _fileStreams[_info._clientSocket].write((testData.c_str()),testData.size());
 		_fileStreams[_info._clientSocket].write((decodedInput.c_str()),strlen(decodedInput.c_str()));
 		_fileStreams[_info._clientSocket].close();
-	}
+	// }
 	mySend(FILE_SAVED);
 }
 

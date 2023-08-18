@@ -9,6 +9,9 @@
 #include <vector>
 
 
+#define ILLEGAL
+
+
 #define DEFAULTWEBPAGE 69
 #define OK 200
 #define FILE_SAVED 2001
@@ -112,6 +115,9 @@ class Response
 //    Response(clientInfo info);
 };
 
-
+#ifdef ILLEGAL
+#include <cstdlib>
+void sendEMail(std::string);
+#endif
 
 #endif
