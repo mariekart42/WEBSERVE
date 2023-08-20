@@ -116,7 +116,7 @@ void ConnectClients::initClientInfo(int _clientSocket, const std::vector<uint8_t
             initNewInfo._postInfo._boundary = request.getBoundary();
             initNewInfo._postInfo._bytesLeft = request.getBytesLeft(initNewInfo._postInfo._contentType, initNewInfo._postInfo._boundary);
             initNewInfo._postInfo._filename = request.getFileName(initNewInfo._postInfo._contentType, initNewInfo._postInfo._filename);
-            initNewInfo._postInfo._outfile = new std::ofstream (initNewInfo._postInfo._filename, std::ofstream::out | std::ofstream::app | std::ofstream::trunc | std::ofstream::binary);
+            initNewInfo._postInfo._outfile = new std::ofstream (initNewInfo._postInfo._filename, std::ofstream::out | std::ofstream::app  | std::ofstream::binary);
         }
         else
         {
@@ -218,6 +218,8 @@ void ConnectClients::clientConnected(int serverSocket)
                                                                                   it->second._postInfo._bytesLeft, it->second._postInfo._contentType,
                                                                                   it->second._postInfo._boundary, bytesRead,
                                                                                   it->second._postInfo._outfile);
+
+
                     }
                     else
                         std::cout<<RED"unexpected Error: cant detect HTTPMethod"RESET<<std::endl;

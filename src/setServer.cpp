@@ -21,6 +21,8 @@ void SetServer::initServerSocket()
     // getaddrinfo() generates address that's suitable for bind()
     getaddrinfo(0, std::to_string(_port).c_str(), &_socketAddress, &_bindAddress);
 
+
+
     std::cout << YEL " . . . Creating Socket" RESET << std::endl;
 
     _serverSocket = socket(_bindAddress->ai_family, _bindAddress->ai_socktype, _bindAddress->ai_protocol);	 // domain, type, protocol

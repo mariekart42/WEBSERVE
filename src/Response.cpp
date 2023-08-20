@@ -422,25 +422,17 @@ bool Response::saveRequestToFile(int bytesRead, std::ofstream &outfile)
 
 //
 //
-//    // print file content:
-//    int fd = open((UPLOAD_FOLDER + _info._postInfo._filename).c_str(), O_RDONLY);
-//
-//    if (fd == -1) {
-//        perror("Error opening file");
-//        return 1;
-//    }
-//
+    // print file content:
+//    int fd = open((_info._postInfo._filename).c_str(), O_RDONLY);
 //    char buffer[MAX_REQUESTSIZE];
 //    ssize_t blob;
-//
 //    while ((blob = read(fd, buffer, sizeof(buffer))) > 0)
 //    {
 //        // Printing binary data as hexadecimal values
 //        for (ssize_t i = 0; i < blob; ++i) {
-//            std::cout << std::hex << static_cast<unsigned int>(buffer[i]) << " ";
+//            std::cout << std::hex << static_cast<unsigned int>(buffer[i]) << "";
 //        }
 //    }
-//
 //    close(fd);
 
 
