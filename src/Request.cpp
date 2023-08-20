@@ -180,6 +180,20 @@ int Request::getStatusCode() const
     return _statusCode;
 }
 
+
+
+
+//std::ofstream *Request::getOutfile(std::string filename)
+//{
+//    if (filename.compare(0, 13, "not_found_yet") == 0)
+//
+//    return new std::ofstream (filename.c_str(), std::ofstream::out | std::ofstream::trunc);
+//}
+
+
+
+
+
 // std::vector<uint8_t> Request::getBody() const
 // {
 //    std::vector<uint8_t> bodyVector;

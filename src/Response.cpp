@@ -35,14 +35,14 @@ void Response::getResponse()
 
 
 
-bool Response::postResponse(std::string filename, int bytesLeft, std::string contentType, std::string boundary, int bytesRead)
+bool Response::postResponse(std::string filename, int bytesLeft, std::string contentType, std::string boundary, int bytesRead, std::ofstream *outfile)
 {
     _info._postInfo._filename = filename;
     _info._postInfo._bytesLeft = bytesLeft;
      _info._postInfo._boundary = boundary; // NEED LATER
     std::cout<< GRN"DEBUG: postResponse: content-Type: " << contentType<<""RESET<<std::endl;
     if (contentType == "multipart/form-data")
-        return saveRequestToFile(bytesRead);
+        return saveRequestToFile(bytesRead, *outfile);
     else if (contentType == "application/x-www-form-urlencoded")
     {
         std::cout << GRN"DEBUG: it's application/x-www-form-urlencoded"RESET<<std::endl;
@@ -373,170 +373,199 @@ void Response::initNewFileName()
 }
 
 
-bool Response::saveRequestToFile(int bytesRead)
+
+//
+//bool Response::saveRequestToFile(int bytesRead)
+//{
+//
+//}
+
+
+
+bool Response::saveRequestToFile(int bytesRead, std::ofstream &outfile)
 {
-
-    std::string convert(_info._input.begin(), _info._input.end());
-
-    if (convert.compare(0, 4, "POST") == 0)
-    {
-        // ONLY FOR DEBUGGING, LATER RETURN ERROR MESSAGE AND EMPTY PIPE
-        if (fileExistsInDirectory())
-            initNewFileName();
-
-        // TRUNCATE FILE IF THERE IS SOMETHING
-        if (_fileStreams[_info._clientSocket].tellp() != std::streampos(0))
-        {
-            _fileStreams[_info._clientSocket].open((UPLOAD_FOLDER + _info._postInfo._filename), std::ofstream::trunc);
-            _info._postInfo._overwriteFile = true;
-        }
+//    outfile << _info._input;
 
 
-        // only send stuff after main header
-        std::string findStr = "\r\n\r\n--"+_info._postInfo._boundary;
-        size_t startPosPre = convert.find(findStr); // should search for boundary string here, but this seems more persistent
-        size_t startPos = startPosPre + findStr.size();
 
-
-        size_t newPos = convert.find("\r\n\r\n", startPos+2);
-
-
-        std::vector<uint8_t> newVector(_info._input.begin(), _info._input.end());
-        std::string debugString(newVector.begin(), newVector.end());
-
-        _info._postInfo._filename = "SOMTHING";
-
-//        _fileStreams[_info._clientSocket].open((UPLOAD_FOLDER + _info._postInfo._filename).c_str(), std::ios::binary);
-//        _fileStreams[_info._clientSocket].open((UPLOAD_FOLDER + _info._postInfo._filename).c_str(), std::ios::binary);
-        std::ofstream outfile;
-        outfile.open("afile.jpeg");
-//        std::stringstream stringstream;
-//        _fileStreams[_info._clientSocket].write(reinterpret_cast<const char*>(newVector.data()),bytesRead - startPos);
-        for (std::vector<uint8_t>::iterator it = newVector.begin()+(newPos+4); it != newVector.end(); it++) {
-//            _fileStreams[_info._clientSocket] << *it;
+    for (std::vector<uint8_t>::iterator it = _info._input.begin(); it != _info._input.end(); it++) {
             outfile << *it;
-//            stringstream << *it;
         }
-        outfile.close();
-//        std::string string(stringstream.str());
-
-//        _fileStreams[_info._clientSocket].write(reinterpret_cast<const char*>(newVector.data()),bytesRead - startPos);
-//        _fileStreams[_info._clientSocket].write(debugString.c_str(),bytesRead - startPos);
+//    outfile.close();
 
 
 
-//        // Get the file name from the ofstream object
-//        std::string filename = (UPLOAD_FOLDER + _info._postInfo._filename);
+//    outfile->write()
+
 //
-//        // Close the ofstream to release the file
-//        _fileStreams[_info._clientSocket].close();
+//    std::string convert(_info._input.begin(), _info._input.end());
 //
-//        // Open the file in binary read mode using std::ifstream
-//        std::ifstream inputFile(filename.c_str(), std::ios::binary);
+//    if (convert.compare(0, 4, "POST") == 0)
+//    {
+//        // ONLY FOR DEBUGGING, LATER RETURN ERROR MESSAGE AND EMPTY PIPE
+//        if (fileExistsInDirectory())
+//            initNewFileName();
 //
-//        if (!inputFile.is_open()) {
-//            std::cerr << "Failed to open input file." << std::endl;
-//            return 1;
+//        // TRUNCATE FILE IF THERE IS SOMETHING
+//        if (_fileStreams[_info._clientSocket].tellp() != std::streampos(0))
+//        {
+//            _fileStreams[_info._clientSocket].open((UPLOAD_FOLDER + _info._postInfo._filename), std::ofstream::trunc);
+//            _info._postInfo._overwriteFile = true;
 //        }
 //
-//        char buffer[MAX_REQUESTSIZE];
-//        while (inputFile.read(buffer, sizeof(buffer))) {
-//            std::streamsize bytesRead = inputFile.gcount();
 //
-//            // Printing binary data as hexadecimal values
-//            for (std::streamsize i = 0; i < bytesRead; ++i) {
-//                std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<unsigned int>(buffer[i]) << " ";
+//        // only send stuff after main header
+//        std::string findStr = "\r\n\r\n--"+_info._postInfo._boundary;
+//        size_t startPosPre = convert.find(findStr); // should search for boundary string here, but this seems more persistent
+//        size_t startPos = startPosPre + findStr.size();
+//
+//
+//        size_t newPos = convert.find("\r\n\r\n", startPos+2);
+//
+//
+//        std::vector<uint8_t> newVector(_info._input.begin(), _info._input.end());
+//        std::string debugString(newVector.begin(), newVector.end());
+//
+//        _info._postInfo._filename = "SOMTHING";
+//
+////        _fileStreams[_info._clientSocket].open((UPLOAD_FOLDER + _info._postInfo._filename).c_str(), std::ios::binary);
+////        _fileStreams[_info._clientSocket].open((UPLOAD_FOLDER + _info._postInfo._filename).c_str(), std::ios::binary);
+//        std::ofstream outfile;
+//        outfile.open("afile.jpeg", std::ios::binary);
+////        std::stringstream stringstream;
+////        _fileStreams[_info._clientSocket].write(reinterpret_cast<const char*>(newVector.data()),bytesRead - startPos);
+//        for (std::vector<uint8_t>::iterator it = newVector.begin()+(newPos+4); it != newVector.end(); it++) {
+////            _fileStreams[_info._clientSocket] << *it;
+//            outfile << *it;
+////            stringstream << *it;
+//        }
+//        outfile.close();
+////        outfile.open("afile.jpeg", std::ofstream::app);
+////        for (std::vector<uint8_t>::iterator it = newVector.begin()+(newPos+4); it != newVector.end(); it++) {
+//////            _fileStreams[_info._clientSocket] << *it;
+////            outfile << *it;
+//////            stringstream << *it;
+////        }
+////        outfile.close();
+////        std::string string(stringstream.str());
+//
+////        _fileStreams[_info._clientSocket].write(reinterpret_cast<const char*>(newVector.data()),bytesRead - startPos);
+////        _fileStreams[_info._clientSocket].write(debugString.c_str(),bytesRead - startPos);
+//
+//
+//
+////        // Get the file name from the ofstream object
+////        std::string filename = (UPLOAD_FOLDER + _info._postInfo._filename);
+////
+////        // Close the ofstream to release the file
+////        _fileStreams[_info._clientSocket].close();
+////
+////        // Open the file in binary read mode using std::ifstream
+////        std::ifstream inputFile(filename.c_str(), std::ios::binary);
+////
+////        if (!inputFile.is_open()) {
+////            std::cerr << "Failed to open input file." << std::endl;
+////            return 1;
+////        }
+////
+////        char buffer[MAX_REQUESTSIZE];
+////        while (inputFile.read(buffer, sizeof(buffer))) {
+////            std::streamsize bytesRead = inputFile.gcount();
+////
+////            // Printing binary data as hexadecimal values
+////            for (std::streamsize i = 0; i < bytesRead; ++i) {
+////                std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<unsigned int>(buffer[i]) << " ";
+////            }
+////        }
+////
+////        inputFile.close();
+//////        exitWithError("DEBUFGGING");
+//
+//
+//
+//
+//
+//    }
+//    else
+//    {
+//        std::cout << GRN"bytesRead: "RESET<<bytesRead<<std::endl;
+//
+//        std::string lastBoundary = _info._postInfo._boundary + "--";
+//        std::vector<uint8_t>::iterator lastBoundaryIt = std::search(_info._input.begin(), _info._input.end(), lastBoundary.begin(), lastBoundary.end());
+//
+//        // boundary is NOT inside input
+//        if (lastBoundaryIt == _info._input.end())
+//        {
+//
+//            _fileStreams[_info._clientSocket].open((UPLOAD_FOLDER + _info._postInfo._filename).c_str(), std::ios::binary | std::ofstream::app);
+//            for (std::vector<uint8_t>::iterator it = _info._input.begin(); it != _info._input.end(); it++) {
+//                _fileStreams[_info._clientSocket] << *it;
 //            }
+////            _fileStreams[_info._clientSocket].write(reinterpret_cast<const char*>(_info._input.data()),bytesRead);
+//            _fileStreams[_info._clientSocket].close();
+//        }
+//        else // boundary IS inside input
+//        {
+//
+//            // Calculate the length of the boundary
+//            size_t boundaryLength = lastBoundary.length();
+//
+//            // Subtract the boundary length from the last boundary iterator position
+//            std::vector<uint8_t>::iterator previousDataEndIt = lastBoundaryIt - (boundaryLength);
+//
+//            // Extract the data up to the last boundary
+//            std::vector<uint8_t> previousData(_info._input.begin(), previousDataEndIt);
+//
+//            std::string tmp(_info._input.begin(), _info._input.end());
+//
+//            size_t pos = tmp.find("\r\n--"+_info._postInfo._boundary);
+//
+//            std::vector<uint8_t>::iterator endIt = _info._input.begin() + pos;
+//
+//            _fileStreams[_info._clientSocket].open((UPLOAD_FOLDER + _info._postInfo._filename).c_str(), std::ios::binary | std::ofstream::app);
+//            std::vector<uint8_t>::iterator it;
+//            for (it = _info._input.begin(); it != endIt; it++) {
+//                _fileStreams[_info._clientSocket] << *it;
+//            }
+////            _fileStreams[_info._clientSocket].write(reinterpret_cast<const char*>(previousData.data()),bytesRead);
+//            _fileStreams[_info._clientSocket].close();
+//
+//            std::cout << RED"DEBUG: done writing to file [FIRST CALL]"RESET<<std::endl;
+//            std::cout << RED"DEBUG: file path: "<<(UPLOAD_FOLDER + _info._postInfo._filename)<<""RESET<<std::endl;
+////            if (_info._postInfo._overwriteFile == true)
+//                mySend(FILE_SAVED_AND_OVERWRITTEN);
+////            else
+////                mySend(FILE_SAVED);
+//            _fileStreams[_info._clientSocket].close();
+//            close(_info._clientSocket);
+//            return false;
 //        }
 //
-//        inputFile.close();
-////        exitWithError("DEBUFGGING");
-
-
-
-
-
-    }
-    else
-    {
-        std::cout << GRN"bytesRead: "RESET<<bytesRead<<std::endl;
-
-        std::string lastBoundary = _info._postInfo._boundary + "--";
-        std::vector<uint8_t>::iterator lastBoundaryIt = std::search(_info._input.begin(), _info._input.end(), lastBoundary.begin(), lastBoundary.end());
-
-        // boundary is NOT inside input
-        if (lastBoundaryIt == _info._input.end())
-        {
-
-            _fileStreams[_info._clientSocket].open((UPLOAD_FOLDER + _info._postInfo._filename).c_str(), std::ios::binary | std::ofstream::app);
-            for (std::vector<uint8_t>::iterator it = _info._input.begin(); it != _info._input.end(); it++) {
-                _fileStreams[_info._clientSocket] << *it;
-            }
-//            _fileStreams[_info._clientSocket].write(reinterpret_cast<const char*>(_info._input.data()),bytesRead);
-            _fileStreams[_info._clientSocket].close();
-        }
-        else // boundary IS inside input
-        {
-
-            // Calculate the length of the boundary
-            size_t boundaryLength = lastBoundary.length();
-
-            // Subtract the boundary length from the last boundary iterator position
-            std::vector<uint8_t>::iterator previousDataEndIt = lastBoundaryIt - (boundaryLength);
-
-            // Extract the data up to the last boundary
-            std::vector<uint8_t> previousData(_info._input.begin(), previousDataEndIt);
-
-            std::string tmp(_info._input.begin(), _info._input.end());
-
-            size_t pos = tmp.find("\r\n--"+_info._postInfo._boundary);
-
-            std::vector<uint8_t>::iterator endIt = _info._input.begin() + pos;
-
-            _fileStreams[_info._clientSocket].open((UPLOAD_FOLDER + _info._postInfo._filename).c_str(), std::ios::binary | std::ofstream::app);
-            std::vector<uint8_t>::iterator it;
-            for (it = _info._input.begin(); it != endIt; it++) {
-                _fileStreams[_info._clientSocket] << *it;
-            }
-//            _fileStreams[_info._clientSocket].write(reinterpret_cast<const char*>(previousData.data()),bytesRead);
-            _fileStreams[_info._clientSocket].close();
-
-            std::cout << RED"DEBUG: done writing to file [FIRST CALL]"RESET<<std::endl;
-            std::cout << RED"DEBUG: file path: "<<(UPLOAD_FOLDER + _info._postInfo._filename)<<""RESET<<std::endl;
-//            if (_info._postInfo._overwriteFile == true)
-                mySend(FILE_SAVED_AND_OVERWRITTEN);
-//            else
-//                mySend(FILE_SAVED);
-            _fileStreams[_info._clientSocket].close();
-            close(_info._clientSocket);
-            return false;
-        }
-
-
-
-    }
-
-
-    // print file content:
-    int fd = open((UPLOAD_FOLDER + _info._postInfo._filename).c_str(), O_RDONLY);
-
-    if (fd == -1) {
-        perror("Error opening file");
-        return 1;
-    }
-
-    char buffer[MAX_REQUESTSIZE];
-    ssize_t blob;
-
-    while ((blob = read(fd, buffer, sizeof(buffer))) > 0)
-    {
-        // Printing binary data as hexadecimal values
-        for (ssize_t i = 0; i < blob; ++i) {
-            std::cout << std::hex << static_cast<unsigned int>(buffer[i]) << " ";
-        }
-    }
-
-    close(fd);
+//
+//
+//    }
+//
+//
+//    // print file content:
+//    int fd = open((UPLOAD_FOLDER + _info._postInfo._filename).c_str(), O_RDONLY);
+//
+//    if (fd == -1) {
+//        perror("Error opening file");
+//        return 1;
+//    }
+//
+//    char buffer[MAX_REQUESTSIZE];
+//    ssize_t blob;
+//
+//    while ((blob = read(fd, buffer, sizeof(buffer))) > 0)
+//    {
+//        // Printing binary data as hexadecimal values
+//        for (ssize_t i = 0; i < blob; ++i) {
+//            std::cout << std::hex << static_cast<unsigned int>(buffer[i]) << " ";
+//        }
+//    }
+//
+//    close(fd);
 
     return true;
 }

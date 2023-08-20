@@ -60,6 +60,7 @@ struct postInfo
     std::string _contentType;
     std::string _boundary;
     bool _overwriteFile;
+    std::ofstream *_outfile;
 };
 
 
@@ -72,7 +73,6 @@ struct clientInfo
     std::string _fileContentType;// initted
     std::vector<uint8_t> _input;
     int _statusCode;// initted
-
     postInfo _postInfo;
 };
 
@@ -83,7 +83,6 @@ class Response
         std::vector<uint8_t> _file;
         clientInfo _info;
         std::map<int, std::ofstream> _fileStreams;
-
 
     public:
         Response(const std::vector<uint8_t>&, int, const std::string&);
@@ -100,12 +99,12 @@ class Response
         static std::vector<uint8_t> readFile(const std::string&);
         void mySend(int);
         std::string getHeader(int statusCode);
-        bool saveRequestToFile(int);
+        bool saveRequestToFile(int, std::ofstream &);
 
         void emptyClientPipe();
 
         void getResponse();
-        bool postResponse(std::string, int, std::string, std::string, int);
+        bool postResponse(std::string, int, std::string, std::string, int, std::ofstream *);
 
 
        bool fileExistsInDirectory() const;

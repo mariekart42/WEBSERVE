@@ -116,6 +116,7 @@ void ConnectClients::initClientInfo(int _clientSocket, const std::vector<uint8_t
             initNewInfo._postInfo._boundary = request.getBoundary();
             initNewInfo._postInfo._bytesLeft = request.getBytesLeft(initNewInfo._postInfo._contentType, initNewInfo._postInfo._boundary);
             initNewInfo._postInfo._filename = request.getFileName(initNewInfo._postInfo._contentType, initNewInfo._postInfo._filename);
+            initNewInfo._postInfo._outfile = new std::ofstream (initNewInfo._postInfo._filename, std::ofstream::out | std::ofstream::app | std::ofstream::trunc | std::ofstream::binary);
         }
         else
         {
@@ -133,9 +134,12 @@ void ConnectClients::initClientInfo(int _clientSocket, const std::vector<uint8_t
     else if (it->second._postInfo._isMultiPart == true)   // only for multipart!!
     {
         Request request(input);
+        std::string oldFilename = it->second._postInfo._filename;
         it->second._input = input;
         it->second._postInfo._bytesLeft -= bytesRead;
         it->second._postInfo._filename = request.getFileName(it->second._postInfo._contentType, it->second._postInfo._filename);
+        if (it->second._postInfo._filename.compare(0, 13, "not_found_yet") != 0)
+            rename(oldFilename.c_str(), it->second._postInfo._filename.c_str());
         it->second._statusCode = request.getStatusCode();
     }
 }
@@ -210,7 +214,10 @@ void ConnectClients::clientConnected(int serverSocket)
                     }
                     else if (strncmp(_clientData, "POST", 4) == 0 || it->second._postInfo._isMultiPart == true)
                     {
-                        it->second._postInfo._isMultiPart = response.postResponse(it->second._postInfo._filename, it->second._postInfo._bytesLeft, it->second._postInfo._contentType, it->second._postInfo._boundary, bytesRead);
+                        it->second._postInfo._isMultiPart = response.postResponse(it->second._postInfo._filename,
+                                                                                  it->second._postInfo._bytesLeft, it->second._postInfo._contentType,
+                                                                                  it->second._postInfo._boundary, bytesRead,
+                                                                                  it->second._postInfo._outfile);
                     }
                     else
                         std::cout<<RED"unexpected Error: cant detect HTTPMethod"RESET<<std::endl;

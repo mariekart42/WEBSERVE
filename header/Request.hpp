@@ -29,6 +29,7 @@ class Request
         std::string getFileName(const std::string&, const std::string&);
 //        std::vector<uint8_t> getFile() const;
         std::string getBoundary();
+    std::ofstream *getOutfile(std::string);
 
 };
 
