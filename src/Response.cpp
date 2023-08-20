@@ -392,18 +392,27 @@ bool Response::saveRequestToFile(int bytesRead, std::ofstream &outfile)
 
     if (convert.find("POST") == 0 && convert.find(startBoundary) == std::string::npos) // only header, no body -> not writing to outfile!
         return true;
-    else if ((boundaryPos = convert.find(startBoundary) != std::string::npos))  // cut header and put stuff afterward to outfile
+    else if ((boundaryPos = convert.find(startBoundary)) != std::string::npos)  // cut header and put stuff afterward to outfile
     {
         size_t bodyHeaderPos = boundaryPos + startBoundary.size();
 
-        size_t bodyPos = convert.find("\r\n\r\n", bodyHeaderPos+2) + 4; // maybe not right Pos
+        size_t bodyPos = convert.find("\r\n\r\n", bodyHeaderPos+2) + 4;
+        // IF IT DOESNT FIND THIS "\r\n\r\n" DOTN DO FORLOOP
+        if (bodyPos == std::string::npos)
+            return true;
+//"---------------------------420934440522953336893088357611"
+//"-----------------------------420934440522953336893088357611\r\n"
+
+
+        // WORKS IN CHROME [but picture has less bytes then original]
+        // DOES NOT WORK IN FIREFOX --> DIFFERENT BOUNDARY?
+
 
 
         for (std::vector<uint8_t>::iterator it = _info._input.begin() + bodyPos; it != _info._input.end(); it++)
             outfile << *it;
-
     }
-    else if ((boundaryPos = convert.find(endBoundary) != std::string::npos))    // found last boundary
+    else if ((boundaryPos = convert.find(endBoundary)) != std::string::npos)    // found last boundary
     {
 
         for (std::vector<uint8_t>::iterator it = _info._input.begin(); it != _info._input.begin() + boundaryPos; it++)
