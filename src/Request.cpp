@@ -71,7 +71,7 @@ size_t Request::getBytesLeft(const std::string& contentType, const std::string& 
  * extracts the filename defined in the header of the body      */
 std::string Request::getFileName(const std::string& contentType, const std::string& prevFileName)
 {
-    if (!prevFileName.empty() && prevFileName.compare(0, 16, "tmpFileForSocket_") != 0)
+    if (!prevFileName.empty() && prevFileName.compare(0, 13, "not_found_yet") != 0)
         return prevFileName;    // correct filename was already found
     // std::cout<<"multipart/form-data;"<<std::endl;
 

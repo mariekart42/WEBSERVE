@@ -138,7 +138,7 @@ void ConnectClients::initClientInfo(int _clientSocket, const std::vector<uint8_t
         it->second._input = input;
         it->second._postInfo._bytesLeft -= bytesRead;
         it->second._postInfo._filename = request.getFileName(it->second._postInfo._contentType, it->second._postInfo._filename);
-        if (it->second._postInfo._filename.compare(0, 13, "not_found_yet") != 0)
+        if (oldFilename.compare(0, 13, "not_found_yet") == 0 && it->second._postInfo._filename.compare(0, 13, "not_found_yet") != 0)
             rename(oldFilename.c_str(), it->second._postInfo._filename.c_str());
         it->second._statusCode = request.getStatusCode();
     }

@@ -16,6 +16,4 @@ int main(int ac, char **av)
     }
     else
         exitWithError("./a.out <PORT>");
-
-
 }
