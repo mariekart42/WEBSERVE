@@ -7,7 +7,6 @@ SetServer::SetServer(int port):
 SetServer::~SetServer()
 {
     close(_serverSocket);
-    exit(0);
 }
 
 
@@ -21,14 +20,13 @@ void SetServer::initServerSocket()
     // getaddrinfo() generates address that's suitable for bind()
     getaddrinfo(0, std::to_string(_port).c_str(), &_socketAddress, &_bindAddress);
 
-
-
     std::cout << YEL " . . . Creating Socket" RESET << std::endl;
 
     _serverSocket = socket(_bindAddress->ai_family, _bindAddress->ai_socktype, _bindAddress->ai_protocol);	 // domain, type, protocol
     if (_serverSocket < 0)
         exitWithError("Cannot create socket");
 }
+
 
 void SetServer::bindSocket()
 {
@@ -39,6 +37,7 @@ void SetServer::bindSocket()
         exitWithError("Cannot connect socket to address, Port already in use");
     freeaddrinfo(_bindAddress);
 }
+
 
 void SetServer::startListen() const
 {
@@ -55,7 +54,7 @@ void SetServer::setUpServer()
 {
     initServerSocket();
     bindSocket();
-    startListen(); //init
+    startListen();
     ConnectClients obj;
     obj.connectClients(_serverSocket);
 }

@@ -9,23 +9,15 @@
 #include <sys/socket.h>     // send()
 #include <sys/stat.h>       // stat struct -> check for File/Folder
 #include <fcntl.h>          // nonblock macro
-
-
-#include <iostream>
+#include <map>
+#include <string>
 #include <vector>
-#include <sys/socket.h>
+#include <poll.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <unistd.h>
-#include <poll.h>
-
 
 
 #define FAILURE "FAILURE"
-
-
-
-
 
 
 // Colour shit

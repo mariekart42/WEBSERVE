@@ -35,6 +35,8 @@ class ConnectClients
         void initClientInfo(int, const std::vector<uint8_t>&, int);
         int receiveData(int);
 
+        void closeConnection(int*);
+
         std::map<int, clientInfo> _clientInfo;
 };
 

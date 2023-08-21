@@ -2,9 +2,7 @@
 #define RESPONSE_HPP
 
 #include "Request.hpp"
-//#include "connectClients.hpp"
 #include "Error.hpp"
-//#include "uti.hpp"
 #include <dirent.h>
 #include <vector>
 
@@ -53,26 +51,24 @@ class Request;
 
 struct postInfo
 {
-
     bool _isMultiPart;
     size_t _bytesLeft;
     std::string _filename;
     std::string _contentType;
     std::string _boundary;
-    bool _overwriteFile;
     std::ofstream *_outfile;
 };
 
 
 struct clientInfo
 {
-    int _clientSocket;// initted
+    int _clientSocket;
 
-    httpMethod _myHTTPMethod;// initted
-    std::string _url;// initted
-    std::string _fileContentType;// initted
+    httpMethod _myHTTPMethod;
+    std::string _url;
+    std::string _fileContentType;
     std::vector<uint8_t> _input;
-    int _statusCode;// initted
+    int _statusCode;
     postInfo _postInfo;
 };
 
@@ -86,38 +82,36 @@ class Response
 
     public:
         Response(const std::vector<uint8_t>&, int, const std::string&);
-
-//        Response();
         ~Response();
 
-       std::string getContentType();
-        void sendResponse();
+
+        std::string getContentType();
         void sendDefaultWebpage();
-        // void POSTResponse();
-        // void DELETEResponse();
+
         void sendRequestedFile();
         static std::vector<uint8_t> readFile(const std::string&);
         void mySend(int);
         std::string getHeader(int statusCode);
-        bool saveRequestToFile(int, std::ofstream &);
 
-        void emptyClientPipe();
 
-        void getResponse();
-        bool postResponse(std::string, int, std::string, std::string, int, std::ofstream *);
 
 
        bool fileExistsInDirectory() const;
 
 
         std::string decodeURL(const std::string&);
+
+
+        // POST
+        bool uploadFile(const std::string&, const std::string&, std::ofstream*);
+        bool saveRequestToFile(std::ofstream&, const std::string&);
         void urlDecodedInput();
 
-        void initNewFileName();
-//        std::string getFileName(const Response::postInfo&);
-//        size_t getContentLen();
 
-//    Response(clientInfo info);
+        // DELETE
+        void deleteFile();
+
+
 };
 
 #ifdef ILLEGAL
