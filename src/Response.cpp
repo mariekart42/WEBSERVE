@@ -208,41 +208,58 @@ bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boun
 {
     std::string convert(_info._input.begin(), _info._input.end());
     std::string startBoundary = "--"+boundary+"\r\n";
+//    std::string endBoundary = "--"+boundary+"--";
+//    std::string startBoundary = "--"+boundary+"\r\n";
     std::string endBoundary = "\r\n--"+boundary+"--";
-    size_t boundaryPos;
+    std::vector<uint8_t>::iterator startPos69 = _info._input.begin();
+    std::vector<uint8_t>::iterator endPos69 = _info._input.end();
+    bool endOfFile = false;
 
-    if (convert.find("POST") == 0 && convert.find(startBoundary) == std::string::npos) // only header, no body -> not writing to outfile!
+//    if (NO_DATA_TO_UPLOAD)
+//        return true;
+
+    size_t posStartBoundary = convert.find(startBoundary);
+    size_t posEndBoundary = convert.find(endBoundary);
+
+    if (convert.find("POST") == 0 && posStartBoundary == std::string::npos)
         return true;
-    else if ((boundaryPos = convert.find(startBoundary)) != std::string::npos)  // cut header and put stuff afterward to outfile
+
+    if (posStartBoundary != std::string::npos)  // cut header and put stuff afterward to outfile
     {
-        size_t bodyHeaderPos = boundaryPos + startBoundary.size();
+        size_t bodyPos = convert.find("\r\n\r\n", (posStartBoundary + startBoundary.size() + 2)) + 4;
 
-        size_t bodyPos = convert.find("\r\n\r\n", bodyHeaderPos+2) + 4;
-
-        if (bodyPos == std::string::npos)
+        if (bodyPos == std::string::npos)   // not the beginning of body content
             return true;
 
-        for (std::vector<uint8_t>::iterator it = _info._input.begin() + bodyPos; it != _info._input.end(); it++)
-            outfile << *it;
+        startPos69 += bodyPos;
+        if (posEndBoundary != std::string::npos)    // found last boundary
+        {
+            endOfFile = true;
+            endPos69 = _info._input.begin() + posEndBoundary;
+        }
     }
-    else if ((boundaryPos = convert.find(endBoundary)) != std::string::npos)    // found last boundary
+    else if (posEndBoundary != std::string::npos)    // found last boundary
     {
-
-        for (std::vector<uint8_t>::iterator it = _info._input.begin(); it != _info._input.begin() + boundaryPos; it++)
-            outfile << *it;
-
+        endPos69 = _info._input.begin() + posEndBoundary;
+        endOfFile = true;
+    }
+//std::cout<<std::endl;
+    std::vector<uint8_t>::iterator it;
+    for (it = startPos69; it != endPos69; it++)
+    {
+//        std::cout << *it;
+        outfile << *it;
+    }
+//std::cout<<std::endl;
+    if (endOfFile == true)
+    {
         mySend(FILE_SAVED);
         return false;
     }
-    else    // in the middle of body
-    {
-        for (std::vector<uint8_t>::iterator it = _info._input.begin(); it != _info._input.end(); it++)
-            outfile << *it;
-    }
     return true;
-
-
 }
+
+
 
 
 

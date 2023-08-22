@@ -19,7 +19,7 @@ class SetServer
         SetServer(int);
         ~SetServer();
 
-        void setUpServer();
+        void setUpServer(int* );
 };
 
 #endif

@@ -87,7 +87,7 @@ void ConnectClients::initClientInfo(int _clientSocket, const std::vector<uint8_t
             initNewInfo._postInfo._boundary = request.getBoundary();
             initNewInfo._postInfo._bytesLeft = request.getBytesLeft(initNewInfo._postInfo._contentType, initNewInfo._postInfo._boundary);
             initNewInfo._postInfo._filename = request.getFileName(initNewInfo._postInfo._contentType, initNewInfo._postInfo._filename);
-            initNewInfo._postInfo._outfile = new std::ofstream (initNewInfo._postInfo._filename, std::ofstream::out | std::ofstream::app  | std::ofstream::binary);
+            initNewInfo._postInfo._outfile = new std::ofstream (UPLOAD_FOLDER+initNewInfo._postInfo._filename, std::ofstream::out | std::ofstream::app  | std::ofstream::binary);
         }
         else
         {
@@ -106,7 +106,7 @@ void ConnectClients::initClientInfo(int _clientSocket, const std::vector<uint8_t
         it->second._postInfo._bytesLeft -= bytesRead;
         it->second._postInfo._filename = request.getFileName(it->second._postInfo._contentType, it->second._postInfo._filename);
         if (oldFilename.compare(0, 13, "not_found_yet") == 0 && it->second._postInfo._filename.compare(0, 13, "not_found_yet") != 0)
-            rename(oldFilename.c_str(), it->second._postInfo._filename.c_str());
+            rename((UPLOAD_FOLDER+oldFilename).c_str(), (UPLOAD_FOLDER+it->second._postInfo._filename).c_str());
         it->second._statusCode = request.getStatusCode();
     }
 }

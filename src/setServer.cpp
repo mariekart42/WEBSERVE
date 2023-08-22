@@ -50,8 +50,17 @@ void SetServer::startListen() const
 }
 
 
-void SetServer::setUpServer()
+void SetServer::setUpServer(int portArray[3])
 {
+//    int i = 0;
+//    while (i < 3)
+//    {
+//        initServerSocket();
+//        bindSocket();
+//        startListen();
+//        ConnectClients obj;
+//        obj.connectClients(_serverSocket);
+//    }
     initServerSocket();
     bindSocket();
     startListen();

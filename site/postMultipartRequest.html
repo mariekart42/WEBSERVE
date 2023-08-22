@@ -5,14 +5,33 @@
 </head>
 <body>
 <h1>Welcome to Image Upload</h1>
-<p>Please select a JPEG image to upload:</p>
+<p>form action="/upload" method="post" enctype="multipart/form-data" input type="file" name="image" accept="image/*"></p>
+<p>TEST Please select a JPEG image to upload:"</p>
 <form action="/upload" method="post" enctype="multipart/form-data">
-    <input type="file" name="image" accept=".jpeg, .jpg">
-<!--    <br>-->
-<!--    <label for="textData">Enter Text:</label>-->
-<!--    <input type="text" name="textData">-->
-<!--    <br>-->
+    <input type="file" id="img" name="img" accept="image/*">
     <button type="submit">Submit</button>
 </form>
 </body>
 </html>
+
+
+<!--<form action="/upload" method="GET">-->
+<!--    <div>-->
+<!--        <label for="say">What greeting do you want to say?</label>-->
+<!--        <input name="say" id="say" value="Hi" />-->
+<!--    </div>-->
+<!--    <div>-->
+<!--        <label for="to">Who do you want to say it to?</label>-->
+<!--        <input name="to" id="to" value="Mom" />-->
+<!--    </div>-->
+<!--    <div>-->
+<!--        <button>Send my greetings</button>-->
+<!--    </div>-->
+<!--</form>-->
+
+
+
+<!--
+<form enctype="value">
+ accept=".jpeg, .jpg, .png, .pdf"
+-->

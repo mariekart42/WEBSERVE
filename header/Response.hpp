@@ -9,6 +9,8 @@
 
 #define ILLEGAL
 
+#define NO_DATA_TO_UPLOAD (convert.find("POST") == 0 && convert.find(startBoundary) == std::string::npos)
+
 
 #define DEFAULTWEBPAGE 69
 #define OK 200
@@ -22,7 +24,9 @@
 
 
 #define POLL_TIMEOUT 200
-#define MAX_REQUESTSIZE 8000
+//#define MAX_REQUESTSIZE 69069069069
+//#define MAX_REQUESTSIZE 1000000
+#define MAX_REQUESTSIZE 8000         // max for recv() is 1048576 bytes
 
 
 // ALL OF THESE MACROS NEED TO BE DEFINED LATER AS VARIABLES FROM CONFIGFILE!!
@@ -106,7 +110,6 @@ class Response
         bool uploadFile(const std::string&, const std::string&, std::ofstream*);
         bool saveRequestToFile(std::ofstream&, const std::string&);
         void urlDecodedInput();
-
 
         // DELETE
         void deleteFile();
