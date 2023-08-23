@@ -208,20 +208,15 @@ bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boun
 {
     std::string convert(_info._input.begin(), _info._input.end());
     std::string startBoundary = "--"+boundary+"\r\n";
-//    std::string endBoundary = "--"+boundary+"--";
-//    std::string startBoundary = "--"+boundary+"\r\n";
     std::string endBoundary = "\r\n--"+boundary+"--";
     std::vector<uint8_t>::iterator startPos69 = _info._input.begin();
     std::vector<uint8_t>::iterator endPos69 = _info._input.end();
     bool endOfFile = false;
 
-//    if (NO_DATA_TO_UPLOAD)
-//        return true;
-
     size_t posStartBoundary = convert.find(startBoundary);
     size_t posEndBoundary = convert.find(endBoundary);
 
-    if (convert.find("POST") == 0 && posStartBoundary == std::string::npos)
+    if (NO_DATA_TO_UPLOAD)
         return true;
 
     if (posStartBoundary != std::string::npos)  // cut header and put stuff afterward to outfile
@@ -243,15 +238,10 @@ bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boun
         endPos69 = _info._input.begin() + posEndBoundary;
         endOfFile = true;
     }
-//std::cout<<std::endl;
     std::vector<uint8_t>::iterator it;
     for (it = startPos69; it != endPos69; it++)
-    {
-//        std::cout << *it;
         outfile << *it;
-    }
-//std::cout<<std::endl;
-    if (endOfFile == true)
+    if (endOfFile)
     {
         outfile.close();
         mySend(FILE_SAVED);

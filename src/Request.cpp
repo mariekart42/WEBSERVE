@@ -168,6 +168,8 @@ std::string Request::getURL()
     size_t startPos = _tmp.find('/', 0) + 1;
     size_t endPos = _tmp.find(' ', startPos);
 
+
+    // MAKE URL LOWERCASE HERE
     if (endPos != std::string::npos)
         return (_tmp.substr(startPos, endPos - (startPos)));
     else
