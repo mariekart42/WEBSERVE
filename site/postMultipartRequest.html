@@ -1,18 +1,49 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Welcome to Image Upload</title>
+    <title>Welcome to Upload all u want</title>
 </head>
 <body>
-<h1>Welcome to Image Upload</h1>
-<p>form action="/upload" method="post" enctype="multipart/form-data" input type="file" name="image" accept="image/*"></p>
-<p>TEST Please select a JPEG image to upload:"</p>
+
+
+<h1>Welcome to Upload all u want</h1>
+<br>
+<h3>TEST 1:  upload image/* </h3>
+<p> -- -- --> [&#9989; *.bmp, *.jpeg/jpg, *.gif, *.png *.bmp]</p>
+<p> -- -- --> [&#10060; *.avif, *.ico, *.svg, *.tif/tiff, *.webp]</p>
 <form action="/upload" method="post" enctype="multipart/form-data">
-    <input type="file" id="img" name="img" accept="image/*">
+    <input type="file" name="img">
     <button type="submit">Submit</button>
-</form>
+</form><br><br>
+
+<!--<h2>Upload a PDF File</h2>-->
+<!--<form action="/upload" method="post" enctype="multipart/form-data">-->
+<!--    <label for="pdfFile">Select a PDF file:</label>-->
+<!--    <input type="file" name="pdfFile" id="pdfFile" accept=".pdf">-->
+<!--    <br><br>-->
+<!--    <input type="submit" value="Upload">-->
+<!--</form>-->
+
+
+
+<!--<h3>TEST 2:  upload application/* </h3>-->
+<!--<p> &#45;&#45; &#45;&#45; &ndash;&gt; [&#9989; ]</p>-->
+<!--<p> &#45;&#45; &#45;&#45; &ndash;&gt; [&#10060; ]</p>-->
+<!--<form action="/upload" method="post" enctype="multipart/form-data">-->
+<!--    <input type="file" id="application" name="app" accept="application/*">-->
+<!--    <button type="submit">Submit</button>-->
+<!--</form><br><br>-->
+
+
+
 </body>
 </html>
+
+
+
+
+
+
 
 
 <!--<form action="/upload" method="GET">-->

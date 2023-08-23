@@ -253,6 +253,7 @@ bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boun
 //std::cout<<std::endl;
     if (endOfFile == true)
     {
+        outfile.close();
         mySend(FILE_SAVED);
         return false;
     }

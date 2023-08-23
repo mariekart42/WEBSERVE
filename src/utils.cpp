@@ -18,15 +18,14 @@ std::string comparerContentType(const std::string& fileExtension)
 
     if (extensionToType.empty())
     {
-        extensionToType.insert(std::make_pair("avif", "image/avif"));   // not commonly supported by browser
-        extensionToType.insert(std::make_pair("bmp", "image/bmp"));
-        extensionToType.insert(std::make_pair("jpeg", "image/jpeg"));
-        extensionToType.insert(std::make_pair("jpg", "image/jpeg"));
-        extensionToType.insert(std::make_pair("gif", "image/gif"));
+        extensionToType.insert(std::make_pair("avif", "image/avif"));// ❌ not commonly supported by browser
+        extensionToType.insert(std::make_pair("bmp", "image/bmp"));// ✅
+        extensionToType.insert(std::make_pair("jpeg", "image/jpeg"));// ✅
+        extensionToType.insert(std::make_pair("jpg", "image/jpeg"));// ✅
+        extensionToType.insert(std::make_pair("gif", "image/gif"));// ✅
         extensionToType.insert(std::make_pair("ico", "image/vnd.microsoft.icon"));
-        extensionToType.insert(std::make_pair("png", "image/png"));
-        extensionToType.insert(std::make_pair("svg", "image/svg+xml"));
-//        extensionToType.insert(std::make_pair("svg", "image/svg")); // test
+        extensionToType.insert(std::make_pair("png", "image/png"));// ✅
+        extensionToType.insert(std::make_pair("svg", "image/svg+xml"));// ❌
         extensionToType.insert(std::make_pair("tiff", "image/tiff"));   // only supported by safari
         extensionToType.insert(std::make_pair("tif", "image/tiff"));   // only supported by safari
         extensionToType.insert(std::make_pair("webp", "image/webp"));
