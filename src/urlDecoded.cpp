@@ -2,7 +2,7 @@
 
 void Response::urlDecodedInput()
 {
-	std::string tmp(_info._input.begin(), _info._input.end());
+	std::string tmp(_info._postInfo._input.begin(), _info._postInfo._input.end());
 	size_t foundPos = tmp.find("textData=");
 	std::string testData;
 	if (foundPos != std::string::npos)

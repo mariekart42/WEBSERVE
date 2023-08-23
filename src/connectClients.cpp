@@ -66,7 +66,7 @@ void ConnectClients::initNewConnection(int serverSocket)
 void ConnectClients::initClientInfo(int _clientSocket, const std::vector<uint8_t>& input, int bytesRead)
 {
     std::map<int, clientInfo>::iterator it1 = _clientInfo.find(_clientSocket);
-    if (it1 != _clientInfo.end() && it1->second._postInfo._isMultiPart == false)
+    if (it1 != _clientInfo.end() && it1->second._isMultiPart == false)
     {
         _clientInfo.erase(it1);
     }
@@ -75,36 +75,38 @@ void ConnectClients::initClientInfo(int _clientSocket, const std::vector<uint8_t
     {
         clientInfo initNewInfo;
         Request request(input);
-        initNewInfo._input = input;
-        initNewInfo._clientSocket = _clientSocket;
+
         initNewInfo._myHTTPMethod = request.getHTTPMethod();
-        initNewInfo._url = request.getURL();
+        initNewInfo._clientSocket = _clientSocket;
         initNewInfo._fileContentType = request.getFileContentType(initNewInfo._url);
-        initNewInfo._postInfo._contentType = request.getContentType();
-        if (initNewInfo._postInfo._contentType == "multipart/form-data")
+        initNewInfo._contentType = request.getContentType();
+        initNewInfo._isMultiPart = false;
+        initNewInfo._url = request.getURL();
+
+        if (initNewInfo._myHTTPMethod == M_POST)
         {
-            initNewInfo._postInfo._isMultiPart = true;
-            initNewInfo._postInfo._boundary = request.getBoundary();
-            initNewInfo._postInfo._bytesLeft = request.getBytesLeft(initNewInfo._postInfo._contentType, initNewInfo._postInfo._boundary);
-            initNewInfo._postInfo._filename = request.getFileName(initNewInfo._postInfo._contentType, initNewInfo._postInfo._filename);
+            initNewInfo._postInfo._input = input;
+            initNewInfo._postInfo._filename = request.getFileName(initNewInfo._contentType, initNewInfo._postInfo._filename, UPLOAD_FOLDER);
             initNewInfo._postInfo._outfile = new std::ofstream (UPLOAD_FOLDER+initNewInfo._postInfo._filename, std::ofstream::out | std::ofstream::app  | std::ofstream::binary);
+            if (initNewInfo._contentType == "multipart/form-data")
+            {
+                initNewInfo._isMultiPart = true;
+                initNewInfo._postInfo._boundary = request.getBoundary();
+            }
+            else
+                initNewInfo._postInfo._filename = "LOL_NO_CLUE.txt";
         }
-        else
-        {
-            initNewInfo._postInfo._isMultiPart = false;
-            initNewInfo._postInfo._bytesLeft = 0;
-            initNewInfo._postInfo._filename = "LOL_NO_CLUE.txt";
-        }
-        initNewInfo._statusCode = 200;
+
+
+//        initNewInfo._statusCode = 200;
         _clientInfo[_clientSocket] = initNewInfo;
     }
-    else if (it->second._postInfo._isMultiPart == true)   // only for multipart!!
+    else if (it->second._isMultiPart == true)   // only for multipart!!
     {
         Request request(input);
         std::string oldFilename = it->second._postInfo._filename;
-        it->second._input = input;
-        it->second._postInfo._bytesLeft -= bytesRead;
-        it->second._postInfo._filename = request.getFileName(it->second._postInfo._contentType, it->second._postInfo._filename);
+        it->second._postInfo._input = input;
+        it->second._postInfo._filename = request.getFileName(it->second._contentType, it->second._postInfo._filename, UPLOAD_FOLDER);
         if (oldFilename.compare(0, 13, "not_found_yet") == 0 && it->second._postInfo._filename.compare(0, 13, "not_found_yet") != 0)
             rename((UPLOAD_FOLDER+oldFilename).c_str(), (UPLOAD_FOLDER+it->second._postInfo._filename).c_str());
         it->second._statusCode = request.getStatusCode();
@@ -160,7 +162,7 @@ void ConnectClients::clientConnected(int serverSocket)
                             response.sendRequestedFile();
                             break;
                         case M_POST:
-                            it->second._postInfo._isMultiPart = response.uploadFile(it->second._postInfo._contentType, it->second._postInfo._boundary, it->second._postInfo._outfile);
+                            it->second._isMultiPart = response.uploadFile(it->second._contentType, it->second._postInfo._boundary, it->second._postInfo._outfile);
                             break;
                         case M_DELETE:
                             response.deleteFile();
@@ -170,7 +172,7 @@ void ConnectClients::clientConnected(int serverSocket)
                             break;
                     }
 
-                    if (!it->second._postInfo._isMultiPart)
+                    if (!it->second._isMultiPart)
                         closeConnection(&i);
 
                 }

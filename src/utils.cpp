@@ -18,22 +18,30 @@ std::string comparerContentType(const std::string& fileExtension)
 
     if (extensionToType.empty())
     {
-        extensionToType.insert(std::make_pair("avif", "image/avif"));// ❌ not commonly supported by browser
-        extensionToType.insert(std::make_pair("bmp", "image/bmp"));// ✅
-        extensionToType.insert(std::make_pair("jpeg", "image/jpeg"));// ✅
-        extensionToType.insert(std::make_pair("jpg", "image/jpeg"));// ✅
-        extensionToType.insert(std::make_pair("gif", "image/gif"));// ✅
+        extensionToType.insert(std::make_pair("avif", "image/avif"));
+        extensionToType.insert(std::make_pair("bmp", "image/bmp"));
+        extensionToType.insert(std::make_pair("jpeg", "image/jpeg"));
+        extensionToType.insert(std::make_pair("jpg", "image/jpeg"));
+        extensionToType.insert(std::make_pair("gif", "image/gif"));
         extensionToType.insert(std::make_pair("ico", "image/vnd.microsoft.icon"));
-        extensionToType.insert(std::make_pair("png", "image/png"));// ✅
-        extensionToType.insert(std::make_pair("svg", "image/svg+xml"));// ❌
-        extensionToType.insert(std::make_pair("tiff", "image/tiff"));   // only supported by safari
-        extensionToType.insert(std::make_pair("tif", "image/tiff"));   // only supported by safari
+        extensionToType.insert(std::make_pair("png", "image/png"));
+        extensionToType.insert(std::make_pair("svg", "image/svg+xml"));
+        extensionToType.insert(std::make_pair("tiff", "image/tiff"));
+        extensionToType.insert(std::make_pair("tif", "image/tiff"));
         extensionToType.insert(std::make_pair("webp", "image/webp"));
+
+        extensionToType.insert(std::make_pair("avi", "video/x-msvideo"));
+        extensionToType.insert(std::make_pair("mp4", "video/mp4"));
+        extensionToType.insert(std::make_pair("mpeg", "video/mpeg"));
+        extensionToType.insert(std::make_pair("ogv", "video/ogg"));
+        extensionToType.insert(std::make_pair("ts", "video/mp2t"));
+        extensionToType.insert(std::make_pair("webm", "video/webm"));
+        extensionToType.insert(std::make_pair("3gp", "video/3gpp"));
+        extensionToType.insert(std::make_pair("3g2", "video/3gpp2"));
 
         extensionToType.insert(std::make_pair("aac", "audio/aac"));
         extensionToType.insert(std::make_pair("abw", "application/x-abiword"));
         extensionToType.insert(std::make_pair("arc", "application/x-freearc"));
-        extensionToType.insert(std::make_pair("avi", "video/x-msvideo"));
         extensionToType.insert(std::make_pair("azw", "application/vnd.amazon.ebook"));
         extensionToType.insert(std::make_pair("bin", "application/octet-stream"));
         extensionToType.insert(std::make_pair("bz", "application/x-bzip"));
@@ -60,14 +68,11 @@ std::string comparerContentType(const std::string& fileExtension)
         extensionToType.insert(std::make_pair("midi", "audio/x-midi"));
         extensionToType.insert(std::make_pair("mjs", "text/javascript"));
         extensionToType.insert(std::make_pair("mp3", "audio/mpeg"));
-        extensionToType.insert(std::make_pair("mp4", "video/mp4"));
-        extensionToType.insert(std::make_pair("mpeg", "video/mpeg"));
         extensionToType.insert(std::make_pair("mpkg", "application/vnd.apple.installer+xml"));
         extensionToType.insert(std::make_pair("odp", "application/vnd.oasis.opendocument.presentation"));
         extensionToType.insert(std::make_pair("ods", "application/vnd.oasis.opendocument.spreadsheet"));
         extensionToType.insert(std::make_pair("odt", "application/vnd.oasis.opendocument.text"));
         extensionToType.insert(std::make_pair("oga", "audio/ogg"));
-        extensionToType.insert(std::make_pair("ogv", "video/ogg"));
         extensionToType.insert(std::make_pair("ogx", "application/ogg"));
         extensionToType.insert(std::make_pair("opus", "audio/opus"));
         extensionToType.insert(std::make_pair("otf", "font/otf"));
@@ -79,13 +84,11 @@ std::string comparerContentType(const std::string& fileExtension)
         extensionToType.insert(std::make_pair("rtf", "application/rtf"));
         extensionToType.insert(std::make_pair("sh", "application/x-sh"));
         extensionToType.insert(std::make_pair("tar", "application/x-tar"));
-        extensionToType.insert(std::make_pair("ts", "video/mp2t"));
         extensionToType.insert(std::make_pair("ttf", "font/ttf"));
         extensionToType.insert(std::make_pair("txt", "text/plain"));
         extensionToType.insert(std::make_pair("vsd", "application/vnd.visio"));
         extensionToType.insert(std::make_pair("wav", "audio/wav"));
         extensionToType.insert(std::make_pair("weba", "audio/webm"));
-        extensionToType.insert(std::make_pair("webm", "video/webm"));
         extensionToType.insert(std::make_pair("woff", "font/woff"));
         extensionToType.insert(std::make_pair("woff2", "font/woff2"));
         extensionToType.insert(std::make_pair("xhtml", "application/xhtml+xml"));
@@ -94,8 +97,6 @@ std::string comparerContentType(const std::string& fileExtension)
         extensionToType.insert(std::make_pair("xml", "application/xml"));
         extensionToType.insert(std::make_pair("xul", "application/vnd.mozilla.xul+xml"));
         extensionToType.insert(std::make_pair("zip", "application/zip"));
-        extensionToType.insert(std::make_pair("3gp", "video/3gpp"));
-        extensionToType.insert(std::make_pair("3g2", "video/3gpp2"));
         extensionToType.insert(std::make_pair("7z", "application/x-7z-compressed"));
     }
 

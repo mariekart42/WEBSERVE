@@ -1,12 +1,8 @@
 #include "../header/Response.hpp"
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <iomanip>
 
 Response::Response(const std::vector<uint8_t>& input, int clientSocket, const std::string& url)
 {
-    _info._input = input;
+    _info._postInfo._input = input;
     _info._clientSocket = clientSocket;
     _info._statusCode = 200;
     _info._url = url;
@@ -206,11 +202,11 @@ bool Response::uploadFile(const std::string& contentType, const std::string& bou
 
 bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boundary)
 {
-    std::string convert(_info._input.begin(), _info._input.end());
+    std::string convert(_info._postInfo._input.begin(), _info._postInfo._input.end());
     std::string startBoundary = "--"+boundary+"\r\n";
     std::string endBoundary = "\r\n--"+boundary+"--";
-    std::vector<uint8_t>::iterator startPos69 = _info._input.begin();
-    std::vector<uint8_t>::iterator endPos69 = _info._input.end();
+    std::vector<uint8_t>::iterator startPos69 = _info._postInfo._input.begin();
+    std::vector<uint8_t>::iterator endPos69 = _info._postInfo._input.end();
     bool endOfFile = false;
 
     size_t posStartBoundary = convert.find(startBoundary);
@@ -230,12 +226,12 @@ bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boun
         if (posEndBoundary != std::string::npos)    // found last boundary
         {
             endOfFile = true;
-            endPos69 = _info._input.begin() + posEndBoundary;
+            endPos69 = _info._postInfo._input.begin() + posEndBoundary;
         }
     }
     else if (posEndBoundary != std::string::npos)    // found last boundary
     {
-        endPos69 = _info._input.begin() + posEndBoundary;
+        endPos69 = _info._postInfo._input.begin() + posEndBoundary;
         endOfFile = true;
     }
     std::vector<uint8_t>::iterator it;
@@ -248,32 +244,6 @@ bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boun
         return false;
     }
     return true;
-}
-
-
-
-
-
-bool Response::fileExistsInDirectory() const
-{
-    std::string filename = _info._postInfo._filename;
-
-   DIR* dir = opendir(UPLOAD_FOLDER);
-   if (dir == nullptr) {
-       std::cerr << "Error opening directory: " << strerror(errno) << std::endl;
-       return false;
-   }
-
-   struct dirent* entry;
-   while ((entry = readdir(dir)) != nullptr) {
-       if (strcmp(entry->d_name, filename.c_str()) == 0) {
-           closedir(dir);
-           return true;
-       }
-   }
-
-   closedir(dir);
-   return false;
 }
 
 

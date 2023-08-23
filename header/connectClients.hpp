@@ -7,6 +7,9 @@
 #include <poll.h>       // pollfd struct
 
 
+#define DEBUG
+
+
 #define MAX_USERS 10
 // #define BUFFER_SIZE 8000
 #define DATA_TO_READ (_fdList[i].revents & POLLIN)

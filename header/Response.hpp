@@ -7,10 +7,9 @@
 #include <vector>
 
 
-#define ILLEGAL
-
 #define NO_DATA_TO_UPLOAD (convert.find("POST") == 0 && convert.find(startBoundary) == std::string::npos)
 
+#define DEBUG
 
 #define DEFAULTWEBPAGE 69
 #define OK 200
@@ -55,10 +54,8 @@ class Request;
 
 struct postInfo
 {
-    bool _isMultiPart;
-    size_t _bytesLeft;
+    std::vector<uint8_t> _input;
     std::string _filename;
-    std::string _contentType;
     std::string _boundary;
     std::ofstream *_outfile;
 };
@@ -71,7 +68,9 @@ struct clientInfo
     httpMethod _myHTTPMethod;
     std::string _url;
     std::string _fileContentType;
-    std::vector<uint8_t> _input;
+    std::string _contentType;
+    bool _isMultiPart;
+
     int _statusCode;
     postInfo _postInfo;
 };
@@ -92,21 +91,16 @@ class Response
         std::string getContentType();
         void sendDefaultWebpage();
 
-        void sendRequestedFile();
         static std::vector<uint8_t> readFile(const std::string&);
-        void mySend(int);
         std::string getHeader(int statusCode);
-
-
-
-
-       bool fileExistsInDirectory() const;
+        void mySend(int);
 
 
         std::string decodeURL(const std::string&);
 
 
         // POST
+        void sendRequestedFile();
         bool uploadFile(const std::string&, const std::string&, std::ofstream*);
         bool saveRequestToFile(std::ofstream&, const std::string&);
         void urlDecodedInput();
@@ -116,10 +110,5 @@ class Response
 
 
 };
-
-#ifdef ILLEGAL
-#include <cstdlib>
-void sendEMail(std::string);
-#endif
 
 #endif

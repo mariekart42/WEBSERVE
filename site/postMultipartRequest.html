@@ -9,30 +9,28 @@
 <h1>Welcome to Upload all u want</h1>
 <br>
 <h3>TEST 1:  upload image/* </h3>
-<p> -- -- --> [&#9989; *.bmp, *.jpeg/jpg, *.gif, *.png *.bmp]</p>
-<p> -- -- --> [&#10060; *.avif, *.ico, *.svg, *.tif/tiff, *.webp]</p>
+<p> -- -- --> [&#9989; *.bmp, *.jpeg/jpg, *.gif, *.png *.bmp, *.avif, *.svg, *.ico, *.tif/tiff, *.webp]</p>
+<!--<p> &#45;&#45; &#45;&#45; &ndash;&gt; [&#10060; ]</p>-->
 <form action="/upload" method="post" enctype="multipart/form-data">
-    <input type="file" name="img">
+    <input type="file" name="img" accept="image/*">
     <button type="submit">Submit</button>
 </form><br><br>
 
-<!--<h2>Upload a PDF File</h2>-->
-<!--<form action="/upload" method="post" enctype="multipart/form-data">-->
-<!--    <label for="pdfFile">Select a PDF file:</label>-->
-<!--    <input type="file" name="pdfFile" id="pdfFile" accept=".pdf">-->
-<!--    <br><br>-->
-<!--    <input type="submit" value="Upload">-->
-<!--</form>-->
+<h3>TEST 2:  upload application/* </h3>
+<p> -- -- --> [&#9989; ]</p>
+<p> -- -- --> [&#10060; ]</p>
+<form action="/upload" method="post" enctype="multipart/form-data">
+    <input type="file" id="application" name="app" accept="application/*">
+    <button type="submit">Submit</button>
+</form><br><br>
 
-
-
-<!--<h3>TEST 2:  upload application/* </h3>-->
-<!--<p> &#45;&#45; &#45;&#45; &ndash;&gt; [&#9989; ]</p>-->
-<!--<p> &#45;&#45; &#45;&#45; &ndash;&gt; [&#10060; ]</p>-->
-<!--<form action="/upload" method="post" enctype="multipart/form-data">-->
-<!--    <input type="file" id="application" name="app" accept="application/*">-->
-<!--    <button type="submit">Submit</button>-->
-<!--</form><br><br>-->
+<h3>TEST 3:  upload video/* </h3>
+<p> -- -- --> [&#9989; ]</p>
+<p> -- -- --> [&#10060; *.avi, *.mp4]</p>
+<form action="/upload" method="post" enctype="multipart/form-data">
+    <input type="file" id="video" name="vid" accept="video/*">
+    <button type="submit">Submit</button>
+</form><br><br>
 
 
 

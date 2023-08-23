@@ -3,6 +3,7 @@
 
 #include "utils.h"
 
+#define DEBUG
 
 enum httpMethod{
     M_GET,
@@ -22,15 +23,13 @@ class Request
         ~Request();
         httpMethod getHTTPMethod();
         std::string getURL();
-        std::string getFileContentType(const std::string&);
+        static std::string getFileContentType(const std::string&);
         int getStatusCode() const;
         std::string getContentType();
-        size_t getBytesLeft(const std::string&, const std::string&);
-        std::string getFileName(const std::string&, const std::string&);
-//        std::vector<uint8_t> getFile() const;
+        std::string getFileName(const std::string&, const std::string&, const std::string&);
         std::string getBoundary();
-    std::ofstream *getOutfile(std::string);
-
+        static bool fileExists(const std::string&, const std::string&);
+        static std::string getNewFilename(const std::string&, const std::string&);
 };
 
 #endif

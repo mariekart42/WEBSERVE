@@ -15,6 +15,7 @@
 #include <poll.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <dirent.h>
 
 
 #define FAILURE "FAILURE"

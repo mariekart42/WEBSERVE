@@ -1,6 +1,6 @@
 
 #include "../header/Request.hpp"
-#include <vector>
+
 Request::Request(const std::vector<uint8_t>& clientData):
     _tmp(std::string(clientData.begin(), clientData.end())), _statusCode()
 {}
@@ -34,52 +34,56 @@ std::string Request::getFileContentType(const std::string& url)
     return FAILURE;
 }
 
-/* only for POST && multipart
- * checks for multipart and returs the difference between
- * Content-Length and size of input                     */
-size_t Request::getBytesLeft(const std::string& contentType, const std::string& boundary)
+
+bool Request::fileExists(const std::string& checkFilename, const std::string& uploadFolder)
 {
-    if (contentType.compare(0, 19, "multipart/form-data") == 0)
-    {
-        size_t foundPos = _tmp.find("Content-Length: ");
+    const std::string& filename = checkFilename;
 
-        if (foundPos != std::string::npos)
-        {
-            size_t endPos = _tmp.find("\r\n", foundPos);
-            if (endPos != std::string::npos)
-            {
-                std::string requestLenStr = _tmp.substr(foundPos + 15, endPos - foundPos - 15);
-                size_t requestLen = static_cast<size_t>(std::strtol(requestLenStr.c_str(), nullptr, 10));
-
-                std::cout << GRN"DEBUG: Content-Length: " << requestLen << ""RESET<< std::endl;
-
-                // search for end of header
-                size_t headerSize = _tmp.find("\r\n\r\n") + 4;
-
-
-                return (requestLen - (_tmp.size() - headerSize));
-            }
-        }
-        exitWithError("unexpected error: unable do get Content-Lenght");
-        return -1;  // error
+    DIR* dir = opendir(uploadFolder.c_str());
+    if (dir == nullptr) {
+        std::cerr << "Error opening directory: " << strerror(errno) << std::endl;
+        return false;
     }
-    return 0;
+
+    struct dirent* entry;
+    while ((entry = readdir(dir)) != nullptr) {
+        if (strcmp(entry->d_name, filename.c_str()) == 0) {
+            closedir(dir);
+            return true;
+        }
+    }
+
+    closedir(dir);
+    return false;
+}
+
+
+std::string Request::getNewFilename(const std::string& checkFilename, const std::string& uploadFolder)
+{
+    size_t lastDotPos = checkFilename.rfind('.'); // Find the last dot position
+
+    if (lastDotPos == std::string::npos) // If dot is found
+        exitWithError("unexpected Error: could not getNewFilename");
+
+    std::string filename = checkFilename.substr(0, lastDotPos); // Take substring up to the last dot
+    std::string fileExtension = checkFilename.substr(lastDotPos, checkFilename.size());
+
+    int fileCount = 1;
+    while (fileExists(filename + " (" + std::to_string(fileCount) + ")" + fileExtension, uploadFolder))
+        fileCount++;
+    return (filename + " (" + std::to_string(fileCount) + ")"+ fileExtension);
 }
 
 
 /* only for POST && multipart
  * extracts the filename defined in the header of the body      */
-std::string Request::getFileName(const std::string& contentType, const std::string& prevFileName)
+std::string Request::getFileName(const std::string& contentType, const std::string& prevFileName, const std::string& uploadFolder)
 {
     if (!prevFileName.empty() && prevFileName.compare(0, 13, "not_found_yet") != 0)
         return prevFileName;    // correct filename was already found
-    // std::cout<<"multipart/form-data;"<<std::endl;
 
-
-    // std::cout<<contentType<<std::endl;
     if (contentType.compare(0, 34, "multipart/form-data") == 0)
     {
-        // std::cout<<"IN HEEERE"<<std::endl;
         size_t foundPos = _tmp.find("filename=\"");
 
         if (foundPos != std::string::npos)
@@ -88,19 +92,28 @@ std::string Request::getFileName(const std::string& contentType, const std::stri
             if (endPos != std::string::npos)
             {
                 std::string fileName = _tmp.substr(foundPos + 10, (endPos) - (foundPos + 10));
+                if (fileName.rfind('.') == std::string::npos) // no file with .
+                    return (FAILURE);
+                if (fileExists(fileName, uploadFolder))
+                {
+                    fileName = getNewFilename(fileName, uploadFolder);
 
-                std::cout << GRN"DEBUG: filename: " << fileName << ""RESET<< std::endl;
+                }
+                #ifdef DEBUG
+                    std::cout << GRN"DEBUG: filename: " << fileName << ""RESET<< std::endl;
+                #endif
                 return fileName;
             }
-            std::cout << "DEBUG: no filename found in POST request" << std::endl;
+            #ifdef DEBUG
+                std::cout << "DEBUG: no filename found in POST request" << std::endl;
+            #endif
             return (&"tmpFileForSocket_" [ random()]);
         }
-        // exitWithError("unexpected error: unable do get filename");
-        std::cout << "prolly first chunk of multipart, wait for filename"<<std::endl;
+        #ifdef DEBUG
+            std::cout << "prolly first chunk of multipart, wait for filename"<<std::endl;
+        #endif
         return "not_found_yet";  // error
     }
-
-    // WHAT IF POST REQUEST BUT NOT multipart/form-data?
 
     return FAILURE; // not failure but we don't consider filename if not POST
 }
@@ -116,12 +129,13 @@ std::string Request::getContentType()
 
     if (foundPos != std::string::npos)
     {
-        size_t endPos = _tmp.find(";", foundPos);// CHanged from ; to \r
+        size_t endPos = _tmp.find(';', foundPos);// CHanged from ; to \r
         if (endPos != std::string::npos)
         {
             std::string contentType = _tmp.substr(foundPos + 14, endPos - (foundPos + 14));
-
-            std::cout << GRN"DEBUG: Content-Type: " << contentType << ""RESET<< std::endl;
+            #ifdef DEBUG
+                std::cout << GRN"DEBUG: Content-Type: " << contentType << ""RESET<< std::endl;
+            #endif
             return contentType;
         }
     }
@@ -137,12 +151,10 @@ std::string Request::getBoundary()
 
     if (foundPos != std::string::npos)
     {
-        size_t endPos = _tmp.find("\r", foundPos);
+        size_t endPos = _tmp.find('\r', foundPos);
         if (endPos != std::string::npos)
         {
             std::string contentType = _tmp.substr(foundPos + 30, endPos - (foundPos + 30));
-
-            // std::cout << GRN"DEBUG: Boundary: " << contentType << RESET""<<std::endl;
             return contentType;
         }
     }
@@ -182,41 +194,3 @@ int Request::getStatusCode() const
     return _statusCode;
 }
 
-
-
-
-//std::ofstream *Request::getOutfile(std::string filename)
-//{
-//    if (filename.compare(0, 13, "not_found_yet") == 0)
-//
-//    return new std::ofstream (filename.c_str(), std::ofstream::out | std::ofstream::trunc);
-//}
-
-
-
-
-
-// std::vector<uint8_t> Request::getBody() const
-// {
-//    std::vector<uint8_t> bodyVector;
-
-//    size_t startPos = _tmp.find("\r\n\r\n") + 4;
-//    size_t endPos = _tmp.size();
-
-//    if (endPos != std::string::npos)
-//        bodyVector.insert(bodyVector.end(), _tmp.begin() + startPos, _tmp.begin() + endPos);
-//    else
-//        bodyVector.insert(bodyVector.end(), _tmp.begin() + startPos, _tmp.end());
-
-//    // Print the contents of the vector (numeric values)
-//    for (size_t i = 0; i < bodyVector.size(); ++i) {
-//        std::cout <<GRN ""<< static_cast<int>(bodyVector[i]) << " "RESET;
-//    }
-
-//    return bodyVector;
-// }
-
-//std::vector<uint8_t> Request::getFile() const
-//{
-//    return (_clientData);
-//}
