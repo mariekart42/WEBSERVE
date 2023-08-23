@@ -17,7 +17,7 @@
 </form><br><br>
 
 <h3>TEST 2:  upload application/* </h3>
-<p> -- -- --> [&#9989; ]</p>
+<p> -- -- --> [&#9989; *.pdf, *.doc, *.docx, *.bin, *.json, *.gz]</p>
 <p> -- -- --> [&#10060; ]</p>
 <form action="/upload" method="post" enctype="multipart/form-data">
     <input type="file" id="application" name="app" accept="application/*">
@@ -25,13 +25,21 @@
 </form><br><br>
 
 <h3>TEST 3:  upload video/* </h3>
-<p> -- -- --> [&#9989; ]</p>
-<p> -- -- --> [&#10060; *.avi, *.mp4]</p>
+<p> -- -- --> [&#9989; *.mpeg, *.avi, *.mp4, *.ogv, *.webm]</p>
+<p> -- -- --> [&#10060; ]</p>
 <form action="/upload" method="post" enctype="multipart/form-data">
     <input type="file" id="video" name="vid" accept="video/*">
     <button type="submit">Submit</button>
 </form><br><br>
 
+
+<h3>TEST 4:  upload text/* </h3>
+<p> -- -- --> [&#9989; *.html, *.js, *.mjs, *.txt, *.htm, *.ics, *.css, *.csv]</p>
+<!--<p> &#45;&#45; &#45;&#45; &ndash;&gt; [&#10060; ]</p>-->
+<form action="/upload" method="post" enctype="multipart/form-data">
+    <input type="file" id="text" name="txt" accept="text/*">
+    <button type="submit">Submit</button>
+</form><br><br>
 
 
 </body>
