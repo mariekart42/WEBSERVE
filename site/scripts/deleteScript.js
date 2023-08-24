@@ -1,5 +1,8 @@
 const hostname = window.location.hostname;
 const port = window.location.port;
+const resultMessage = document.getElementById("resultMessage"); // Get the result message element
+
+// if (confirmation) {
 
 document.getElementById("deleteButton").addEventListener("click", function() {
     const filePath = document.getElementById("filePath").value;
@@ -9,10 +12,10 @@ document.getElementById("deleteButton").addEventListener("click", function() {
             method: "DELETE"
         })
             .then(response => {
-                if (response.ok) {
-                    alert("File deleted successfully.");
-                } else {
-                    alert("Error deleting file.");
+                if (response.ok)
+                    resultMessage.textContent = "File deleted successfully.";
+                else {
+                    resultMessage.textContent = "Error deleting file.";
                 }
             })
             .catch(error => {
@@ -20,3 +23,4 @@ document.getElementById("deleteButton").addEventListener("click", function() {
             });
     }
 });
+// }
