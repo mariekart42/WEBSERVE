@@ -11,47 +11,42 @@
 
 #define DEBUG
 
-#define DEFAULTWEBPAGE 69
-#define OK 200
-#define FILE_SAVED 2001
-#define FILE_ALREADY_EXISTS 2002
-#define FILE_SAVED_AND_OVERWRITTEN 2003
-#define FILE_NOT_SAVED 5001
+#define DEFAULTWEBPAGE 2001
+#define FILE_SAVED 2012
 #define IS_FOLDER (s.st_mode & S_IFDIR)
 #define IS_FILE (s.st_mode & S_IFREG)
-#define FILE_DELETED 2004
-#define FILE_DELETED_FAIL 2005
-
+#define FILE_DELETED 2043
+#define FILE_DELETED_FAIL 4044
+#define FORBIDDEN 4035
+#define ERROR_INDEXFILE 4046
+#define DIRECTORY_LIST 2007
 
 #define POLL_TIMEOUT 200
-//#define MAX_REQUESTSIZE 69069069069
-//#define MAX_REQUESTSIZE 1000000
 #define MAX_REQUESTSIZE 8000         // max for recv() is 1048576 bytes
 
 
-// ALL OF THESE MACROS NEED TO BE DEFINED LATER AS VARIABLES FROM CONFIGFILE!!
-//#define PATH_DEFAULTWEBSITE "site/defaultWebpage.html"
-
- #define PATH_DEFAULTWEBSITE "site/postMultipartRequest.html"
-// #define PATH_DEFAULTWEBSITE "site/defaultWebpage.html"
-//#define PATH_DEFAULTWEBSITE "site/subscribe.html"
 
 
-#define PATH_500_ERRORWEBSITE "site/error/500.html"
-#define PATH_404_ERRORWEBSITE "site/error/404.html"
+#define PATH_500_ERRORWEBSITE "error/500.html"
+#define PATH_404_ERRORWEBSITE "error/404.html"
+#define PATH_ERROR_INDEXFILE "error/PATH_ERROR_INDEXFILE.html"
+#define PATH_FORBIDDEN "error/PATH_FORBIDDEN.html"
+
+#define PATH_HANDLEFOLDERSLATER "error/handleFoldersLater.html"// delete later
+
+// NEED FROM CONFIG PARSER!
+#define PATH_DEFAULTWEBSITE "root/index.html"
 #define INDEX_PAGE ""   // can have a name I guess (host_name??)
-#define SITE_FOLDER "site/" // folder in which all folders for client are stored
+#define ROOT_FOLDER "root/" // folder in which all folders for client are stored
+#define AUTOINDEX true
+#define INDEX true      // we only consider index.html, if not provided in config, INDEX variable is false
 
-#define UPLOAD_FOLDER "site/upload/"
-//#define UPLOAD_FOLDER "site/subscribe/"
+#define UPLOAD_FOLDER "root/upload/"
 
-#define PATH_HANDLEFOLDERSLATER "site/handleFoldersLater.html"
-#define PATH_FILE_NOT_SAVED "site/error/500_FILE_NOT_SAVED.html"
-#define PATH_FILE_SAVED "site/PATH_FILE_SAVED.html"
-#define PATH_FILE_ALREADY_EXISTS "site/PATH_FILE_AREADY_EXISTS.html"
-#define PATH_FILE_SAVED_AND_OVERWRITTEN "site/PATH_FILE_SAVED_AND_OVERWRITTEN.html"
-#define PATH_FILE_DELETED "site/PATH_FILE_DELETED.html"
-#define PATH_FILE_DELETED_FAIL "site/PATH_FILE_DELETED_FAIL.html"
+
+#define PATH_FILE_SAVED "root/PATH_FILE_SAVED.html"
+#define PATH_FILE_DELETED "root/PATH_FILE_DELETED.html"
+#define PATH_FILE_DELETED_FAIL "root/PATH_FILE_DELETED.html"
 
 
 class Request;
@@ -93,7 +88,6 @@ class Response
 
 
         std::string getContentType();
-        void sendDefaultWebpage();
 
         static std::vector<uint8_t> readFile(const std::string&);
         std::string getHeader(int statusCode);
@@ -102,7 +96,11 @@ class Response
 
         std::string decodeURL(const std::string&);
 
+        std::string generateList(const std::string &, const std::string&);
 
+
+        int getDirectoryIndexPage();
+        void sendIndexPage();
         // POST
         void sendRequestedFile();
         bool uploadFile(const std::string&, const std::string&, std::ofstream*);
@@ -111,6 +109,7 @@ class Response
 
         // DELETE
         void deleteFile();
+
 
 
 };

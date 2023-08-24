@@ -14,6 +14,7 @@ void ErrorResponse::initializeErrorMessages()
     errorMessages[201] = "Created";
     errorMessages[204] = "No Content";
     errorMessages[400] = "Bad Request";
+    errorMessages[403] = "Forbidden";
     errorMessages[404] = "Not Found";
     errorMessages[409] = "Conflict";
     errorMessages[500] = "Internal Server Error";

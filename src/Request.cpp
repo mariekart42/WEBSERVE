@@ -35,6 +35,27 @@ std::string Request::getFileContentType(const std::string& url)
 }
 
 
+bool Request::pathExists(const std::string& path) {
+    struct stat buffer;
+    return stat(path.c_str(), &buffer) == 0;
+}
+
+bool Request::checkPathInFolder(const std::string& filePath, const std::string& rootFolder)
+{
+    //THIS WORKED BEFORE:
+//    std::string fullPath = rootFolder + "/" + filePath;
+//    return pathExists(fullPath);
+
+    if (filePath.find('/') != std::string::npos) {
+        std::string fullPath = rootFolder + "/" + filePath;
+        return pathExists(fullPath);
+    } else {
+        return pathExists(rootFolder + "/" + filePath);
+    }
+}
+
+
+// this fu
 bool Request::fileExists(const std::string& checkFilename, const std::string& uploadFolder)
 {
     const std::string& filename = checkFilename;
@@ -69,9 +90,9 @@ std::string Request::getNewFilename(const std::string& checkFilename, const std:
     std::string fileExtension = checkFilename.substr(lastDotPos, checkFilename.size());
 
     int fileCount = 1;
-    while (fileExists(filename + " (" + std::to_string(fileCount) + ")" + fileExtension, uploadFolder))
+    while (fileExists(filename + "(" + std::to_string(fileCount) + ")" + fileExtension, uploadFolder))
         fileCount++;
-    return (filename + " (" + std::to_string(fileCount) + ")"+ fileExtension);
+    return (filename + "(" + std::to_string(fileCount) + ")"+ fileExtension);
 }
 
 

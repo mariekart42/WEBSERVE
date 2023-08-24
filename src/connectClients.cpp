@@ -98,7 +98,7 @@ void ConnectClients::initClientInfo(int _clientSocket, const std::vector<uint8_t
         }
         if (initNewInfo._myHTTPMethod == M_DELETE)
         {
-            if (!Request::fileExists(initNewInfo._url, UPLOAD_FOLDER))
+            if (!Request::checkPathInFolder(initNewInfo._url, UPLOAD_FOLDER))
                 initNewInfo._url = FAILURE;
         }
 
