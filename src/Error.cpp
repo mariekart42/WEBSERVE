@@ -11,6 +11,8 @@ void ErrorResponse::initializeErrorMessages()
 {
     errorMessages[69] = "default Webpage";
     errorMessages[200] = "OK";
+    errorMessages[201] = "Created";
+    errorMessages[204] = "No Content";
     errorMessages[400] = "Bad Request";
     errorMessages[404] = "Not Found";
     errorMessages[409] = "Conflict";

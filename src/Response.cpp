@@ -13,8 +13,21 @@ Response::~Response()
 {
 }
 
-void Response::deleteFile(){};
+void Response::deleteFile()
+{
 
+std::cout << "file to deleet: " << _info._url << std::endl;
+    if (_info._url == FAILURE)
+        mySend(FILE_DELETED_FAIL);
+
+    if (std::remove((UPLOAD_FOLDER + _info._url).c_str()) != 0)
+        std::cout << "Error deleting the file." << std::endl;
+    else
+        std::cout << "File deleted successfully." << std::endl;
+    std::cout << "wanna delete something" << std::endl;
+    mySend(FILE_DELETED);
+
+}
 
 
 void Response::sendRequestedFile()
@@ -83,24 +96,18 @@ void Response::mySend(int statusCode)
 
         if (statusCode == FILE_SAVED)
         {
-            statusCode = 200;
+            statusCode = 201;
             _file = readFile(PATH_FILE_SAVED);
         }
-        else if (statusCode == FILE_NOT_SAVED)
+        else if (statusCode == FILE_DELETED)
         {
-            statusCode = 200;
-            _file = readFile(PATH_FILE_NOT_SAVED);
+            statusCode = 204;
+            _file = readFile(PATH_FILE_DELETED);
         }
-        else if (statusCode == FILE_ALREADY_EXISTS)
+        else if (statusCode == FILE_DELETED_FAIL)
         {
-            statusCode = 200;
-            _file = readFile(PATH_FILE_ALREADY_EXISTS);
-        }
-        else if (statusCode == FILE_SAVED_AND_OVERWRITTEN)
-        {
-            statusCode = 200;
-            _file = readFile(PATH_FILE_SAVED_AND_OVERWRITTEN);
-
+            statusCode = 404;
+            _file = readFile(PATH_FILE_DELETED_FAIL);
         }
         else if (statusCode == DEFAULTWEBPAGE)
         {
@@ -117,7 +124,10 @@ void Response::mySend(int statusCode)
         else if (statusCode == 6969)
             _file = readFile(PATH_HANDLEFOLDERSLATER);
         else
-            exitWithError("status code not defined in mySend() [EXIT]");
+        {
+            _file = readFile(PATH_500_ERRORWEBSITE);
+            std::cout << RED"ERROR: status code not defined in mySend()"RESET << std::endl;
+        }
     }
     else
     {

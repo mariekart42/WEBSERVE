@@ -96,9 +96,12 @@ void ConnectClients::initClientInfo(int _clientSocket, const std::vector<uint8_t
             else
                 initNewInfo._postInfo._filename = "LOL_NO_CLUE.txt";
         }
+        if (initNewInfo._myHTTPMethod == M_DELETE)
+        {
+            if (!Request::fileExists(initNewInfo._url, UPLOAD_FOLDER))
+                initNewInfo._url = FAILURE;
+        }
 
-
-//        initNewInfo._statusCode = 200;
         _clientInfo[_clientSocket] = initNewInfo;
     }
     else if (it->second._isMultiPart == true)   // only for multipart!!
@@ -118,7 +121,7 @@ int ConnectClients::receiveData(int i)
     
     memset(_clientData, 0, MAX_REQUESTSIZE);
     ssize_t bytesRead = recv(_fdList[i].fd, _clientData, sizeof(_clientData), O_NONBLOCK);
-
+std::cout << "Client Data:\n"<<_clientData<<std::endl;
     // converting client data to vector
     size_t charArraySize = MAX_REQUESTSIZE;
     _byteVector.clear();

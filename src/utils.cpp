@@ -57,9 +57,6 @@ std::string comparerContentType(const std::string& fileExtension)
         extensionToType.insert(std::make_pair("pdf", "application/pdf"));
         extensionToType.insert(std::make_pair("doc", "application/msword"));
         extensionToType.insert(std::make_pair("docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"));
-        // ˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆ WORKS ˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆ
-
-
         extensionToType.insert(std::make_pair("bz", "application/x-bzip"));
         extensionToType.insert(std::make_pair("bz2", "application/x-bzip2"));
         extensionToType.insert(std::make_pair("cda", "application/x-cdf"));

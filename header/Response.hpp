@@ -19,7 +19,8 @@
 #define FILE_NOT_SAVED 5001
 #define IS_FOLDER (s.st_mode & S_IFDIR)
 #define IS_FILE (s.st_mode & S_IFREG)
-
+#define FILE_DELETED 2004
+#define FILE_DELETED_FAIL 2005
 
 
 #define POLL_TIMEOUT 200
@@ -46,9 +47,12 @@
 
 #define PATH_HANDLEFOLDERSLATER "site/handleFoldersLater.html"
 #define PATH_FILE_NOT_SAVED "site/error/500_FILE_NOT_SAVED.html"
-#define PATH_FILE_SAVED "site/FILE_SAVED.html"
+#define PATH_FILE_SAVED "site/PATH_FILE_SAVED.html"
 #define PATH_FILE_ALREADY_EXISTS "site/PATH_FILE_AREADY_EXISTS.html"
 #define PATH_FILE_SAVED_AND_OVERWRITTEN "site/PATH_FILE_SAVED_AND_OVERWRITTEN.html"
+#define PATH_FILE_DELETED "site/PATH_FILE_DELETED.html"
+#define PATH_FILE_DELETED_FAIL "site/PATH_FILE_DELETED_FAIL.html"
+
 
 class Request;
 
