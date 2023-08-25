@@ -1,0 +1,68 @@
+body {
+    display: flex;
+    align-items: flex-start; /* Align content to the top of the screen */
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    padding-top: 100px; /* Height of content */
+    padding-right: 400px;
+}
+.background-image {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url(../images/yeee.jpg);
+    background-size: cover;
+    opacity: 0.2; /* 20% transparency */
+    z-index: -1; /* Behind the content */
+}
+.delete-button {
+    background-color: #c28989;
+    color: #650202;
+    border: none;
+    padding: 4px 9px;
+    font-size: 17px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+    border-radius: 5px;
+    margin-left: 300px; /* Adjust this margin to move the vertical line */
+}
+.delete-button:hover {
+    background-color: #650202;
+    color: #c28989;
+}
+/* Adjust spacing between file path and delete button */
+.file-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px; /* Increased margin for more space */
+}
+.file-link {
+    color: #4479ff; /* Change the color of file path links */
+    text-decoration: underline; /* Add underline to file path links */
+    font-size: 20px;
+}
+
+.delete-container {
+    /*display: flex;*/
+    /*align-items: center;*/
+    margin-left: 20px; /* Increased margin for more space */
+}
+
+/* Variable spacing between file path and delete button */
+.spacer {
+    flex: 1;
+    color: #a40000;
+    margin-left: 20px;
+}
+
+.index-result-message{
+    /*width: 70%; !* Adjust the width *!*/
+    /*padding: 10px; !* Add some padding for better appearance *!*/
+    /*!*border: 1px solid #ccc;*!*/
+    /*border-radius: 10px; !* Adjust the border radius *!*/
+    color: #ff0000;
+    font-size: 15px; /* Adjust the font size */
+}

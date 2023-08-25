@@ -39,7 +39,7 @@
 #define INDEX_PAGE ""   // can have a name I guess (host_name??)
 #define ROOT_FOLDER "root/" // folder in which all folders for client are stored
 #define AUTOINDEX true
-#define INDEX true      // we only consider index.html, if not provided in config, INDEX variable is false
+#define INDEX false      // we only consider index.html, if not provided in config, INDEX variable is false
 
 #define UPLOAD_FOLDER "root/upload/"
 

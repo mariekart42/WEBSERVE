@@ -98,10 +98,37 @@ body, html {
 
 
 .result-message{
-    width: 30%; /* Adjust the width */
+    width: 70%; /* Adjust the width */
     padding: 10px; /* Add some padding for better appearance */
     /*border: 1px solid #ccc;*/
     border-radius: 10px; /* Adjust the border radius */
     font-size: 15px; /* Adjust the font size */
 }
 
+
+
+
+.custom-gohome-button{
+    background-color: #abaaaa;
+    color: #2d2d2d;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+    border-radius: 4px;
+}
+.custom-gohome-button:hover{
+    background-color: #2d2d2d;
+    color: #abaaaa;
+}
+
+/* Style for the container holding the button and text */
+.button-container {
+    display: flex;
+    align-items: center;
+}
+
+/* Space between the text and button */
+.button-container span {
+    margin-right: 10px;
+}

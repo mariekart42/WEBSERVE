@@ -37,44 +37,6 @@ std::cout << "file to deleet: " << _info._url << std::endl;
 }
 
 
-//std::string Response::generateList(const std::string& rootFolder, const std::string& currentFolder = "")
-//{
-//    std::string filePaths;
-//
-//    std::string folderPath = rootFolder + "/" + currentFolder;
-//    DIR* dir = opendir(folderPath.c_str());
-//
-//    if (dir) {
-//        struct dirent* entry;
-//        while ((entry = readdir(dir)) != NULL) {
-//            std::string itemName = entry->d_name;
-//
-//            if (itemName != "." && itemName != "..") {
-//                std::string itemPath = folderPath + "/" + itemName;
-//                struct stat itemStat;
-//
-//                if (stat(itemPath.c_str(), &itemStat) == 0) {
-//                    if (S_ISDIR(itemStat.st_mode)) {
-//                        // Recurse into subfolder
-//                        std::string subfolderPaths = generateList(rootFolder, currentFolder + "/" + itemName);
-//                        filePaths += subfolderPaths;
-//                    } else if (S_ISREG(itemStat.st_mode)) {
-//                        std::string linkPath = currentFolder.empty() ? itemName : currentFolder.substr(1) + "/" + itemName;
-//                        filePaths += "<div class=\"item folder\">\n"
-//                                                                   "            <a href=\""+linkPath+"\">"+linkPath+"</a>\n"
-//                                                                   "            <button class=\"delete-button\" onclick=\"confirmDelete(\'"+linkPath+"\')\">Delete</button>\n"
-//                                                                                                                                                     "<p id=\"resultMessage\" class=\"result-message\"></p>\n"
-//                                                                   "        </div>";
-//                    }
-//                }
-//            }
-//        }
-//        closedir(dir);
-//    }
-//
-//    return filePaths;
-//}
-
 
 std::string Response::generateList(const std::string& rootFolder, const std::string& currentFolder = "")
 {
@@ -117,83 +79,108 @@ std::string Response::generateList(const std::string& rootFolder, const std::str
 int Response::getDirectoryIndexPage()
 {
 
+//    std::string start69 = "<!DOCTYPE html>"
+//                          "<html lang=\"en\">"
+//                          "<head>"
+//                          "    <meta charset=\"UTF-8\">"
+//                          "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
+//                          "    <title>Index of /</title>"
+//                          "    <style>"
+//                          "        .delete-button {\n"
+//                          "            background-color: red;\n"
+//                          "            color: white;\n"
+//                          "            border: none;\n"
+//                          "            padding: 5px 10px;\n"
+//                          "            cursor: pointer;\n"
+//                          "        }\n"
+//                          "        \n"
+//                          "        /* Add space between file path and delete button */\n"
+//                          "        .spacer {\n"
+//                          "            margin-left: 10px; /* Adjust spacing as needed */\n"
+//                          "        }"
+//                          "    </style>"
+//                          "</head>"
+//                          "<body>"
+//                          "    <div class=\"container\">"
+//                          "        <h1>Index of /</h1>"
+//                          "        <div id=\"fileItems\"></div>"
+//                          "    </div>"
+//                          "    <script>"
+//                          "        const hostname = window.location.hostname;"
+//                          "        const port = window.location.port;"
+//                          "        const filePaths = [";
+//    std::string middle69 = generateList(ROOT_FOLDER, std::basic_string<char>());
+//    std::string end69 = "\"u/can't/delete/me\""
+//                        "        ];"
+//                        "        const fileItemsContainer = document.getElementById(\"fileItems\");"
+//                        "        filePaths.forEach(filePath => {"
+//                        "            const fileItem = document.createElement(\"div\");"
+//                        "            fileItem.className = \"item folder\";"
+//                        "            const fileLink = document.createElement(\"a\");"
+//                        "            fileLink.href = filePath;"
+//                        "            fileLink.textContent = filePath;"
+//                        "            const deleteButton = document.createElement(\"button\");"
+//                        "            deleteButton.className = \"delete-button\";"
+//                        "            deleteButton.textContent = \"Delete\";"
+//                        "            deleteButton.addEventListener(\"click\", function() {"
+//                        "                confirmDelete(filePath);"
+//                        "            });"
+//                        "            const resultMessage = document.createElement(\"p\");"
+//                        "            resultMessage.className = \"result-message\";"
+//                        "            fileItem.appendChild(fileLink);"
+//                        "fileItem.appendChild(spacer); // Add spacer"
+//                        "            fileItem.appendChild(deleteButton);"
+//                        "            fileItem.appendChild(resultMessage);"
+//                        "            fileItemsContainer.appendChild(fileItem);"
+//                        "        });"
+//                        "        function confirmDelete(filePath) {"
+//                        "            const confirmation = confirm(`Are you sure you want to delete the file at path: ${filePath}?`);"
+//                        "            if (confirmation) {"
+//                        "                fetch(`http://${hostname}:${port}/${customEncodeURIComponent(filePath)}`, {"
+//                        "                    method: \"DELETE\""
+//                        "                })"
+//                        "                    .then(response => {"
+//                        "                        const resultMessage = document.querySelector(`[href=\"${filePath}\"]`).nextSibling;"
+//                        "                        if (response.ok)"
+//                        "                            resultMessage.textContent = \" File deleted successfully\";"
+//                        "                        else {"
+//                        "                            resultMessage.textContent = \" Error, file does not exist\";"
+//                        "                        }"
+//                        "                    })"
+//                        "                    .catch(error => {"
+//                        "                        console.error(\"An error occurred:\", error);"
+//                        "                    });"
+//                        "            }"
+//                        "        }"
+//                        "        function customEncodeURIComponent(uri) {"
+//                        "            return encodeURIComponent(uri).replace(/%2F/g, \"/\").replace(/^upload\\//, \"\");"
+//                        "        }"
+//                        "    </script>"
+//                        "</body>"
+//                        "</html>";
+
     std::string start69 = "<!DOCTYPE html>\n"
                           "<html lang=\"en\">\n"
                           "<head>\n"
                           "    <meta charset=\"UTF-8\">\n"
-                          "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
+                          "    <meta name=\"viewport\" content=\"\"width=device-width, initial-scale=1.0\"\">\n"
                           "    <title>Index of /</title>\n"
-                          "    <style>\n"
-                          "        /* Your existing CSS styles here */\n"
-                          "    </style>\n"
+                          "    <link rel=\"stylesheet\" href=\"styles/styleIndex.css\">"
                           "</head>\n"
                           "<body>\n"
+                          "    <div class=\"background-image\"></div>\n"
                           "    <div class=\"container\">\n"
-                          "        <h1>Index of /</h1>\n"
-                          "        <div id=\"fileItems\"></div>\n"
-                          "    </div>\n"
-                          "\n"
+                          "            <h1>Index of  /</h1><br>\n"
+                          "            <div id=\"fileItems\"></div>\n"
+                          "        </div>\n"
                           "    <script>\n"
                           "        const hostname = window.location.hostname;\n"
                           "        const port = window.location.port;\n"
-                          "\n"
                           "        const filePaths = [";
     std::string middle69 = generateList(ROOT_FOLDER, std::basic_string<char>());
-    std::string end69 = "\"images/dog.png\"\n"
-                        "            // Add more file paths here\n"
-                        "        ];\n"
-                        "\n"
-                        "        const fileItemsContainer = document.getElementById(\"fileItems\");\n"
-                        "\n"
-                        "        filePaths.forEach(filePath => {\n"
-                        "            const fileItem = document.createElement(\"div\");\n"
-                        "            fileItem.className = \"item folder\";\n"
-                        "\n"
-                        "            const fileLink = document.createElement(\"a\");\n"
-                        "            fileLink.href = filePath;\n"
-                        "            fileLink.textContent = filePath;\n"
-                        "\n"
-                        "            const deleteButton = document.createElement(\"button\");\n"
-                        "            deleteButton.className = \"delete-button\";\n"
-                        "            deleteButton.textContent = \"Delete\";\n"
-                        "            deleteButton.addEventListener(\"click\", function() {\n"
-                        "                confirmDelete(filePath);\n"
-                        "            });\n"
-                        "\n"
-                        "            const resultMessage = document.createElement(\"p\");\n"
-                        "            resultMessage.className = \"result-message\";\n"
-                        "\n"
-                        "            fileItem.appendChild(fileLink);\n"
-                        "            fileItem.appendChild(deleteButton);\n"
-                        "            fileItem.appendChild(resultMessage);\n"
-                        "\n"
-                        "            fileItemsContainer.appendChild(fileItem);\n"
-                        "        });\n"
-                        "\n"
-                        "        function confirmDelete(filePath) {\n"
-                        "            const confirmation = confirm(`Are you sure you want to delete the file at path: ${filePath}?`);\n"
-                        "            if (confirmation) {\n"
-                        "                fetch(`http://${hostname}:${port}/${customEncodeURIComponent(filePath)}`, {\n"
-                        "                    method: \"DELETE\"\n"
-                        "                })\n"
-                        "                    .then(response => {\n"
-                        "                        const resultMessage = document.querySelector(`[href=\"${filePath}\"]`).nextSibling;\n"
-                        "                        if (response.ok)\n"
-                        "                            resultMessage.textContent = \" File deleted successfully\";\n"
-                        "                        else {\n"
-                        "                            resultMessage.textContent = \" Error, file does not exist\";\n"
-                        "                        }\n"
-                        "                    })\n"
-                        "                    .catch(error => {\n"
-                        "                        console.error(\"An error occurred:\", error);\n"
-                        "                    });\n"
-                        "            }\n"
-                        "        }\n"
-                        "\n"
-                        "        function customEncodeURIComponent(uri) {\n"
-                        "            return encodeURIComponent(uri).replace(/%2F/g, \"/\").replace(/^upload\\//, \"\");\n"
-                        "        }\n"
-                        "    </script>\n"
+    std::string end69 ="\"something/else\"];"
+            "    </script>\n"
+                        "    <script src=\"scripts/script.js\"></script>\n"
                         "</body>\n"
                         "</html>";
     std::string result = start69 + middle69 + end69;

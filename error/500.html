@@ -1,39 +1,116 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>500 Internal Server Error</title>-->
+<!--    <style>-->
+<!--        body {-->
+<!--            font-family: Arial, sans-serif;-->
+<!--            background-color: #f7f7f7;-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--            display: flex;-->
+<!--            justify-content: center;-->
+<!--            align-items: center;-->
+<!--            height: 100vh;-->
+<!--        }-->
+<!--        .error-container {-->
+<!--            text-align: center;-->
+<!--        }-->
+<!--        .error-code {-->
+<!--            font-size: 120px;-->
+<!--            font-weight: bold;-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
+<!--        .error-message {-->
+<!--            font-size: 24px;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="container">-->
+<!--    <div class="error-code">500</div>-->
+<!--    <div class="error-message">Internal Server Error</div>-->
+<!--    <p>Sorry, an unexpected error occurred on the server.</p>-->
+<!--</div>-->
+<!--<p><a href="/">GO HOME</a></p>-->
+<!--</body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>500 Internal Server Error</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f7f7f7;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .error-container {
-            text-align: center;
-        }
-        .error-code {
-            font-size: 120px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-        .error-message {
-            font-size: 24px;
-        }
+    <!--    <link rel="stylesheet" href="styles/styles.css">-->
+    <title>500</title>
+    <style> body, html {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+    }
+
+    .background-image {
+        /* Your background image styling */
+    }
+
+    .content {
+        text-align: center;
+        margin-top: -500px; /* Adjust this value to move the content further up */
+    }
+
+
+    .custom-gohome-button {
+        background-color: #abaaaa;
+        color: #2d2d2d;
+        border: none;
+        padding: 5px 6px;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out;
+        border-radius: 4px;
+    }
+
+    .custom-gohome-button:hover {
+        background-color: #2d2d2d;
+        color: #abaaaa;
+    }
+
+    .button-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 20px;
+    }
+    .button-container span {
+        margin-right: 10px; /* Adjust this value to increase the distance between text and button */
+    }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="error-code">500</div>
-    <div class="error-message">Internal Server Error</div>
-    <p>Sorry, an unexpected error occurred on the server.</p>
+<div class="background-image"></div>
+<div class="content">
+    <h1>500 SERVER ERROR</h1>
+    <h5>Sorry something wrong with our server, will fix it</h5>
+
+    <div class="button-container">
+        <span>GO </span>
+        <button class="custom-gohome-button" onclick="goToIndexPage()"> HOME</button>
+    </div>
+
+    <script>
+        function goToIndexPage() {
+            window.location.href = '/'; // Change this URL to your index page's URL
+        }
+    </script>
 </div>
-<p><a href="/">GO HOME</a></p>
 </body>
 </html>

@@ -1,45 +1,123 @@
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--<head>-->
+<!--    <title>SHEESH 404 ERROR</title>-->
+<!--    <style>-->
+<!--        body {-->
+<!--            font-family: Arial, sans-serif;-->
+<!--            text-align: center;-->
+<!--            background-color: #f5f5f5;-->
+<!--        }-->
+
+<!--        .container {-->
+<!--            max-width: 400px;-->
+<!--            margin: 100px auto;-->
+<!--            padding: 20px;-->
+<!--            border: 1px solid #ddd;-->
+<!--            border-radius: 5px;-->
+<!--            background-color: #fff;-->
+<!--            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);-->
+<!--        }-->
+
+<!--        h1 {-->
+<!--            font-size: 36px;-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
+
+<!--        p {-->
+<!--            font-size: 18px;-->
+<!--            color: #888;-->
+<!--        }-->
+
+<!--        .error-image {-->
+<!--            max-width: 100%;-->
+<!--            height: auto;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="container">-->
+<!--    <h1>Damn sorry,</h1>-->
+<!--    <p> 404 Not Found</p>-->
+<!--    <p><a href="/">GO HOME</a></p>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->
+
+
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>SHEESH 404 ERROR</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f5f5f5;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--    <link rel="stylesheet" href="styles/styles.css">-->
+    <title>404</title>
+    <style> body, html {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
 
-        .container {
-            max-width: 400px;
-            margin: 100px auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #fff;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+    }
 
-        h1 {
-            font-size: 36px;
-            margin-bottom: 20px;
-        }
+    .background-image {
+        /* Your background image styling */
+    }
 
-        p {
-            font-size: 18px;
-            color: #888;
-        }
+    .content {
+        text-align: center;
+        margin-top: -500px; /* Adjust this value to move the content further up */
+    }
 
-        .error-image {
-            max-width: 100%;
-            height: auto;
-        }
+
+    .custom-gohome-button {
+        background-color: #abaaaa;
+        color: #2d2d2d;
+        border: none;
+        padding: 5px 6px;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out;
+        border-radius: 4px;
+    }
+
+    .custom-gohome-button:hover {
+        background-color: #2d2d2d;
+        color: #abaaaa;
+    }
+
+    .button-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 20px;
+    }
+    .button-container span {
+        margin-right: 10px; /* Adjust this value to increase the distance between text and button */
+    }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>Damn sorry,</h1>
-    <p> 404 Not Found</p>
-    <p><a href="/">GO HOME</a></p>
+<div class="background-image"></div>
+<div class="content">
+    <h1>404 File not Found</h1>
+
+    <div class="button-container">
+        <span>GO </span>
+        <button class="custom-gohome-button" onclick="goToIndexPage()"> HOME</button>
+    </div>
+
+    <script>
+        function goToIndexPage() {
+            window.location.href = '/'; // Change this URL to your index page's URL
+        }
+    </script>
 </div>
 </body>
 </html>
