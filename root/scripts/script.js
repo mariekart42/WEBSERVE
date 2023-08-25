@@ -1,5 +1,6 @@
 const fileItemsContainer = document.getElementById("fileItems");
-
+const hostname = window.location.hostname;
+const port = window.location.port;
 filePaths.forEach(filePath => {
     const fileItem = document.createElement("div");
     fileItem.className = "file-item"; // Add the "file-item" class
@@ -38,13 +39,23 @@ function confirmDelete(filePath) {
         })
             .then(response => {
                 const resultMessage = document.querySelector(`[href="${filePath}"]`).nextSibling;
+                // const spacer = resultMessage.previousSibling; // Select the spacer
                 if (response.ok){
-                    resultMessage.textContent = " File deleted successfully";
-                    spacer.classList.add("green-spacer"); // Apply the green spacer class
+                    // resultMessage.textContent = " File deleted successfully";
+                    // spacer.classList.add("green-spacer"); // Apply the green spacer class
+                    resultMessage.textContent = "File deleted successfully";
+                    resultMessage.classList.add("success"); // Apply the success class
+                }
+                else if (response.status === 403)
+                {
+                    resultMessage.textContent = "Sowwy, mom said no";
+                    resultMessage.classList.add("permission-denied");
                 }
                 else {
-                    resultMessage.textContent = " Error, file does not exist";
-                    spacer.classList.add("green-spacer"); // Apply the green spacer class
+                    resultMessage.textContent = "Error, file does not exist";
+                    resultMessage.classList.add("error"); // Apply the error class
+                    // resultMessage.textContent = " Error, file does not exist";
+                    // spacer.classList.add("green-spacer"); // Apply the green spacer class
                 }
             })
             .catch(error => {

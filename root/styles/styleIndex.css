@@ -46,23 +46,44 @@ body {
 }
 
 .delete-container {
-    /*display: flex;*/
-    /*align-items: center;*/
     margin-left: 20px; /* Increased margin for more space */
 }
 
 /* Variable spacing between file path and delete button */
 .spacer {
     flex: 1;
-    color: #a40000;
     margin-left: 20px;
 }
 
 .index-result-message{
-    /*width: 70%; !* Adjust the width *!*/
-    /*padding: 10px; !* Add some padding for better appearance *!*/
-    /*!*border: 1px solid #ccc;*!*/
-    /*border-radius: 10px; !* Adjust the border radius *!*/
-    color: #ff0000;
     font-size: 15px; /* Adjust the font size */
+    font-family: "Apple Color Emoji", emoji;
 }
+
+
+.success {
+    width: 200px; /* Adjust the width as needed */
+    color: green;
+}
+.success::before {
+    content: "\1F525"; /* Unicode for the emoji, adjust as needed */
+    margin-right: 5px; /* Add some space between emoji and text */
+}
+
+.error {
+    width: 200px; /* Adjust the width as needed */
+    color: #8d0000;
+}
+.error::before {
+    content: "\26A1"; /* Unicode for the emoji, adjust as needed */
+    margin-right: 5px; /* Add some space between emoji and text */
+}
+
+.permission-denied{
+    width: 200px; /* Adjust the width as needed */
+    color: #912626;
+}
+.permission-denied::before {
+     content: "\1F31A"; /* Unicode for the emoji, adjust as needed */
+     margin-right: 5px; /* Add some space between emoji and text */
+ }

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content=""width=device-width, initial-scale=1.0"">
+    <title>Index of /</title>
+    <link rel="stylesheet" href="root/styles/styleIndex.css">
+<!--    <style>-->
+<!--        body {-->
+<!--            display: flex;-->
+<!--            align-items: flex-start; /* Align content to the top of the screen */-->
+<!--            justify-content: center;-->
+<!--            height: 100vh;-->
+<!--            margin: 0;-->
+<!--            padding-top: 100px; /* Height of content */-->
+<!--            padding-right: 400px;-->
+<!--        }-->
+<!--        .background-image {-->
+<!--            position: fixed;-->
+<!--            top: 0;-->
+<!--            left: 0;-->
+<!--            width: 100%;-->
+<!--            height: 100%;-->
+<!--            background-image: url(root/images/yeee.jpg);-->
+<!--            background-size: cover;-->
+<!--            opacity: 0.2; /* 20% transparency */-->
+<!--            z-index: -1; /* Behind the content */-->
+<!--        }-->
+<!--        .delete-button {-->
+<!--            background-color: #c28989;-->
+<!--            color: #650202;-->
+<!--            border: none;-->
+<!--            padding: 4px 9px;-->
+<!--            font-size: 17px;-->
+<!--            cursor: pointer;-->
+<!--            transition: background-color 0.3s ease-in-out;-->
+<!--            border-radius: 5px;-->
+<!--            margin-left: 300px; /* Adjust this margin to move the vertical line */-->
+<!--        }-->
+<!--        .delete-button:hover {-->
+<!--            background-color: #650202;-->
+<!--            color: #c28989;-->
+<!--        }-->
+<!--        /* Adjust spacing between file path and delete button */-->
+<!--        .file-item {-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            margin-bottom: 5px; /* Increased margin for more space */-->
+<!--        }-->
+<!--        .file-link {-->
+<!--            color: #4479ff; /* Change the color of file path links */-->
+<!--            text-decoration: underline; /* Add underline to file path links */-->
+<!--            font-size: 20px;-->
+<!--        }-->
+
+<!--        .delete-container {-->
+<!--            /*display: flex;*/-->
+<!--            /*align-items: center;*/-->
+<!--            margin-left: 20px; /* Increased margin for more space */-->
+<!--        }-->
+
+<!--        /* Variable spacing between file path and delete button */-->
+<!--        .spacer {-->
+<!--            flex: 1;-->
+<!--        }-->
+<!--    </style>-->
+</head>
+<body>
+    <div class="background-image"></div>
+    <div class="container">
+            <h1>Index of /</h1>
+            <div id="fileItems"></div>
+        </div>
+    <script>
+        // const hostname = window.location.hostname;
+        // const port = window.location.port;
+        const filePaths = ["u/can't/delete/me", "something/else"];
+        // const fileItemsContainer = document.getElementById("fileItems");
+        //
+        // filePaths.forEach(filePath => {
+        //     const fileItem = document.createElement("div");
+        //     fileItem.className = "file-item"; // Add the "file-item" class
+        //
+        //     const fileLink = document.createElement("a");
+        //     fileLink.href = filePath;
+        //     fileLink.textContent = filePath;
+        //     fileLink.className = "file-link";
+        //
+        //     const spacer = document.createElement("span");
+        //     spacer.className = "spacer"; // Apply spacer class
+        //
+        //     const deleteButton = document.createElement("button");
+        //     deleteButton.className = "delete-button";
+        //     deleteButton.textContent = "Delete";
+        //
+        //     deleteButton.addEventListener("click", function() {
+        //         confirmDelete(filePath);
+        //     });
+        //
+        //     const resultMessage = document.createElement("p");
+        //     resultMessage.className = "result-message";
+        //
+        //     fileItem.appendChild(fileLink);
+        //     fileItem.appendChild(spacer); // Add spacer
+        //     fileItem.appendChild(deleteButton);
+        //     fileItem.appendChild(resultMessage);
+        //     fileItemsContainer.appendChild(fileItem);
+        // });
+        //
+        // function confirmDelete(filePath) {
+        //     const confirmation = confirm(`Are you sure you want to delete the file at path: ${filePath}?`);
+        //     if (confirmation) {
+        //         fetch(`http://${hostname}:${port}/${customEncodeURIComponent(filePath)}`, {
+        //             method: "DELETE"
+        //         })
+        //             .then(response => {
+        //                 const resultMessage = document.querySelector(`[href="${filePath}"]`).nextSibling;
+        //                 if (response.ok)
+        //                     resultMessage.textContent = " File deleted successfully";
+        //                 else {
+        //                     resultMessage.textContent = " Error, file does not exist";
+        //                 }
+        //             })
+        //             .catch(error => {
+        //                 console.error("An error occurred:", error);
+        //             });
+        //     }
+        // }
+        //
+        // function customEncodeURIComponent(uri) {
+        //     return encodeURIComponent(uri).replace(/%2F/g, "/").replace(/^upload\//, "");
+        // }
+    </script>
+    <script src="root/scripts/script.js"></script>
+</body>
+</html>

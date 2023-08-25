@@ -22,18 +22,31 @@ Response::~Response()
 
 void Response::deleteFile()
 {
+    if (INDEX == false && AUTOINDEX == true)
+    {
+        if (std::remove((UPLOAD_FOLDER + _info._url).c_str()) != 0)
+        {
+            mySend(FORBIDDEN);
+            std::cout << "Error deleting the file." << std::endl;
+        }
+        else
+            std::cout << "File deleted successfully." << std::endl;
+        mySend(FILE_DELETED);
 
-std::cout << "file to deleet: " << _info._url << std::endl;
-    if (_info._url == FAILURE)
-        mySend(FILE_DELETED_FAIL);
-
-    if (std::remove((UPLOAD_FOLDER + _info._url).c_str()) != 0)// changed UPLOAD_FOLDER to ROOT_FOLDER
-        std::cout << "Error deleting the file." << std::endl;
+    }
     else
-        std::cout << "File deleted successfully." << std::endl;
-    std::cout << "wanna delete something" << std::endl;
-    mySend(FILE_DELETED);
-
+    {
+        std::cout << "file to deleet: " << _info._url << std::endl;
+        if (_info._url == FAILURE)
+            mySend(FILE_DELETED_FAIL);
+        if (std::remove((UPLOAD_FOLDER + _info._url).c_str()) != 0)// changed UPLOAD_FOLDER to ROOT_FOLDER
+        {
+            mySend(FORBIDDEN);
+            std::cout << "Error deleting the file." << std::endl;
+        } else
+            std::cout << "File deleted successfully." << std::endl;
+        mySend(FILE_DELETED);
+    }
 }
 
 
@@ -174,8 +187,6 @@ int Response::getDirectoryIndexPage()
                           "            <div id=\"fileItems\"></div>\n"
                           "        </div>\n"
                           "    <script>\n"
-                          "        const hostname = window.location.hostname;\n"
-                          "        const port = window.location.port;\n"
                           "        const filePaths = [";
     std::string middle69 = generateList(ROOT_FOLDER, std::basic_string<char>());
     std::string end69 ="\"something/else\"];"
@@ -225,10 +236,16 @@ void Response::sendRequestedFile()
         }
         else if (IS_FILE)
         {
-            _file = readFile(ROOT_FOLDER + _info._url);
-            if (_file.empty())   // if file doesn't exist
-                mySend(404);
-            mySend(200);
+            if (_info._url == ".DS_Store"){
+                mySend(FORBIDDEN);
+            }
+            else
+            {
+                _file = readFile(ROOT_FOLDER + _info._url);
+                if (_file.empty())   // if file doesn't exist
+                    mySend(404);
+                mySend(200);
+            }
         }
         else
         {

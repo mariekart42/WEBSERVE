@@ -121,7 +121,7 @@ int ConnectClients::receiveData(int i)
     
     memset(_clientData, 0, MAX_REQUESTSIZE);
     ssize_t bytesRead = recv(_fdList[i].fd, _clientData, sizeof(_clientData), O_NONBLOCK);
-//std::cout << "Client Data:\n"<<_clientData<<std::endl;
+std::cout << "Client Data:\n"<<_clientData<<std::endl;
     // converting client data to vector
     size_t charArraySize = MAX_REQUESTSIZE;
     _byteVector.clear();

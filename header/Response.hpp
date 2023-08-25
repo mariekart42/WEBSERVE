@@ -18,7 +18,7 @@
 #define FILE_DELETED 2043
 #define FILE_DELETED_FAIL 4044
 #define FORBIDDEN 4035
-#define ERROR_INDEXFILE 4046
+#define ERROR_INDEXFILE 4036
 #define DIRECTORY_LIST 2007
 
 #define POLL_TIMEOUT 200
@@ -30,7 +30,7 @@
 #define PATH_500_ERRORWEBSITE "error/500.html"
 #define PATH_404_ERRORWEBSITE "error/404.html"
 #define PATH_ERROR_INDEXFILE "error/PATH_ERROR_INDEXFILE.html"
-#define PATH_FORBIDDEN "error/PATH_FORBIDDEN.html"
+#define PATH_FORBIDDEN "error/403.html"
 
 #define PATH_HANDLEFOLDERSLATER "error/handleFoldersLater.html"// delete later
 
@@ -39,7 +39,7 @@
 #define INDEX_PAGE ""   // can have a name I guess (host_name??)
 #define ROOT_FOLDER "root/" // folder in which all folders for client are stored
 #define AUTOINDEX true
-#define INDEX false      // we only consider index.html, if not provided in config, INDEX variable is false
+#define INDEX true      // we only consider index.html, if not provided in config, INDEX variable is false
 
 #define UPLOAD_FOLDER "root/upload/"
 
