@@ -24,14 +24,15 @@ class ConnectClients
         int _currClientSocket;
         char _clientData[MAX_REQUESTSIZE];
         std::vector<uint8_t> _byteVector;
+        std::vector<int> _serverSockets;
 
     public:
-        ConnectClients();
+        ConnectClients(const std::vector<int>&);
         ~ConnectClients();
 
-        void clientConnected(int);
-        void initFdList(int);
-        void connectClients(int);
+        void clientConnected();
+        void initFdList();
+        void connectClients();
 
         void initNewConnection(int serverSocket);
 
@@ -41,6 +42,8 @@ class ConnectClients
         void closeConnection(int*);
 
         std::map<int, clientInfo> _clientInfo;
+
+        int socketMatch(int);
 };
 
 

@@ -9,6 +9,8 @@
 
 #define NO_DATA_TO_UPLOAD (convert.find("POST") == 0 && convert.find(startBoundary) == std::string::npos)
 
+
+
 #define DEBUG
 
 #define DEFAULTWEBPAGE 2001
@@ -22,7 +24,7 @@
 #define DIRECTORY_LIST 2007
 
 #define POLL_TIMEOUT 200
-#define MAX_REQUESTSIZE 8000         // max for recv() is 1048576 bytes
+#define MAX_REQUESTSIZE 1000         // max for recv() is 1048576 bytes
 
 
 

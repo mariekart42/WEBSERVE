@@ -1,71 +1,93 @@
 #include "../header/setServer.hpp"
 
 SetServer::SetServer(int port):
-    _port(port), _serverSocket(), _socketAddress(), _bindAddress()
+    _port(port)//, _serverSocket(), _socketAddress(), _bindAddress()
 {}
 
 SetServer::~SetServer()
 {
-    close(_serverSocket);
+//    close(_serverSocket);
 }
 
 
-void SetServer::initServerSocket()
+int SetServer::getNewServerSocket(int port)
 {
-    memset(&_socketAddress, 0, sizeof(_socketAddress));
-    _socketAddress.ai_family = AF_INET;        // communicate over IPv4
-    _socketAddress.ai_socktype = SOCK_STREAM;  // TCP socket
-    _socketAddress.ai_flags = AI_PASSIVE;      // any available network interface
+    int newServerSocket;
+    struct addrinfo socketAddress;
+    struct addrinfo *bindAddress;
+
+    memset(&socketAddress, 0, sizeof(socketAddress));
+    socketAddress.ai_family = AF_INET;        // communicate over IPv4
+    socketAddress.ai_socktype = SOCK_STREAM;  // TCP socket
+    socketAddress.ai_flags = AI_PASSIVE;      // any available network interface
 
     // getaddrinfo() generates address that's suitable for bind()
-    getaddrinfo(0, std::to_string(_port).c_str(), &_socketAddress, &_bindAddress);
+    getaddrinfo(0, std::to_string(port).c_str(), &socketAddress, &bindAddress);
 
-    std::cout << YEL " . . . Creating Socket" RESET << std::endl;
+    std::cout << YEL " . . . Creating Socket"RESET << std::endl;
 
-    _serverSocket = socket(_bindAddress->ai_family, _bindAddress->ai_socktype, _bindAddress->ai_protocol);	 // domain, type, protocol
-    if (_serverSocket < 0)
+    newServerSocket = socket(bindAddress->ai_family, bindAddress->ai_socktype, bindAddress->ai_protocol);	 // domain, type, protocol
+    if (newServerSocket < 0)
         exitWithError("Cannot create socket");
-}
-
-
-void SetServer::bindSocket()
-{
-    std::cout << YEL " . . . Binding socket to local address" RESET << std::endl;
+    std::cout << YEL " . . . Binding socket to local address\nSocket: "<< newServerSocket << "" RESET << std::endl;
 
     // binds specify address and port to "mySocket"
-    if (bind(_serverSocket, _bindAddress->ai_addr, _bindAddress->ai_addrlen) < 0)
+    if (bind(newServerSocket, bindAddress->ai_addr, bindAddress->ai_addrlen) < 0)
         exitWithError("Cannot connect socket to address, Port already in use");
-    freeaddrinfo(_bindAddress);
+    freeaddrinfo(bindAddress);
+
+    return (newServerSocket);
 }
 
 
-void SetServer::startListen() const
+void SetServer::initServerSocket(int serverSocket)
 {
     std::cout << YEL " . . . Listening" RESET << std::endl;
     // listen function puts created socket into a passive listening state
     // -> allows server to accept() incoming client connections
     //	  (second arg: how many client connections allowed to queue up)
-    if (listen(_serverSocket, 10) < 0)
+    if (listen(serverSocket, 10) < 0)
         exitWithError("Socket listen failed");
 }
 
 
-void SetServer::setUpServer(int portArray[3])
+//void SetServer::startListen() const
+//{
+//}
+
+
+void SetServer::setUpServer()
 {
-//    int i = 0;
-//    while (i < 3)
+
+//    Config config;
+//
+//    if (!config.getStartServer())
 //    {
-//        initServerSocket();
-//        bindSocket();
-//        startListen();
-//        ConnectClients obj;
-//        obj.connectClients(_serverSocket);
+//        // error, dont start Server
 //    }
-    initServerSocket();
-    bindSocket();
-    startListen();
-    ConnectClients obj;
-    obj.connectClients(_serverSocket);
+//
+//    int amountPorts = config.getPortVector().size();
+    std::vector<int> serverSockets;
+//    std::vector<
+    int amountPorts = 2;
+    int port;
+    for (int i = 0; i < amountPorts; i++)
+    {
+//        int currentPort = config.getPortAt(i);
+        if (i == 0)
+            port = 2020;
+        if (i == 1)
+            port = 6060;
+        int newServerSocket;
+        newServerSocket = getNewServerSocket(port);
+        initServerSocket(newServerSocket);
+//        startListen();
+        // ADD NEW SERVER SOCKET TO THE END OF SERVER SOCKET VECTOR
+        serverSockets.push_back(newServerSocket);
+    }
+
+    ConnectClients obj(serverSockets);
+    obj.connectClients();
 }
 
 

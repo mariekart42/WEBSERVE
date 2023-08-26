@@ -1,8 +1,9 @@
 #include "../header/connectClients.hpp"
 
-ConnectClients::ConnectClients():
+ConnectClients::ConnectClients(const std::vector<int>& serverSockets):
     _clientAddress(),
-    _clientAddressLen(sizeof(_clientAddress)), _fdList(), _currClientSocket(), _clientData()
+    _clientAddressLen(sizeof(_clientAddress)), _fdList(), _currClientSocket(), _clientData(),
+    _serverSockets(serverSockets)
 {}
 
 
@@ -12,24 +13,24 @@ ConnectClients::~ConnectClients()
 }
 
 
-void ConnectClients::initFdList(int serverSocket)
+void ConnectClients::initFdList()
 {
-    for (int i = 0; i < MAX_USERS; i++ )
+    for (int x = 0; x < _serverSockets.size(); x++)
     {
-        pollfd newSocket = {};
-        newSocket.fd = -1;
-        newSocket.events = 0;
-        newSocket.revents = 0;
-        _fdList.push_back(newSocket);
+        for (int i = 0; i < MAX_USERS; i++) {
+            pollfd newSocket = {};
+            newSocket.fd = -1;
+            newSocket.events = 0;
+            newSocket.revents = 0;
+            _fdList.push_back(newSocket);
 
-    }
-    for (int k = 0; k < MAX_USERS; k++ )
-    {
-        if (_fdList[k].fd == -1)
-        {
-            _fdList[k].fd = serverSocket;
-            _fdList[k].events = POLLIN;     // Concern about Read-Only Events
-            break;
+        }
+        for (int k = 0 + x; k < MAX_USERS; k++) {
+            if (_fdList[k].fd == -1) {
+                _fdList[k].fd = _serverSockets.at(x);
+                _fdList[k].events = POLLIN;     // Concern about Read-Only Events
+                break;
+            }
         }
     }
 }
@@ -140,63 +141,79 @@ void ConnectClients::closeConnection(int *i)
     --*i;
 }
 
-
-void ConnectClients::clientConnected(int serverSocket)
+int ConnectClients::socketMatch(int fdListFd)
 {
-    for (int i = 0; i < _fdList.size(); ++i)
+    for (int i = 0; i < _serverSockets.size(); i++)
     {
-        if (DATA_TO_READ)   //_fdList[i].revents & POLLIN
+        if (_serverSockets.at(i) == fdListFd)
+            return (fdListFd);
+    }
+    return -1;
+}
+
+void ConnectClients::clientConnected()
+{
+//    for (int k = 0; k < serverSockets.size(); k++)
+//    {
+        for (int i = 0; i < _fdList.size(); ++i)
         {
-            if (_fdList[i].fd == serverSocket)
-                initNewConnection(serverSocket);
-            else
+            if (DATA_TO_READ)   //_fdList[i].revents & POLLIN
             {
-                int bytesRead = receiveData(i);
-                if (bytesRead > 0)
+//                if (_fdList[i].fd == serverSockets.at(k))
+                if (socketMatch(_fdList[i].fd) > 0)
                 {
-                    initClientInfo(_fdList[i].fd, _byteVector, bytesRead);
-
-                    std::map<int, clientInfo>::iterator it = _clientInfo.find(_fdList[i].fd);
-                    Response response(_byteVector, _fdList[i].fd, it->second._url);
-
-                    switch (it->second._myHTTPMethod)
-                    {
-                        case M_GET:
-                            response.sendRequestedFile();
-                            break;
-                        case M_POST:
-                            it->second._isMultiPart = response.uploadFile(it->second._contentType, it->second._postInfo._boundary, it->second._postInfo._outfile);
-                            break;
-                        case M_DELETE:
-                            response.deleteFile();
-                            break;
-                        default:
-                            std::cout<<RED"unexpected Error: cant detect HTTPMethod"RESET<<std::endl;
-                            break;
-                    }
-
-                    if (!it->second._isMultiPart)
-                        closeConnection(&i);
-
-                }
-                else if (bytesRead == 0)
-                {
-                    // DO I HAVE TO RESPONSE ANYTHING?
-                    std::cout << "Connection closed by client" << std::endl;
-                    closeConnection(&i);
+                    int currentServerSocket = _fdList[i].fd;
+                    initNewConnection(currentServerSocket);
+//                    _fdList[i].revents = 0;
                 }
                 else
-                    exitWithError("unexpected error while reading data from client with read()");
+                {
+                    int bytesRead = receiveData(i);
+                    if (bytesRead > 0) {
+                        initClientInfo(_fdList[i].fd, _byteVector, bytesRead);
+
+                        std::map<int, clientInfo>::iterator it = _clientInfo.find(_fdList[i].fd);
+                        Response response(_byteVector, _fdList[i].fd, it->second._url);
+
+                        switch (it->second._myHTTPMethod) {
+                            case M_GET:
+                                response.sendRequestedFile();
+                                break;
+                            case M_POST:
+                                it->second._isMultiPart = response.uploadFile(it->second._contentType,
+                                                                              it->second._postInfo._boundary,
+                                                                              it->second._postInfo._outfile);
+                                break;
+                            case M_DELETE:
+                                response.deleteFile();
+                                break;
+                            default:
+                                std::cout << RED"unexpected Error: cant detect HTTPMethod"RESET << std::endl;
+                                break;
+                        }
+
+                        if (!it->second._isMultiPart)
+                            closeConnection(&i);
+
+                    }
+                    else if (bytesRead == 0) {
+                        // DO I HAVE TO RESPONSE ANYTHING?
+                        std::cout << "Connection closed by client" << std::endl;
+                        closeConnection(&i);
+                    }
+                    else
+                        exitWithError("unexpected error while reading data from client with read()");
+                }
             }
         }
     }
-}
+//}
 
 
 
-void ConnectClients::connectClients(int serverSocket)
+void ConnectClients::connectClients()
 {
-    initFdList(serverSocket);
+    initFdList();
 
     while (69)
     {
@@ -209,7 +226,7 @@ void ConnectClients::connectClients(int serverSocket)
                 std::cout<<YEL". . . waiting"RESET<<std::endl;
                 break;
             default:
-                clientConnected(serverSocket);
+                clientConnected();
                 break;
         }
     }

@@ -12,9 +12,8 @@ int main(int ac, char **av)
         // implement config parser here:
         //  - array OR vector<int>  of Ports ---> eg. portArray[size=3] = {2020, 3030, 4040};
 
-        int portArray[3] = {2020, 3030, 4040};
         SetServer obj(port);
-        obj.setUpServer(portArray);
+        obj.setUpServer();
 
     }
     else
