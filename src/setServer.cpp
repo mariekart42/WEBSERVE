@@ -64,9 +64,9 @@ std::vector<int> SetServer::setUpServer()
 
 //    std::vector<int> ports = config.getPortVector(); // do this but wait for config
     std::vector<int> ports;
-    ports.push_back(2020);
-    ports.push_back(4040);
-    ports.push_back(6060);
+    ports.push_back(1010);
+//    ports.push_back(3030);
+//    ports.push_back(6060);
 
     std::vector<int> serverSockets;
 

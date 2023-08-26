@@ -101,7 +101,7 @@ class Response
         std::string generateList(const std::string &, const std::string&);
 
 
-        int getDirectoryIndexPage();
+        int getDirectoryIndexPage(const std::string&);
         void sendIndexPage();
         // POST
         void sendRequestedFile();

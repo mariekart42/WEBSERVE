@@ -89,7 +89,7 @@ std::string Response::generateList(const std::string& rootFolder, const std::str
 
 
 
-int Response::getDirectoryIndexPage()
+int Response::getDirectoryIndexPage(const std::string& directory)
 {
 
 //    std::string start69 = "<!DOCTYPE html>"
@@ -188,7 +188,7 @@ int Response::getDirectoryIndexPage()
                           "        </div>\n"
                           "    <script>\n"
                           "        const filePaths = [";
-    std::string middle69 = generateList(ROOT_FOLDER, std::basic_string<char>());
+    std::string middle69 = generateList(directory, std::basic_string<char>());
     std::string end69 ="\"something/else\"];"
             "    </script>\n"
                         "    <script src=\"scripts/script.js\"></script>\n"
@@ -213,7 +213,7 @@ void Response::sendIndexPage()
 
     }
     else if (AUTOINDEX)
-        return (mySend(getDirectoryIndexPage()));
+        return (mySend(getDirectoryIndexPage(ROOT_FOLDER)));
     else
         return (mySend(FORBIDDEN));
 
@@ -231,7 +231,7 @@ void Response::sendRequestedFile()
     {
         if (IS_FOLDER)  //-> LATER if config is parsed
         {
-            mySend(6969);
+            mySend(getDirectoryIndexPage(ROOT_FOLDER + _info._url));
             std::cout << RED"ERROR: Cant handle Folders jet, do if config parser is done"RESET<< std::endl;
         }
         else if (IS_FILE)
