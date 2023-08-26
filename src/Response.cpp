@@ -267,6 +267,7 @@ std::string Response::getContentType()
 
        std::string fileExtension;
 
+
        if (endPos != std::string::npos)
            fileExtension = (_info._url.substr(startPos + 1, endPos - (startPos)));
        else
