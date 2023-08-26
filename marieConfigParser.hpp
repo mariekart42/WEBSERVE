@@ -54,6 +54,10 @@ class ConfigParser
     private:
         bool _startServer;
 
+        std::stirng _errorMsg;
+        // in case of error, init appropriate error message that
+        // gets printed to console in main.cpp
+
         std::vector<serverData> _serverData;
         //- for each server create one vector element
         //  and init the data in serverData
@@ -64,16 +68,17 @@ class ConfigParser
         ConfigParser();
         ~ConfigParser();
 
-        int getAmountOfPorts();
-        //- return amount of different ports
-        //- you need to check if all provided ports are different
-        //--> if not write error to console && set _startServer to false
 
-        bool getStartServer();
+        std::vector<int> getPortVector();
+        //- return vector of all Ports used in config file
+        //- you need to check if all provided ports are different
+        //--> if not write error message to _errorMsg && set _startServer to false
+
+        bool startServer();
         //- returns bool value of _startServer;
 
-        int getPortAt(int i);
-        //- return Port at i position of servers
+        std::string getErrorMsg();
+        //- return variable _errorMsg
 
 };
 

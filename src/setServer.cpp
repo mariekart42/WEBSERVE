@@ -1,8 +1,9 @@
 #include "../header/setServer.hpp"
 
-SetServer::SetServer(int port):
-    _port(port)//, _serverSocket(), _socketAddress(), _bindAddress()
-{}
+SetServer::SetServer()
+{
+
+}
 
 SetServer::~SetServer()
 {
@@ -51,43 +52,34 @@ void SetServer::initServerSocket(int serverSocket)
 }
 
 
-//void SetServer::startListen() const
-//{
-//}
-
-
-void SetServer::setUpServer()
+std::vector<int> SetServer::setUpServer()
 {
 
 //    Config config;
-//
 //    if (!config.getStartServer())
 //    {
 //        // error, dont start Server
 //    }
-//
-//    int amountPorts = config.getPortVector().size();
+
+
+//    std::vector<int> ports = config.getPortVector(); // do this but wait for config
+    std::vector<int> ports;
+    ports.push_back(2020);
+    ports.push_back(4040);
+    ports.push_back(6060);
+
     std::vector<int> serverSockets;
-//    std::vector<
-    int amountPorts = 2;
-    int port;
-    for (int i = 0; i < amountPorts; i++)
+
+    for (int i = 0; i < ports.size(); i++)
     {
-//        int currentPort = config.getPortAt(i);
-        if (i == 0)
-            port = 2020;
-        if (i == 1)
-            port = 6060;
-        int newServerSocket;
-        newServerSocket = getNewServerSocket(port);
+        int newServerSocket = getNewServerSocket(ports.at(i));
         initServerSocket(newServerSocket);
-//        startListen();
-        // ADD NEW SERVER SOCKET TO THE END OF SERVER SOCKET VECTOR
         serverSockets.push_back(newServerSocket);
     }
 
-    ConnectClients obj(serverSockets);
-    obj.connectClients();
+//    ConnectClients obj(serverSockets);
+//    obj.connectClients();
+    return serverSockets;
 }
 
 

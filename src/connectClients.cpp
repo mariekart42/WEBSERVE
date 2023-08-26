@@ -1,16 +1,14 @@
 #include "../header/connectClients.hpp"
 
 ConnectClients::ConnectClients(const std::vector<int>& serverSockets):
-    _clientAddress(),
-    _clientAddressLen(sizeof(_clientAddress)), _fdList(), _currClientSocket(), _clientData(),
-    _serverSockets(serverSockets)
+    _clientAddress(), _clientAddressLen(sizeof(_clientAddress)),
+    _fdList(), _clientData(), _byteVector(),
+    _serverSockets(serverSockets), _clientInfo()
 {}
 
 
 ConnectClients::~ConnectClients()
-{
-    printf("Closing client connection...\n");
-}
+{}
 
 
 void ConnectClients::initFdList()
@@ -64,8 +62,9 @@ void ConnectClients::initNewConnection(int serverSocket)
 
 
 
-void ConnectClients::initClientInfo(int _clientSocket, const std::vector<uint8_t>& input, int bytesRead)
+void ConnectClients::initClientInfo(int _clientSocket)
 {
+    std::vector<uint8_t> input = _byteVector;
     std::map<int, clientInfo>::iterator it1 = _clientInfo.find(_clientSocket);
     if (it1 != _clientInfo.end() && it1->second._isMultiPart == false)
     {
@@ -136,78 +135,70 @@ std::cout << "Client Data:\n"<<_clientData<<std::endl;
 
 void ConnectClients::closeConnection(int *i)
 {
+    std::cout << "Connection closed by client" << std::endl;
     close(_fdList[*i].fd);
     _fdList.erase(_fdList.begin() + *i);
     --*i;
 }
 
-int ConnectClients::socketMatch(int fdListFd)
+bool ConnectClients::newConnection(int fdListFd)
 {
     for (int i = 0; i < _serverSockets.size(); i++)
     {
         if (_serverSockets.at(i) == fdListFd)
-            return (fdListFd);
+            return (true);
     }
-    return -1;
+    return false;
 }
 
 void ConnectClients::clientConnected()
 {
-//    for (int k = 0; k < serverSockets.size(); k++)
-//    {
-        for (int i = 0; i < _fdList.size(); ++i)
+    std::map<int, clientInfo>::iterator it;
+    int bytesRead;
+    for (int i = 0; i < _fdList.size(); ++i)
+    {
+        if (DATA_TO_READ)   //_fdList[i].revents & POLLIN
         {
-            if (DATA_TO_READ)   //_fdList[i].revents & POLLIN
+            if (newConnection(CURRENT_FD))
+                initNewConnection(CURRENT_FD);
+            else
             {
-//                if (_fdList[i].fd == serverSockets.at(k))
-                if (socketMatch(_fdList[i].fd) > 0)
+                if ((bytesRead = receiveData(i) > 0))
                 {
-                    int currentServerSocket = _fdList[i].fd;
-                    initNewConnection(currentServerSocket);
-//                    _fdList[i].revents = 0;
-                }
-                else
-                {
-                    int bytesRead = receiveData(i);
-                    if (bytesRead > 0) {
-                        initClientInfo(_fdList[i].fd, _byteVector, bytesRead);
+                    initClientInfo(CURRENT_FD);
+                    it = _clientInfo.find(CURRENT_FD);
+                    Response response(_byteVector, CURRENT_FD, it->second._url);
 
-                        std::map<int, clientInfo>::iterator it = _clientInfo.find(_fdList[i].fd);
-                        Response response(_byteVector, _fdList[i].fd, it->second._url);
-
-                        switch (it->second._myHTTPMethod) {
-                            case M_GET:
-                                response.sendRequestedFile();
-                                break;
-                            case M_POST:
-                                it->second._isMultiPart = response.uploadFile(it->second._contentType,
-                                                                              it->second._postInfo._boundary,
-                                                                              it->second._postInfo._outfile);
-                                break;
-                            case M_DELETE:
-                                response.deleteFile();
-                                break;
-                            default:
-                                std::cout << RED"unexpected Error: cant detect HTTPMethod"RESET << std::endl;
-                                break;
-                        }
-
-                        if (!it->second._isMultiPart)
-                            closeConnection(&i);
-
+                    switch (it->second._myHTTPMethod) {
+                        case M_GET:
+                            response.sendRequestedFile();
+                            break;
+                        case M_POST:
+                            it->second._isMultiPart = response.uploadFile(it->second._contentType,
+                                                                          it->second._postInfo._boundary,
+                                                                          it->second._postInfo._outfile);
+                            break;
+                        case M_DELETE:
+                            response.deleteFile();
+                            break;
+                        default:
+                            std::cout << RED"unexpected Error: cant detect HTTPMethod"RESET << std::endl;
+                            break;
                     }
-                    else if (bytesRead == 0) {
-                        // DO I HAVE TO RESPONSE ANYTHING?
-                        std::cout << "Connection closed by client" << std::endl;
+                    if (!it->second._isMultiPart)
                         closeConnection(&i);
-                    }
-                    else
-                        exitWithError("unexpected error while reading data from client with read()");
                 }
+                else if (bytesRead == 0)
+                    closeConnection(&i);
+                else
+                    exitWithError("unexpected error while reading data from client with read()");
+//                if (!it->second._isMultiPart)
+//                    closeConnection(&i);
+
             }
         }
     }
-//}
+}
 
 
 

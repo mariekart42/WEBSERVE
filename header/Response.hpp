@@ -24,7 +24,7 @@
 #define DIRECTORY_LIST 2007
 
 #define POLL_TIMEOUT 200
-#define MAX_REQUESTSIZE 1000         // max for recv() is 1048576 bytes
+#define MAX_REQUESTSIZE 8000         // max for recv() is 1048576 bytes
 
 
 
@@ -41,7 +41,7 @@
 #define INDEX_PAGE ""   // can have a name I guess (host_name??)
 #define ROOT_FOLDER "root/" // folder in which all folders for client are stored
 #define AUTOINDEX true
-#define INDEX true      // we only consider index.html, if not provided in config, INDEX variable is false
+#define INDEX false      // we only consider index.html, if not provided in config, INDEX variable is false
 
 #define UPLOAD_FOLDER "root/upload/"
 

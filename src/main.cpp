@@ -1,21 +1,17 @@
 #include "../header/main.hpp"
 
-int main(int ac, char **av)
+int main(void)
 {
     std::cout << "Putin is gay" << std::endl;
 
-    if (ac == 2)
-    {
-        int port = atoi(av[1]);
-        std::cout << "PORT: " << port << std::endl;
-
-        // implement config parser here:
-        //  - array OR vector<int>  of Ports ---> eg. portArray[size=3] = {2020, 3030, 4040};
-
-        SetServer obj(port);
-        obj.setUpServer();
-
-    }
-    else
-        exitWithError("./a.out <PORT>");
+//    Config conf;
+//    if (conf.startServer)
+//    {
+        SetServer set;
+        ConnectClients connect(set.setUpServer());
+        connect.connectClients();
+//    }
+//    else
+//        std::cout << conf.getErrorMsg() << std::endl;
+    return 0;
 }
