@@ -2,6 +2,8 @@
 #define CONNECTCLIENTS_HPP
 
 #include "Response.hpp"
+#include "marieConfigParser.hpp"
+
 
 #include <netdb.h>		// addrinfo struct
 #include <poll.h>       // pollfd struct

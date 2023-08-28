@@ -22,7 +22,8 @@ class Request
         Request(const std::vector<uint8_t>&);
         ~Request();
         httpMethod getHTTPMethod();
-        std::string getURL();
+        std::string getUrlString();
+        int getPort();
         static std::string getFileContentType(const std::string&);
         int getStatusCode() const;
         std::string getContentType();

@@ -7,7 +7,8 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
-Response::Response(const std::vector<uint8_t>& input, int clientSocket, const std::string& url)
+Response::Response(const std::vector<uint8_t>& input, int clientSocket, const std::string& url, const clientInfo& cInfo):
+        _info(cInfo)
 {
     _info._postInfo._input = input;
     _info._clientSocket = clientSocket;
@@ -22,7 +23,7 @@ Response::~Response()
 
 void Response::deleteFile()
 {
-    if (INDEX == false && AUTOINDEX == true)
+    if (_info._configInfo._indexFile.empty() && _info._configInfo._autoIndex == true)
     {
         if (std::remove((UPLOAD_FOLDER + _info._url).c_str()) != 0)
         {
@@ -204,16 +205,16 @@ int Response::getDirectoryIndexPage(const std::string& directory)
 void Response::sendIndexPage()
 {
     // if there is index.html in root folder
-    if (INDEX)
+    if (!_info._configInfo._indexFile.empty())
     {
-        if (Request::fileExists("index.html", ROOT_FOLDER))
+        if (Request::fileExists(_info._configInfo._indexFile, _info._configInfo._rootFolder))
             return (mySend(DEFAULTWEBPAGE));
         else
             return (mySend(ERROR_INDEXFILE));
 
     }
-    else if (AUTOINDEX)
-        return (mySend(getDirectoryIndexPage(ROOT_FOLDER)));
+    else if (_info._configInfo._autoIndex)
+        return (mySend(getDirectoryIndexPage(_info._configInfo._rootFolder)));
     else
         return (mySend(FORBIDDEN));
 
@@ -222,16 +223,16 @@ void Response::sendIndexPage()
 
 void Response::sendRequestedFile()
 {
-    if (_info._url == INDEX_PAGE)
+    if (_info._url.empty())
         return (sendIndexPage());
 
     struct stat s = {};
 
-    if (stat((ROOT_FOLDER + _info._url).c_str(), &s) == 0)
+    if (stat((_info._configInfo._rootFolder + _info._url).c_str(), &s) == 0)
     {
         if (IS_FOLDER)  //-> LATER if config is parsed
         {
-            mySend(getDirectoryIndexPage(ROOT_FOLDER + _info._url));
+            mySend(getDirectoryIndexPage(_info._configInfo._rootFolder + _info._url));
             std::cout << RED"ERROR: Cant handle Folders jet, do if config parser is done"RESET<< std::endl;
         }
         else if (IS_FILE)
@@ -241,7 +242,7 @@ void Response::sendRequestedFile()
             }
             else
             {
-                _file = readFile(ROOT_FOLDER + _info._url);
+                _file = readFile(_info._configInfo._rootFolder + _info._url);
                 if (_file.empty())   // if file doesn't exist
                     mySend(404);
                 mySend(200);
@@ -313,7 +314,7 @@ void Response::mySend(int statusCode)
         else if (statusCode == DEFAULTWEBPAGE)
         {
             statusCode = 200;
-            _file = readFile(PATH_DEFAULTWEBSITE);
+            _file = readFile(_info._configInfo._rootFolder + _info._configInfo._indexFile);
         }
         else if (statusCode == FORBIDDEN)
         {

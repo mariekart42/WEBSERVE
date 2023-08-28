@@ -75,13 +75,18 @@ void ConnectClients::initClientInfo(int _clientSocket)
     {
         clientInfo initNewInfo;
         Request request(input);
-
+        MarieConfigParser config;
+        int currentPort = request.getPort();
         initNewInfo._myHTTPMethod = request.getHTTPMethod();
         initNewInfo._clientSocket = _clientSocket;
+        initNewInfo._url = config.getUrl(currentPort,request.getUrlString());
         initNewInfo._fileContentType = request.getFileContentType(initNewInfo._url);
         initNewInfo._contentType = request.getContentType();
         initNewInfo._isMultiPart = false;
-        initNewInfo._url = request.getURL();
+        initNewInfo._configInfo._rootFolder = config.getRootFolder(currentPort);
+        initNewInfo._configInfo._autoIndex = config.getAutoIndex(currentPort);
+
+
 
         if (initNewInfo._myHTTPMethod == M_POST)
         {
@@ -135,7 +140,7 @@ std::cout << "Client Data:\n"<<_clientData<<std::endl;
 
 void ConnectClients::closeConnection(int *i)
 {
-    std::cout << "Connection closed by client" << std::endl;
+//    std::cout << "Connection closed by client" << std::endl;
     close(_fdList[*i].fd);
     _fdList.erase(_fdList.begin() + *i);
     --*i;
@@ -167,7 +172,7 @@ void ConnectClients::clientConnected()
                 {
                     initClientInfo(CURRENT_FD);
                     it = _clientInfo.find(CURRENT_FD);
-                    Response response(_byteVector, CURRENT_FD, it->second._url);
+                    Response response(_byteVector, CURRENT_FD, it->second._url, it->second);
 
                     switch (it->second._myHTTPMethod) {
                         case M_GET:

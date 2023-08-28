@@ -196,19 +196,46 @@ httpMethod Request::getHTTPMethod()
 }
 
 
-std::string Request::getURL()
+std::string Request::getUrlString()
 {
     size_t startPos = _tmp.find('/', 0) + 1;
     size_t endPos = _tmp.find(' ', startPos);
 
-
     // MAKE URL LOWERCASE HERE
-    if (endPos != std::string::npos)
+    if (endPos != std::string::npos){
         return (_tmp.substr(startPos, endPos - (startPos)));
+    }
     else
-        return (_tmp.substr(startPos));
+    {// error?
+        exitWithError("debug::url not found[EXIT]");
+        return (_tmp.substr(startPos));// dis was before
+    }
 }
 
+int Request::getPort()
+{
+    std::string hostPrefix = "Host:";
+    size_t position = _tmp.find(hostPrefix);
+    std::string number;
+    int parsedNumber = -1;
+    if (position != std::string::npos)
+    {
+        position += hostPrefix.length();
+        size_t numberStart = _tmp.find_first_of("0123456789", position);
+
+        if (numberStart != std::string::npos)
+        {
+            size_t numberEnd = _tmp.find_first_not_of("0123456789", numberStart);
+
+            if (numberEnd != std::string::npos)
+                number = _tmp.substr(numberStart, numberEnd - numberStart);
+            else
+                number = _tmp.substr(numberStart);
+            parsedNumber = std::atoi(number.c_str());
+        }
+    }
+    return parsedNumber;
+}
 
 int Request::getStatusCode() const
 {
