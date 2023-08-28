@@ -1,6 +1,15 @@
 #ifndef MARIE_CONFIG_PARSER_HPP
 #define MARIE_CONFIG_PARSER_HPP
 
+#include "utils.h"
+
+// DON'T USE!! it's for me for testing
+#define PORT 8080
+#define ROOT_FOLDER "root/"
+#define AUTO_INDEX true
+#define INDEX_FILE "index.html"
+// -----------------------------------
+
 
 struct locationData
 {
@@ -9,7 +18,7 @@ struct locationData
     std::string root;
     //- path where to locate the path specified in location to
 
-    std::vector<std::string> index;
+    std::vector<std::string> _indexFiles;
     //- provide all index files as strings in vector
     //- eg. index.html index.php ...
 
@@ -46,15 +55,16 @@ struct serverData
 
         // location["images"] = location.root;
 
+
 };
 
 
-class ConfigParser
+class MarieConfigParser
 {
     private:
         bool _startServer;
 
-        std::stirng _errorMsg;
+        std::string _errorMsg;
         // in case of error, init appropriate error message that
         // gets printed to console in main.cpp
 
@@ -65,8 +75,8 @@ class ConfigParser
 
 
     public:
-        ConfigParser();
-        ~ConfigParser();
+        MarieConfigParser();
+        ~MarieConfigParser();
 
 
         std::vector<int> getPortVector();
@@ -80,6 +90,37 @@ class ConfigParser
         std::string getErrorMsg();
         //- return variable _errorMsg
 
+
+        std::string getUrl(int port, std::string url);
+        //- search in _serverData vector for the element where port is equal to my provided port
+        //- compare location paths with start of my provided url (url usually has more sub-folders than location path)
+        // ! locations can have paths with more than one folder
+        //- change first element of location path with path that is specified in locations root path
+        //- eg you receive url: /change/path/00.png
+        //- a location in server is specified as:
+        //      location /change/path
+        //      {
+        //          root this/is/a/new
+        //      }
+        //-> if the exact path "/change/path" exist in my provided url,
+        //   return url: this/is/a/new/path/00.png
+        // ! only "/change" gets exchanged with locations root path, not the sub-folders after the first pathname
+
+        std::string getRootFolder(int port);
+        //- similar to getUrl, search server with provided port
+        //- return in there defined root folder
+        //- this syntax "root/folder/"
+
+        int getClientBodysize(int port);
+        //- return client bodysize
+
+        bool getAutoIndex(int port);
+        //- return _autoindex true/false
+
+        std::string getIndexFile(int port);
+        //- return first element from vector _indexFiles
+        //- if no index file provided in configfile
+        //--> return empty string!
 };
 
 

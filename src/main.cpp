@@ -7,6 +7,8 @@ int main(void)
 //    Config conf;
 //    if (conf.startServer)
 //    {
+
+
         SetServer set;
         ConnectClients connect(set.setUpServer());
         connect.connectClients();

@@ -36,12 +36,8 @@
 
 #define PATH_HANDLEFOLDERSLATER "error/handleFoldersLater.html"// delete later
 
+
 // NEED FROM CONFIG PARSER!
-#define PATH_DEFAULTWEBSITE "root/index.html"
-#define INDEX_PAGE ""   // can have a name I guess (host_name??)
-#define ROOT_FOLDER "root/" // folder in which all folders for client are stored
-#define AUTOINDEX true
-#define INDEX false      // we only consider index.html, if not provided in config, INDEX variable is false
 
 #define UPLOAD_FOLDER "root/upload/"
 
@@ -52,6 +48,14 @@
 
 
 class Request;
+
+
+struct configInfo
+{
+    std::string _indexFile; // set to index.html/php... or FAILURE
+    std::string _rootFolder;
+    bool _autoIndex;
+};
 
 struct postInfo
 {
@@ -74,6 +78,7 @@ struct clientInfo
 
     int _statusCode;
     postInfo _postInfo;
+    configInfo _configInfo;
 };
 
 
@@ -85,7 +90,7 @@ class Response
         std::map<int, std::ofstream> _fileStreams;
 
     public:
-        Response(const std::vector<uint8_t>&, int, const std::string&);
+        Response(const std::vector<uint8_t>&, int, const std::string&, const clientInfo&);
         ~Response();
 
 
