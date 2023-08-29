@@ -2,6 +2,7 @@
 #define RESPONSE_HPP
 
 #include "Request.hpp"
+#include "logging.hpp"
 #include "Error.hpp"
 #include <dirent.h>
 #include <vector>

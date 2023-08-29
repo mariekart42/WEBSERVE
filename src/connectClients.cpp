@@ -122,6 +122,10 @@ void ConnectClients::initClientInfo(int _clientSocket)
         }
 
         _clientInfo[_clientSocket] = initNewInfo;
+
+//        std::stringstream ss;
+//        ss << currentPort;
+//        Logging::log(("New Client connected on Port: " + ss.str()), 200);
     }
     else if (it->second._isMultiPart)   // only for multipart!!
     {
@@ -133,6 +137,7 @@ void ConnectClients::initClientInfo(int _clientSocket)
             rename((UPLOAD_FOLDER+oldFilename).c_str(), (UPLOAD_FOLDER+it->second._postInfo._filename).c_str());
         it->second._statusCode = request.getStatusCode();
     }
+
 }
 
 int ConnectClients::receiveData(int i)

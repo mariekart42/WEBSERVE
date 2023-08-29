@@ -154,10 +154,7 @@ void Response::sendRequestedFile()
     if (stat((_info._configInfo._rootFolder + _info._url).c_str(), &s) == 0)
     {
         if (IS_FOLDER)  //-> LATER if config is parsed
-        {
             mySend(getDirectoryIndexPage(_info._url));
-            std::cout << RED"ERROR: Cant handle Folders jet, do if config parser is done"RESET<< std::endl;
-        }
         else if (IS_FILE)
         {
             if (_info._url == ".DS_Store"){
@@ -174,7 +171,8 @@ void Response::sendRequestedFile()
         else
         {
             mySend(500);
-            std::cout << RED"ERROR: unexpected Error in sendRequestedFile()"RESET << std::endl;   // LATER WRITE IN ERROR FILE
+            Logging::log("ERROR: unexpected Error in sendRequestedFile()", 500);
+//            std::cout << RED"ERROR: unexpected Error in sendRequestedFile()"RESET << std::endl;   // LATER WRITE IN ERROR FILE
         }
     }
     else
@@ -200,8 +198,7 @@ std::string Response::getContentType()
            mySend(404);
        return (contentType);
    }
-
-   std::cout << RED"ERROR: is File but can't detect file extension"RESET<<std::endl;
+   Logging::log("is File but can't detect file extension", 500);
    return FAILURE;
 }
 
