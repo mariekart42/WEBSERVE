@@ -3,6 +3,16 @@
 MarieConfigParser::MarieConfigParser() {}
 MarieConfigParser::~MarieConfigParser() {}
 
+std::vector<int> MarieConfigParser::getPortVector()
+{
+    std::vector<int> tmpPortVector;
+    tmpPortVector.push_back(PORT1);
+    tmpPortVector.push_back(PORT2);
+    tmpPortVector.push_back(PORT3);
+    tmpPortVector.push_back(PORT4);
+    return tmpPortVector;
+}
+
 std::string MarieConfigParser::getUrl(int port, std::string prevUrl)
 {
     if (port == -1)
@@ -17,7 +27,7 @@ std::string MarieConfigParser::getRootFolder(int port)
 
 int MarieConfigParser::getClientBodysize(int port)
 {
-    return (PORT);
+    return (CLIENT_BODY);
 }
 
 bool MarieConfigParser::getAutoIndex(int port)
@@ -27,5 +37,9 @@ bool MarieConfigParser::getAutoIndex(int port)
 
 std::string MarieConfigParser::getIndexFile(int port)
 {
-    return (INDEX_FILE);
+    if (port == PORT1 || port == PORT2)
+        return (INDEX_FILE);
+//    if (port == PORT2)
+    std::string emprty= "";
+        return emprty;
 }
