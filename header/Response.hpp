@@ -75,6 +75,8 @@ struct clientInfo
     std::string _fileContentType;
     std::string _contentType;
     bool _isMultiPart;
+//    std::string _directoryIndexString;
+//    bool _directoryIndex;
 
     int _statusCode;
     postInfo _postInfo;
@@ -104,6 +106,8 @@ class Response
         std::string decodeURL(const std::string&);
 
         std::string generateList(const std::string &, const std::string&);
+        std::string generateList2(const std::string &);
+//    void generateList(const std::string& rootFolder, const std::string& currentFolder, std::string& filePaths, int);
 
 
         int getDirectoryIndexPage(const std::string&);
@@ -117,7 +121,7 @@ class Response
         // DELETE
         void deleteFile();
 
-
+ std::string GenerateDownloadPathMappingString( std::string rootFolder, const std::string& directoryPath);
 
 };
 

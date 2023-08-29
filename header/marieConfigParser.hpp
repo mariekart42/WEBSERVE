@@ -4,7 +4,11 @@
 #include "utils.h"
 
 // DON'T USE!! it's for me for testing
-#define PORT 8080
+#define PORT1 1010
+#define PORT2 2020
+#define PORT3 3030
+#define PORT4 6060
+#define CLIENT_BODY 8000
 #define ROOT_FOLDER "root/"
 #define AUTO_INDEX true
 #define INDEX_FILE "index.html"

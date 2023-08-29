@@ -26,13 +26,9 @@ void Response::deleteFile()
     if (_info._configInfo._indexFile.empty() && _info._configInfo._autoIndex == true)
     {
         if (std::remove((UPLOAD_FOLDER + _info._url).c_str()) != 0)
-        {
             mySend(FORBIDDEN);
-            std::cout << "Error deleting the file." << std::endl;
-        }
         else
-            std::cout << "File deleted successfully." << std::endl;
-        mySend(FILE_DELETED);
+            mySend(FILE_DELETED);
 
     }
     else
@@ -87,92 +83,41 @@ std::string Response::generateList(const std::string& rootFolder, const std::str
 }
 
 
-
+//std::string Response::generateList2(const std::string& path)
+//{
+//    std::string filePaths;
+//
+//    DIR* dir = opendir(path.c_str());
+//
+//    if (dir) {
+//        struct dirent* entry;
+//        while ((entry = readdir(dir)) != NULL) {
+//            std::string itemName = entry->d_name;
+//
+//            if (itemName != "." && itemName != "..") {
+//                std::string itemPath = path + "/" + itemName;
+//                struct stat itemStat;
+//
+//                if (stat(itemPath.c_str(), &itemStat) == 0) {
+//                    if (S_ISREG(itemStat.st_mode)) {
+//                        filePaths += "\"" + itemName + "\",";
+//                    } else if (S_ISDIR(itemStat.st_mode)) {
+//                        // Add directory path with a trailing slash
+//                        filePaths += "\"" + itemName + "/" + "\",";
+//                    }
+//                }
+//            }
+//        }
+//        closedir(dir);
+//    }
+//    if (!filePaths.empty())
+//        filePaths = filePaths.substr(0, filePaths.size() - 1);
+//    return filePaths;
+//}
 
 
 int Response::getDirectoryIndexPage(const std::string& directory)
 {
-
-//    std::string start69 = "<!DOCTYPE html>"
-//                          "<html lang=\"en\">"
-//                          "<head>"
-//                          "    <meta charset=\"UTF-8\">"
-//                          "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
-//                          "    <title>Index of /</title>"
-//                          "    <style>"
-//                          "        .delete-button {\n"
-//                          "            background-color: red;\n"
-//                          "            color: white;\n"
-//                          "            border: none;\n"
-//                          "            padding: 5px 10px;\n"
-//                          "            cursor: pointer;\n"
-//                          "        }\n"
-//                          "        \n"
-//                          "        /* Add space between file path and delete button */\n"
-//                          "        .spacer {\n"
-//                          "            margin-left: 10px; /* Adjust spacing as needed */\n"
-//                          "        }"
-//                          "    </style>"
-//                          "</head>"
-//                          "<body>"
-//                          "    <div class=\"container\">"
-//                          "        <h1>Index of /</h1>"
-//                          "        <div id=\"fileItems\"></div>"
-//                          "    </div>"
-//                          "    <script>"
-//                          "        const hostname = window.location.hostname;"
-//                          "        const port = window.location.port;"
-//                          "        const filePaths = [";
-//    std::string middle69 = generateList(ROOT_FOLDER, std::basic_string<char>());
-//    std::string end69 = "\"u/can't/delete/me\""
-//                        "        ];"
-//                        "        const fileItemsContainer = document.getElementById(\"fileItems\");"
-//                        "        filePaths.forEach(filePath => {"
-//                        "            const fileItem = document.createElement(\"div\");"
-//                        "            fileItem.className = \"item folder\";"
-//                        "            const fileLink = document.createElement(\"a\");"
-//                        "            fileLink.href = filePath;"
-//                        "            fileLink.textContent = filePath;"
-//                        "            const deleteButton = document.createElement(\"button\");"
-//                        "            deleteButton.className = \"delete-button\";"
-//                        "            deleteButton.textContent = \"Delete\";"
-//                        "            deleteButton.addEventListener(\"click\", function() {"
-//                        "                confirmDelete(filePath);"
-//                        "            });"
-//                        "            const resultMessage = document.createElement(\"p\");"
-//                        "            resultMessage.className = \"result-message\";"
-//                        "            fileItem.appendChild(fileLink);"
-//                        "fileItem.appendChild(spacer); // Add spacer"
-//                        "            fileItem.appendChild(deleteButton);"
-//                        "            fileItem.appendChild(resultMessage);"
-//                        "            fileItemsContainer.appendChild(fileItem);"
-//                        "        });"
-//                        "        function confirmDelete(filePath) {"
-//                        "            const confirmation = confirm(`Are you sure you want to delete the file at path: ${filePath}?`);"
-//                        "            if (confirmation) {"
-//                        "                fetch(`http://${hostname}:${port}/${customEncodeURIComponent(filePath)}`, {"
-//                        "                    method: \"DELETE\""
-//                        "                })"
-//                        "                    .then(response => {"
-//                        "                        const resultMessage = document.querySelector(`[href=\"${filePath}\"]`).nextSibling;"
-//                        "                        if (response.ok)"
-//                        "                            resultMessage.textContent = \" File deleted successfully\";"
-//                        "                        else {"
-//                        "                            resultMessage.textContent = \" Error, file does not exist\";"
-//                        "                        }"
-//                        "                    })"
-//                        "                    .catch(error => {"
-//                        "                        console.error(\"An error occurred:\", error);"
-//                        "                    });"
-//                        "            }"
-//                        "        }"
-//                        "        function customEncodeURIComponent(uri) {"
-//                        "            return encodeURIComponent(uri).replace(/%2F/g, \"/\").replace(/^upload\\//, \"\");"
-//                        "        }"
-//                        "    </script>"
-//                        "</body>"
-//                        "</html>";
-
     std::string start69 = "<!DOCTYPE html>\n"
                           "<html lang=\"en\">\n"
                           "<head>\n"
@@ -189,12 +134,12 @@ int Response::getDirectoryIndexPage(const std::string& directory)
                           "        </div>\n"
                           "    <script>\n"
                           "        const filePaths = [";
-    std::string middle69 = generateList(directory, std::basic_string<char>());
-    std::string end69 ="\"something/else\"];"
-            "    </script>\n"
-                        "    <script src=\"scripts/script.js\"></script>\n"
-                        "</body>\n"
-                        "</html>";
+    std::string middle69 = generateList(directory, "");
+    std::string end69 ="];"
+                       "    </script>\n"
+                       "    <script src=\"scripts/script.js\"></script>\n"
+                       "</body>\n"
+                       "</html>";
     std::string result = start69 + middle69 + end69;
     for (size_t i = 0; i < result.length(); ++i)
         _file.push_back(static_cast<uint8_t>(result[i]));
@@ -214,7 +159,12 @@ void Response::sendIndexPage()
 
     }
     else if (_info._configInfo._autoIndex)
-        return (mySend(getDirectoryIndexPage(_info._configInfo._rootFolder)));
+    {
+//        _info._directoryIndex = true;
+        mySend(getDirectoryIndexPage(_info._configInfo._rootFolder));
+
+        return;
+    }
     else
         return (mySend(FORBIDDEN));
 
@@ -232,7 +182,8 @@ void Response::sendRequestedFile()
     {
         if (IS_FOLDER)  //-> LATER if config is parsed
         {
-            mySend(getDirectoryIndexPage(_info._configInfo._rootFolder + _info._url));
+            mySend(getDirectoryIndexPage(_info._url));
+//            _info._directoryIndex = true;
             std::cout << RED"ERROR: Cant handle Folders jet, do if config parser is done"RESET<< std::endl;
         }
         else if (IS_FILE)

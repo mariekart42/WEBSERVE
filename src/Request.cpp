@@ -214,28 +214,23 @@ std::string Request::getUrlString()
 
 int Request::getPort()
 {
-    std::string hostPrefix = "Host:";
-    size_t position = _tmp.find(hostPrefix);
-    std::string number;
-    int parsedNumber = -1;
-    if (position != std::string::npos)
+    int lineStart = _tmp.find("Host: ") + 6; // This is the starting position
+    std::string::size_type lineEnd = _tmp.find('\r', lineStart); // finds last char after startPos
+    std::string hostLine = _tmp.substr(lineStart, lineEnd - lineStart);
+
+    std::string::size_type lastCharPos = hostLine.rfind(':') + 1;
+
+    // If the last character is found, create a substring between startPos and lastCharPos
+    if (lastCharPos != std::string::npos)
     {
-        position += hostPrefix.length();
-        size_t numberStart = _tmp.find_first_of("0123456789", position);
-
-        if (numberStart != std::string::npos)
-        {
-            size_t numberEnd = _tmp.find_first_not_of("0123456789", numberStart);
-
-            if (numberEnd != std::string::npos)
-                number = _tmp.substr(numberStart, numberEnd - numberStart);
-            else
-                number = _tmp.substr(numberStart);
-            parsedNumber = std::atoi(number.c_str());
-        }
+        std::string resultStr = hostLine.substr(lastCharPos, lineEnd - lastCharPos);
+        return atoi(resultStr.c_str());
     }
-    return parsedNumber;
+    else
+        exitWithError("unexpected Error: unable to extract Port from request");
+    return -1;
 }
+
 
 int Request::getStatusCode() const
 {
