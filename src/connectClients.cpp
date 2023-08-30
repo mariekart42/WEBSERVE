@@ -38,11 +38,7 @@ void ConnectClients::initNewConnection(int serverSocket)
 {
     // Server socket has activity, accept new connection
     int newClientSocket = accept(serverSocket, (struct sockaddr *) &_clientAddress, &_clientAddressLen);
-//    if (newClientSocket >= 0) {
-//        // Set accepted socket to non-blocking mode
-//        int flags = fcntl(newClientSocket, F_GETFL, 0);
-//        fcntl(newClientSocket, F_SETFL, flags | O_NONBLOCK);
-//    }
+
     if (newClientSocket != -1)
     {
         // Find an available slot or expand the vector
@@ -69,14 +65,6 @@ void ConnectClients::initNewConnection(int serverSocket)
 
 void ConnectClients::initClientInfo(int _clientSocket)
 {
-//    clientInfo tmpClientInfo;
-//    MarieConfigParser tmpConfigParser;
-//    Request tmpRequest(input);
-//    int tmpPort = tmpRequest.getPort();
-//    std::string tmpRootFolder = tmpConfigParser.getRootFolder(tmpPort);
-
-
-
     std::vector<uint8_t> input = _byteVector;
     std::map<int, clientInfo>::iterator it1 = _clientInfo.find(_clientSocket);
     if (it1 != _clientInfo.end() && it1->second._isMultiPart == false)
@@ -101,7 +89,6 @@ void ConnectClients::initClientInfo(int _clientSocket)
         initNewInfo._configInfo._autoIndex = config.getAutoIndex(currentPort);
         initNewInfo._configInfo._indexFile = config.getIndexFile(currentPort);
 
-
         if (initNewInfo._myHTTPMethod == M_POST)
         {
             initNewInfo._postInfo._input = input;
@@ -113,19 +100,18 @@ void ConnectClients::initClientInfo(int _clientSocket)
                 initNewInfo._postInfo._boundary = request.getBoundary();
             }
             else
-                initNewInfo._postInfo._filename = "LOL_NO_CLUE.txt";
+                initNewInfo._postInfo._filename = "tmpFile.txt";
         }
         if (initNewInfo._myHTTPMethod == M_DELETE)
         {
             if (!Request::checkPathInFolder(initNewInfo._url, UPLOAD_FOLDER))
                 initNewInfo._url = FAILURE;
         }
-
         _clientInfo[_clientSocket] = initNewInfo;
 
-//        std::stringstream ss;
-//        ss << currentPort;
-//        Logging::log(("New Client connected on Port: " + ss.str()), 200);
+        std::stringstream ss;
+        ss << currentPort;
+        Logging::log(("[Port " + ss.str() + "]  Received Data"), 200);
     }
     else if (it->second._isMultiPart)   // only for multipart!!
     {
@@ -137,28 +123,29 @@ void ConnectClients::initClientInfo(int _clientSocket)
             rename((UPLOAD_FOLDER+oldFilename).c_str(), (UPLOAD_FOLDER+it->second._postInfo._filename).c_str());
         it->second._statusCode = request.getStatusCode();
     }
-
 }
 
 int ConnectClients::receiveData(int i)
 {
     memset(_clientData, 0, MAX_REQUESTSIZE);
     ssize_t bytesRead = recv(_fdList[i].fd, _clientData, sizeof(_clientData), O_NONBLOCK);
-std::cout << "Client Data:\n"<<_clientData<<std::endl;
+    #ifdef DEBUG
+        std::cout << "Client Data:\n"<<_clientData<<std::endl;
+    #endif
+
     // converting client data to vector
     size_t charArraySize = MAX_REQUESTSIZE;
     _byteVector.clear();
     _byteVector.reserve(charArraySize); // Reserve space to avoid reallocations
     for (size_t k = 0; k < charArraySize; ++k)
         _byteVector.push_back(static_cast<uint8_t>(_clientData[k]));
-
     return bytesRead;
 }
 
 
 void ConnectClients::closeConnection(int *i)
 {
-//    std::cout << "Connection closed by client" << std::endl;
+    Logging::log("Done receiving Data", 200);
     close(_fdList[*i].fd);
     _fdList.erase(_fdList.begin() + *i);
     --*i;
@@ -205,19 +192,14 @@ void ConnectClients::clientConnected()
                             response.deleteFile();
                             break;
                         default:
-                            std::cout << RED"unexpected Error: cant detect HTTPMethod"RESET << std::endl;
+                            Logging::log("cant detect HTTPMethod", 500);
                             break;
                     }
-//                    if (!it->second._isMultiPart)
-//                        closeConnection(&i);
                 }
                 else if (bytesRead == 0)
                     closeConnection(&i);
-//                else
-//                    exitWithError("unexpected error while reading data from client with read()");
-//                if (!it->second._isMultiPart)
-//                    closeConnection(&i);
-
+                else
+                    Logging::log("Unable to read Data from connected Client", 500);
             }
         }
     }
@@ -231,18 +213,19 @@ void ConnectClients::connectClients()
 
     while (69)
     {
+        // poll checks _fdList for read & write events at the same time
+        // poll() ≈ select()
         switch (poll(&_fdList[0], _fdList.size(), -1))
         {
             case -1:
-                exitWithError("Failed to poll [EXIT]");
+                exitWithError("Poll function returned Error [EXIT]");
                 break;
             case 0:
-                std::cout<<YEL". . . waiting"RESET<<std::endl;
+                Logging::log("waiting for client to connect", 200);
                 break;
             default:
                 clientConnected();
                 break;
         }
     }
-    exitWithError("out of poll lop!!!");
 }

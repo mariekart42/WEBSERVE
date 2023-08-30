@@ -2,7 +2,7 @@
 #define RESPONSE_HPP
 
 #include "Request.hpp"
-#include "logging.hpp"
+
 #include "Error.hpp"
 #include <dirent.h>
 #include <vector>
@@ -12,7 +12,7 @@
 
 
 
-#define DEBUG
+
 
 #define DEFAULTWEBPAGE 2001
 #define FILE_SAVED 2012

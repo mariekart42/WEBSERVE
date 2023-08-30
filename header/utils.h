@@ -17,9 +17,14 @@
 #include <arpa/inet.h>
 #include <dirent.h>
 #include <sstream>
+#include <ctime>
 
+
+#include "logging.hpp"
 
 #define FAILURE "FAILURE"
+#define INFO
+#define DEBUG
 
 
 // Colour shit
