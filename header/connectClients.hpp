@@ -9,7 +9,6 @@
 #include <poll.h>       // pollfd struct
 
 
-#define DEBUG
 
 
 #define MAX_USERS 10

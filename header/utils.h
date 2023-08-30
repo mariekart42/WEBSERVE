@@ -24,7 +24,7 @@
 
 #define FAILURE "FAILURE"
 #define INFO
-#define DEBUG
+//#define DEBUG
 
 
 // Colour shit

@@ -23,7 +23,7 @@ int SetServer::getNewServerSocket(int port)
 
     getaddrinfo(0, std::to_string(port).c_str(), &socketAddress, &bindAddress);
 
-    #ifdef INFO
+    #ifdef DEBUG
         std::cout << YEL " . . . Creating Socket"RESET << std::endl;
     #endif
 
@@ -31,7 +31,7 @@ int SetServer::getNewServerSocket(int port)
     if (newServerSocket < 0)
         exitWithError("Socket function returned error [EXIT]");
 
-    #ifdef INFO
+    #ifdef DEBUG
         std::cout << YEL " . . . Binding socket to local address\nSocket: "<< newServerSocket << "" RESET << std::endl;
     #endif
 
@@ -46,7 +46,6 @@ int SetServer::getNewServerSocket(int port)
 
 void SetServer::initServerSocket(int serverSocket)
 {
-    std::cout << YEL " . . . Listening" RESET << std::endl;
     // listen function puts created socket into a passive listening state
     // -> allows server to accept() incoming client connections
     //	  (second arg: how many client connections allowed to queue up)

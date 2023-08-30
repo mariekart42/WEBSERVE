@@ -12,15 +12,15 @@ void Logging::log(const std::string& message, int statusCode)
         exitWithError("Unable to open Logfile [EXIT]");
         return;
     }
-    logFile << " ======= ";
+//    logFile << " ======= ";
     std::time_t currentTime;
     currentTime = std::time(nullptr); // Get current time
     if (statusCode == 200)
     {
-        logFile << message << "  " << std::asctime(std::localtime(&currentTime));
+        logFile << "\n=== "<< std::asctime(std::localtime(&currentTime)) << "=== "<<message<<std::endl;
     }
     else if (statusCode > 200)
-        logFile << "ERROR: "<<message<<"  " << std::asctime(std::localtime(&currentTime));
+        logFile << "\n"<< std::asctime(std::localtime(&currentTime)) << "=== ERROR: "<<message<<std::endl;
 
     logFile.close();
 }

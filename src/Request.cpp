@@ -29,8 +29,6 @@ std::string Request::getFileContentType(const std::string& url)
             return FAILURE;
         return (contentType);
     }
-
-    std::cout << RED"ERROR: is File but can't detect file extension"RESET<<std::endl;
     return FAILURE;
 }
 

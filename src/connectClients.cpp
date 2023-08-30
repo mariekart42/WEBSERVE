@@ -108,10 +108,6 @@ void ConnectClients::initClientInfo(int _clientSocket)
                 initNewInfo._url = FAILURE;
         }
         _clientInfo[_clientSocket] = initNewInfo;
-
-        std::stringstream ss;
-        ss << currentPort;
-        Logging::log(("[Port " + ss.str() + "]  Received Data"), 200);
     }
     else if (it->second._isMultiPart)   // only for multipart!!
     {
@@ -211,6 +207,7 @@ void ConnectClients::connectClients()
 {
     initFdList();
 
+    std::cout << GRN " . . Server ready to connect Clients" RESET << std::endl;
     while (69)
     {
         // poll checks _fdList for read & write events at the same time

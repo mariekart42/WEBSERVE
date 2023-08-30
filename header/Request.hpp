@@ -3,7 +3,6 @@
 
 #include "utils.h"
 
-#define DEBUG
 
 enum httpMethod{
     M_GET,

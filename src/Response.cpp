@@ -147,6 +147,10 @@ void Response::sendIndexPage()
 
 void Response::sendRequestedFile()
 {
+#ifdef INFO
+    std::cout << YEL " . . . Received Data  --  GET  /" <<_info._url<<""RESET<< std::endl;
+#endif
+    Logging::log("Received Data  --  GET  /" + _info._url, 200);
     if (_info._url.empty())
         return (sendIndexPage());
 
@@ -250,7 +254,7 @@ void Response::mySend(int statusCode)
         else if (statusCode == 404)
         {
             _file = readFile(PATH_404_ERRORWEBSITE);
-            std::cout << RED"ERROR: 404 File not found"RESET << std::endl;   // LATER WRITE IN ERROR FILE
+            Logging::log("404 File not found", 404);
         }
         else if (statusCode == 6969)
             _file = readFile(PATH_HANDLEFOLDERSLATER);
@@ -268,6 +272,7 @@ void Response::mySend(int statusCode)
             mySend(404);
     }
     std::string header = getHeader(statusCode);
+    Logging::log("send Data:\n" + header, 200);
 
     send(_info._clientSocket, header.c_str(), header.size(), 0);
     send(_info._clientSocket, (std::string(_file.begin(), _file.end())).c_str(), _file.size(), 0);
