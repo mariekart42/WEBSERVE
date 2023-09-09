@@ -79,6 +79,8 @@ void ConnectClients::initClientInfo(int _clientSocket)
         MarieConfigParser config;
 
         int currentPort = request.getPort();
+
+        // httpMethod getHTTP(myHHTTP, Port, Url);
         initNewInfo._myHTTPMethod = request.getHTTPMethod();
         initNewInfo._clientSocket = _clientSocket;
         initNewInfo._url = config.getUrl(currentPort,request.getUrlString());
@@ -188,6 +190,7 @@ void ConnectClients::clientConnected()
                             response.deleteFile();
                             break;
                         default:
+
                             Logging::log("cant detect HTTPMethod", 500);
                             break;
                     }
