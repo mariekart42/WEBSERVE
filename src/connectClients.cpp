@@ -175,7 +175,7 @@ void ConnectClients::clientConnected()
                 {
                     initClientInfo(CURRENT_FD);
                     it = _clientInfo.find(CURRENT_FD);
-                    Response response(_byteVector, CURRENT_FD, it->second._url, it->second);
+                    Response response(CURRENT_FD, it->second);
 
                     switch (it->second._myHTTPMethod) {
                         case M_GET:

@@ -95,6 +95,13 @@ std::string Request::getNewFilename(const std::string& checkFilename, const std:
     return (filename + "(" + std::to_string(fileCount) + ")"+ fileExtension);
 }
 
+//bool Request::badFileContentType(const std::string &filename)
+//{
+//    // check with existing filen
+//    std::string contentType = comparerContentType(filename);
+//    if (contentType == "FAILURE")
+//        return FAILURE;
+//}
 
 /* only for POST && multipart
  * extracts the filename defined in the header of the body      */
@@ -123,6 +130,8 @@ std::string Request::getFileName(const std::string& contentType, const std::stri
                 #ifdef DEBUG
                     std::cout << GRN"DEBUG: filename: " << fileName << ""RESET<< std::endl;
                 #endif
+                if (getFileContentType(fileName) == FAILURE)
+                    return BAD_CONTENT_TYPE;
                 return fileName;
             }
             #ifdef DEBUG

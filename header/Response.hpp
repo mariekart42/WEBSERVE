@@ -23,6 +23,7 @@
 #define FORBIDDEN 4035
 #define ERROR_INDEXFILE 4036
 #define DIRECTORY_LIST 2007
+#define BAD_REQUEST 4008
 
 #define POLL_TIMEOUT 200
 #define MAX_REQUESTSIZE 8000         // max for recv() is 1048576 bytes
@@ -34,7 +35,7 @@
 #define PATH_404_ERRORWEBSITE "error/404.html"
 #define PATH_ERROR_INDEXFILE "error/PATH_ERROR_INDEXFILE.html"
 #define PATH_FORBIDDEN "error/403.html"
-
+#define PATH_BAD_REQUEST "error/400.html"
 #define PATH_HANDLEFOLDERSLATER "error/handleFoldersLater.html"// delete later
 
 
@@ -93,7 +94,8 @@ class Response
         std::map<int, std::ofstream> _fileStreams;
 
     public:
-        Response(const std::vector<uint8_t>&, int, const std::string&, const clientInfo&);
+//        Response(const std::vector<uint8_t>&, int, const std::string&, const clientInfo&);
+        Response(int, const clientInfo&);
         ~Response();
 
 
@@ -107,7 +109,7 @@ class Response
         std::string decodeURL(const std::string&);
 
         std::string generateList(const std::string &, const std::string&);
-        std::string generateList2(const std::string &);
+//        std::string generateList2(const std::string &);
 //    void generateList(const std::string& rootFolder, const std::string& currentFolder, std::string& filePaths, int);
 
 
@@ -116,7 +118,9 @@ class Response
         // POST
         void sendRequestedFile();
         bool uploadFile(const std::string&, const std::string&, std::ofstream*);
+//        bool uploadFile(std::ofstream*);
         bool saveRequestToFile(std::ofstream&, const std::string&);
+        bool savedDataToFile(std::ofstream &, const std::string&);
         void urlDecodedInput();
 
         // DELETE

@@ -7,14 +7,19 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
-Response::Response(const std::vector<uint8_t>& input, int clientSocket, const std::string& url, const clientInfo& cInfo):
+//Response::Response(const std::vector<uint8_t>& input, int clientSocket, const std::string& url, const clientInfo& cInfo):
+//        _info(cInfo)
+//{
+//    _info._postInfo._input = input;
+//    _info._clientSocket = clientSocket;
+//    _info._statusCode = 200;
+//    _info._url = url;
+//}
+
+Response::Response(int clientSocket, const clientInfo& cInfo):
         _info(cInfo)
 {
-    _info._postInfo._input = input;
     _info._clientSocket = clientSocket;
-    _info._statusCode = 200;
-    _info._url = url;
-
 }
 
 Response::~Response()
@@ -23,20 +28,24 @@ Response::~Response()
 
 void Response::deleteFile()
 {
-    if (_info._configInfo._indexFile.empty() && _info._configInfo._autoIndex == true)
+    #ifdef INFO
+        std::cout << RED " . . . Received Data  --  DELETE  /" <<_info._url<<""RESET<< std::endl;
+    #endif
+    Logging::log("Received Data  --  DELETE  /" + _info._url, 200);
+
+    if (_info._configInfo._indexFile.empty() && _info._configInfo._autoIndex)
     {
         if (std::remove((UPLOAD_FOLDER + _info._url).c_str()) != 0)
-            mySend(FORBIDDEN);
-        else
-            mySend(FILE_DELETED);
+            return (mySend(FORBIDDEN));
+        return (mySend(FILE_DELETED));
     }
     else
     {
         if (_info._url == FAILURE)
-            mySend(FILE_DELETED_FAIL);
+            return (mySend(FILE_DELETED_FAIL));
         if (std::remove((UPLOAD_FOLDER + _info._url).c_str()) != 0)
-            mySend(FORBIDDEN);
-        mySend(FILE_DELETED);
+            return (mySend(FORBIDDEN));
+        return (mySend(FILE_DELETED));
     }
 }
 
@@ -162,25 +171,24 @@ void Response::sendRequestedFile()
         else if (IS_FILE)
         {
             if (_info._url == ".DS_Store"){
-                mySend(FORBIDDEN);
+                return (mySend(FORBIDDEN));
             }
             else
             {
                 _file = readFile(_info._configInfo._rootFolder + _info._url);
                 if (_file.empty())   // if file doesn't exist
-                    mySend(404);
-                mySend(200);
+                    return (mySend(404));
+                return (mySend(200));
             }
         }
         else
         {
-            mySend(500);
             Logging::log("ERROR: unexpected Error in sendRequestedFile()", 500);
-//            std::cout << RED"ERROR: unexpected Error in sendRequestedFile()"RESET << std::endl;   // LATER WRITE IN ERROR FILE
+            return (mySend(500));
         }
     }
     else
-        mySend(404);
+        return (mySend(404));
 }
 
 
@@ -248,6 +256,11 @@ void Response::mySend(int statusCode)
         {
             statusCode = 404;
             _file = readFile(PATH_ERROR_INDEXFILE);
+        }
+        else if (statusCode == BAD_REQUEST)
+        {
+            statusCode = 400;
+            _file = readFile(PATH_BAD_REQUEST);
         }
         else if (statusCode == 500)
             _file = readFile(PATH_500_ERRORWEBSITE);
@@ -321,8 +334,6 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
 
 // v v v  POST  v v v
 
-
-
 bool Response::uploadFile(const std::string& contentType, const std::string& boundary, std::ofstream *outfile)
 {
     if (contentType == "multipart/form-data")
@@ -331,30 +342,35 @@ bool Response::uploadFile(const std::string& contentType, const std::string& bou
         urlDecodedInput();
     return false;
 }
+//
+//bool Response::uploadFile(std::ofstream *outfile)
+//{
+//    if (_info._contentType == "multipart/form-data")
+//        return saveRequestToFile(*outfile, _info._postInfo._boundary);
+//    else if (_info._contentType == "application/x-www-form-urlencoded")
+//        urlDecodedInput();
+//    return false;
+//}
 
 
-bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boundary)
+bool Response::savedDataToFile(std::ofstream &outfile, const std::string& boundary)
 {
     std::string convert(_info._postInfo._input.begin(), _info._postInfo._input.end());
     std::string startBoundary = "--"+boundary+"\r\n";
     std::string endBoundary = "\r\n--"+boundary+"--";
     std::vector<uint8_t>::iterator startPos69 = _info._postInfo._input.begin();
     std::vector<uint8_t>::iterator endPos69 = _info._postInfo._input.end();
-    bool endOfFile = false;
-
     size_t posStartBoundary = convert.find(startBoundary);
     size_t posEndBoundary = convert.find(endBoundary);
+    bool endOfFile = false;
 
     if (NO_DATA_TO_UPLOAD)
         return true;
-
     if (posStartBoundary != std::string::npos)  // cut header and put stuff afterward to outfile
     {
         size_t bodyPos = convert.find("\r\n\r\n", (posStartBoundary + startBoundary.size() + 2)) + 4;
-
         if (bodyPos == std::string::npos)   // not the beginning of body content
             return true;
-
         startPos69 += bodyPos;
         if (posEndBoundary != std::string::npos)    // found last boundary
         {
@@ -370,11 +386,27 @@ bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boun
     std::vector<uint8_t>::iterator it;
     for (it = startPos69; it != endPos69; it++)
         outfile << *it;
-    if (endOfFile)
+    return endOfFile;
+}
+
+
+bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boundary)
+{
+    #ifdef INFO
+        std::cout << BLU " . . . Received Data  --  POST  /" <<_info._url<<""RESET<< std::endl;
+    #endif
+    Logging::log("Received Data  --  POST  /" + _info._url, 200);
+
+
+    if (savedDataToFile(outfile, boundary))
     {
         outfile.close();
-        mySend(FILE_SAVED);
-        return false;
+        if (_info._postInfo._filename == BAD_CONTENT_TYPE)//;
+        {
+            std::remove((_info._configInfo._rootFolder+ _info._url + "/"+ _info._postInfo._filename).c_str());
+            return mySend(BAD_REQUEST), false;
+        }
+        return mySend(FILE_SAVED), false;
     }
     return true;
 }
