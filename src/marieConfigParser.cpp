@@ -10,6 +10,10 @@ std::vector<int> MarieConfigParser::getPortVector()
     tmpPortVector.push_back(PORT2);
     tmpPortVector.push_back(PORT3);
     tmpPortVector.push_back(PORT4);
+    std::cout << " . . . " << PORT1<< std::endl;
+    std::cout << " . . . "<< PORT2 << std::endl;
+    std::cout << " . . . "<< PORT3 << std::endl;
+    std::cout << " . . . "<< PORT4 << std::endl;
     return tmpPortVector;
 }
 

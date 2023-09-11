@@ -279,7 +279,6 @@ void Response::mySend(int statusCode)
     }
     else
     {
-//        // can't find file extension
        _info._fileContentType = getContentType();
         if (_info._fileContentType == FAILURE)
             mySend(404);
@@ -319,11 +318,8 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
             (std::istreambuf_iterator<char>(file)),
             std::istreambuf_iterator<char>()
     );
-
     return content;
 }
-
-
 
 
 
@@ -334,6 +330,8 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
 
 // v v v  POST  v v v
 
+
+
 bool Response::uploadFile(const std::string& contentType, const std::string& boundary, std::ofstream *outfile)
 {
     if (contentType == "multipart/form-data")
@@ -342,19 +340,14 @@ bool Response::uploadFile(const std::string& contentType, const std::string& bou
         urlDecodedInput();
     return false;
 }
-//
-//bool Response::uploadFile(std::ofstream *outfile)
-//{
-//    if (_info._contentType == "multipart/form-data")
-//        return saveRequestToFile(*outfile, _info._postInfo._boundary);
-//    else if (_info._contentType == "application/x-www-form-urlencoded")
-//        urlDecodedInput();
-//    return false;
-//}
 
-
-bool Response::savedDataToFile(std::ofstream &outfile, const std::string& boundary)
+bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boundary)
 {
+    #ifdef INFO
+        std::cout << BLU " . . . Received Data  --  POST  /" <<_info._url<<""RESET<< std::endl;
+    #endif
+    Logging::log("Received Data  --  POST  /" + _info._url, 200);
+
     std::string convert(_info._postInfo._input.begin(), _info._postInfo._input.end());
     std::string startBoundary = "--"+boundary+"\r\n";
     std::string endBoundary = "\r\n--"+boundary+"--";
@@ -366,6 +359,7 @@ bool Response::savedDataToFile(std::ofstream &outfile, const std::string& bounda
 
     if (NO_DATA_TO_UPLOAD)
         return true;
+
     if (posStartBoundary != std::string::npos)  // cut header and put stuff afterward to outfile
     {
         size_t bodyPos = convert.find("\r\n\r\n", (posStartBoundary + startBoundary.size() + 2)) + 4;
@@ -386,22 +380,11 @@ bool Response::savedDataToFile(std::ofstream &outfile, const std::string& bounda
     std::vector<uint8_t>::iterator it;
     for (it = startPos69; it != endPos69; it++)
         outfile << *it;
-    return endOfFile;
-}
 
-
-bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boundary)
-{
-    #ifdef INFO
-        std::cout << BLU " . . . Received Data  --  POST  /" <<_info._url<<""RESET<< std::endl;
-    #endif
-    Logging::log("Received Data  --  POST  /" + _info._url, 200);
-
-
-    if (savedDataToFile(outfile, boundary))
+    if (endOfFile)
     {
         outfile.close();
-        if (_info._postInfo._filename == BAD_CONTENT_TYPE)//;
+        if (_info._postInfo._filename == BAD_CONTENT_TYPE)
         {
             std::remove((_info._configInfo._rootFolder+ _info._url + "/"+ _info._postInfo._filename).c_str());
             return mySend(BAD_REQUEST), false;
@@ -410,5 +393,3 @@ bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boun
     }
     return true;
 }
-
-

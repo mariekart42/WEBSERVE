@@ -77,8 +77,6 @@ struct clientInfo
     std::string _fileContentType;
     std::string _contentType;
     bool _isMultiPart;
-//    std::string _directoryIndexString;
-//    bool _directoryIndex;
 
     int _statusCode;
     postInfo _postInfo;
@@ -94,7 +92,6 @@ class Response
         std::map<int, std::ofstream> _fileStreams;
 
     public:
-//        Response(const std::vector<uint8_t>&, int, const std::string&, const clientInfo&);
         Response(int, const clientInfo&);
         ~Response();
 
@@ -115,18 +112,15 @@ class Response
 
         int getDirectoryIndexPage(const std::string&);
         void sendIndexPage();
+
         // POST
         void sendRequestedFile();
         bool uploadFile(const std::string&, const std::string&, std::ofstream*);
-//        bool uploadFile(std::ofstream*);
         bool saveRequestToFile(std::ofstream&, const std::string&);
-        bool savedDataToFile(std::ofstream &, const std::string&);
         void urlDecodedInput();
 
         // DELETE
         void deleteFile();
-
- std::string GenerateDownloadPathMappingString( std::string rootFolder, const std::string& directoryPath);
 
 };
 

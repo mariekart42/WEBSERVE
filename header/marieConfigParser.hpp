@@ -4,7 +4,7 @@
 #include "utils.h"
 
 // DON'T USE!! it's for me for testing
-#define PORT1 1111
+#define PORT1 1010
 #define PORT2 2222
 #define PORT3 3333
 #define PORT4 4444
