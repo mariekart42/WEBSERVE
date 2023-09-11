@@ -7,7 +7,6 @@ SetServer::SetServer()
 
 SetServer::~SetServer()
 {
-//    close(_serverSocket);
 }
 
 
@@ -22,23 +21,23 @@ int SetServer::getNewServerSocket(int port)
     socketAddress.ai_socktype = SOCK_STREAM;  // TCP socket
     socketAddress.ai_flags = AI_PASSIVE;      // any available network interface
 
-    // getaddrinfo() generates address that's suitable for bind()
-    getaddrinfo(0, std::to_string(port).c_str(), &socketAddress, &bindAddress);// worked
-//std::string hostname = "newName";
-//    int error = getaddrinfo("www.mama.net", "http", &socketAddress, &bindAddress);
-//    if (error != 0)
-//        exitWithError("unable to getaddrinfo");
+    getaddrinfo(0, std::to_string(port).c_str(), &socketAddress, &bindAddress);
 
-    std::cout << YEL " . . . Creating Socket"RESET << std::endl;
+    #ifdef DEBUG
+        std::cout << YEL " . . . Creating Socket"RESET << std::endl;
+    #endif
 
     newServerSocket = socket(bindAddress->ai_family, bindAddress->ai_socktype, bindAddress->ai_protocol);	 // domain, type, protocol
     if (newServerSocket < 0)
-        exitWithError("Cannot create socket");
-    std::cout << YEL " . . . Binding socket to local address\nSocket: "<< newServerSocket << "" RESET << std::endl;
+        exitWithError("Socket function returned error [EXIT]");
+
+    #ifdef DEBUG
+        std::cout << YEL " . . . Binding socket to local address\nSocket: "<< newServerSocket << "" RESET << std::endl;
+    #endif
 
     // binds specify address and port to "mySocket"
     if (bind(newServerSocket, bindAddress->ai_addr, bindAddress->ai_addrlen) < 0)
-        exitWithError("Cannot connect socket to address, Port already in use");
+        exitWithError("Failed to connect, Port already in use [EXIT]");
     freeaddrinfo(bindAddress);
 
     return (newServerSocket);
@@ -47,12 +46,11 @@ int SetServer::getNewServerSocket(int port)
 
 void SetServer::initServerSocket(int serverSocket)
 {
-    std::cout << YEL " . . . Listening" RESET << std::endl;
     // listen function puts created socket into a passive listening state
     // -> allows server to accept() incoming client connections
     //	  (second arg: how many client connections allowed to queue up)
     if (listen(serverSocket, 10) < 0)
-        exitWithError("Socket listen failed");
+        exitWithError("Listen function failed [EXIT]");
 }
 
 
@@ -78,8 +76,6 @@ std::vector<int> SetServer::setUpServer()
         serverSockets.push_back(newServerSocket);
     }
 
-//    ConnectClients obj(serverSockets);
-//    obj.connectClients();
     return serverSockets;
 }
 

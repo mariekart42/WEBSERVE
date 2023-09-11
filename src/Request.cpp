@@ -29,8 +29,6 @@ std::string Request::getFileContentType(const std::string& url)
             return FAILURE;
         return (contentType);
     }
-
-    std::cout << RED"ERROR: is File but can't detect file extension"RESET<<std::endl;
     return FAILURE;
 }
 
@@ -55,20 +53,22 @@ bool Request::checkPathInFolder(const std::string& filePath, const std::string& 
 }
 
 
-// this fu
 bool Request::fileExists(const std::string& checkFilename, const std::string& uploadFolder)
 {
     const std::string& filename = checkFilename;
 
     DIR* dir = opendir(uploadFolder.c_str());
-    if (dir == nullptr) {
-        std::cerr << "Error opening directory: " << strerror(errno) << std::endl;
+    if (dir == nullptr)
+    {
+        Logging::log("Failed to open directory", 500);
         return false;
     }
 
     struct dirent* entry;
-    while ((entry = readdir(dir)) != nullptr) {
-        if (strcmp(entry->d_name, filename.c_str()) == 0) {
+    while ((entry = readdir(dir)) != nullptr)
+    {
+        if (strcmp(entry->d_name, filename.c_str()) == 0)
+        {
             closedir(dir);
             return true;
         }
@@ -84,7 +84,7 @@ std::string Request::getNewFilename(const std::string& checkFilename, const std:
     size_t lastDotPos = checkFilename.rfind('.'); // Find the last dot position
 
     if (lastDotPos == std::string::npos) // If dot is found
-        exitWithError("unexpected Error: could not getNewFilename");
+        exitWithError("unexpected Error: could not getNewFilename [EXIT]");
 
     std::string filename = checkFilename.substr(0, lastDotPos); // Take substring up to the last dot
     std::string fileExtension = checkFilename.substr(lastDotPos, checkFilename.size());
@@ -95,6 +95,13 @@ std::string Request::getNewFilename(const std::string& checkFilename, const std:
     return (filename + "(" + std::to_string(fileCount) + ")"+ fileExtension);
 }
 
+//bool Request::badFileContentType(const std::string &filename)
+//{
+//    // check with existing filen
+//    std::string contentType = comparerContentType(filename);
+//    if (contentType == "FAILURE")
+//        return FAILURE;
+//}
 
 /* only for POST && multipart
  * extracts the filename defined in the header of the body      */
@@ -123,6 +130,8 @@ std::string Request::getFileName(const std::string& contentType, const std::stri
                 #ifdef DEBUG
                     std::cout << GRN"DEBUG: filename: " << fileName << ""RESET<< std::endl;
                 #endif
+                if (getFileContentType(fileName) == FAILURE)
+                    return BAD_CONTENT_TYPE;
                 return fileName;
             }
             #ifdef DEBUG
@@ -206,10 +215,7 @@ std::string Request::getUrlString()
         return (_tmp.substr(startPos, endPos - (startPos)));
     }
     else
-    {// error?
-        exitWithError("debug::url not found[EXIT]");
         return (_tmp.substr(startPos));// dis was before
-    }
 }
 
 int Request::getPort()
@@ -227,7 +233,7 @@ int Request::getPort()
         return atoi(resultStr.c_str());
     }
     else
-        exitWithError("unexpected Error: unable to extract Port from request");
+        exitWithError("unable to extract Port from request [EXIT]");
     return -1;
 }
 
