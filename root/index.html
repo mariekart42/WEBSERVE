@@ -5,52 +5,51 @@
 <!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
 <!--    <link rel="stylesheet" href="styles/styles.css">-->
 <!--    <title>Welcome to Upload all u want</title>-->
-<!--    <script src="scripts/deleteScript.js"></script>-->
 <!--</head>-->
-<!--    <body>-->
-<!--        <div class="background-image"></div>-->
-<!--        <div class="content">-->
-<!--            <h1>Welcome to Upload All You Want</h1>-->
+<!--<body>-->
 
-<!--            <div class="form-section"><br>-->
-<!--                <h3> Upload File</h3>-->
-<!--                <form class="upload-form" action="/upload" method="post" enctype="multipart/form-data">-->
-<!--                    <input type="file" id="everything" name="evr" class="file-input">-->
-<!--                    <button type="submit" class="submit-button">Upload</button>-->
-<!--                </form>-->
-<!--            </div>-->
+<!--<div class="background-image"></div>-->
+<!--    <div class="content">-->
+<!--        <h1>Welcome to Upload All You Want</h1>-->
 
-
-<!--&lt;!&ndash; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * &ndash;&gt;-->
-<!--&lt;!&ndash;test that proofs that UNKNOWN requests should not result in a crash [PUT] &ndash;&gt;-->
-<!--&lt;!&ndash;    <div class="form-section"><h3>Test PUT method</h3>&ndash;&gt;-->
-<!--&lt;!&ndash;    <input type="text" id="data" class="text-input" placeholder="Enter data">&ndash;&gt;-->
-<!--&lt;!&ndash;    <button id="submitButton" class="submit-button">Submit PUT Request</button></div><script>&ndash;&gt;-->
-<!--&lt;!&ndash;    document.getElementById("submitButton").addEventListener("click", function () {const data = document.getElementById("data").value;&ndash;&gt;-->
-<!--&lt;!&ndash;    // Make a PUT request using the Fetch API&ndash;&gt;-->
-<!--&lt;!&ndash;    fetch(`http://${hostname}:${port}/${encodeURIComponent(filePath)}`, {method: "PUT", body: JSON.stringify({ data }), // Convert data to JSON&ndash;&gt;-->
-<!--&lt;!&ndash;    headers: {"Content-Type": "application/json",},})&ndash;&gt;-->
-<!--&lt;!&ndash;    .then((response) => response.json())&ndash;&gt;-->
-<!--&lt;!&ndash;    .then((result) => {console.log("Response from server:", result);})&ndash;&gt;-->
-<!--&lt;!&ndash;    .catch((error) => {console.error("Error:", error);});});</script>&ndash;&gt;-->
-<!--&lt;!&ndash; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * &ndash;&gt;-->
+<!--    <div class="form-section"><br>-->
+<!--        <h3> Upload File</h3>-->
+<!--        <form class="upload-form" action="/upload" method="post" enctype="multipart/form-data">-->
+<!--            <input type="file" id="everything" name="evr" class="file-input">-->
+<!--            <button type="submit" class="submit-button">Upload</button>-->
+<!--        </form>-->
+<!--    </div>-->
 
 
-<!--            <div class="form-section"><br><br>-->
-<!--                <h3>Delete File</h3>-->
-<!--                <form id="deleteForm" class="delete-form">-->
-<!--                    <label for="filePath" class="file-label">Enter File:</label>-->
-<!--                    <input type="text" id="filePath" name="filePath" class="file-input" required>-->
-<!--                    <button type="button" id="deleteButton" class="delete-button">Delete</button>-->
-<!--                    <p id="resultMessage" class="result-message"></p>-->
-<!--                </form>-->
-<!--                <script src="scripts/deleteScript.js"></script>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </body>-->
+<!--        &lt;!&ndash; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * &ndash;&gt;-->
+<!--        &lt;!&ndash;test that proofs that UNKNOWN requests should not result in a crash [PUT] &ndash;&gt;-->
+<!--            <div class="form-section"><h3>Test PUT method</h3>-->
+<!--            <input type="text" id="data" class="text-input" placeholder="Enter data">-->
+<!--            <button id="submitButton" class="submit-button">Submit PUT Request</button></div><script>-->
+<!--            document.getElementById("submitButton").addEventListener("click", function () {const data = document.getElementById("data").value;-->
+<!--            // Make a PUT request using the Fetch API-->
+<!--            fetch(`http://${hostname}:${port}/${encodeURIComponent(filePath)}`, {method: "PUT", body: JSON.stringify({ data }), // Convert data to JSON-->
+<!--            headers: {"Content-Type": "application/json",},})-->
+<!--            .then((response) => response.json())-->
+<!--            .then((result) => {console.log("Response from server:", result);})-->
+<!--            .catch((error) => {console.error("Error:", error);});});</script>-->
+<!--        &lt;!&ndash; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * &ndash;&gt;-->
+
+
+<!--    <div class="form-section"><br><br>-->
+<!--        <h3>Delete File</h3>-->
+<!--        <form id="deleteForm" class="delete-form">-->
+<!--            <label for="filePath" class="file-label">Enter File:</label>-->
+<!--            <input type="text" id="filePath" name="filePath" class="file-input" required>-->
+<!--            <button type="button" id="deleteButton" class="delete-button">Delete</button>-->
+<!--            <p id="resultMessage" class="result-message"></p>-->
+<!--        </form>-->
+<!--&lt;!&ndash;    <script src="scripts/script.js"></script>&ndash;&gt;-->
+<!--        <script src="scripts/deleteScript.js"></script>-->
+<!--    </div>-->
+<!--</div>-->
+<!--</body>-->
 <!--</html>-->
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -62,8 +61,8 @@
 </head>
 <body>
 <div class="background-image"></div>
-    <div class="content">
-        <h1>Welcome to Upload All You Want</h1>
+<div class="content">
+    <h1>Welcome to Upload All You Want</h1>
 
     <div class="form-section"><br>
         <h3> Upload File</h3>
@@ -72,22 +71,6 @@
             <button type="submit" class="submit-button">Upload</button>
         </form>
     </div>
-
-
-        <!--&lt;!&ndash; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * &ndash;&gt;-->
-        <!--&lt;!&ndash;test that proofs that UNKNOWN requests should not result in a crash [PUT] &ndash;&gt;-->
-<!--            <div class="form-section"><h3>Test PUT method</h3>-->
-<!--            <input type="text" id="data" class="text-input" placeholder="Enter data">-->
-<!--            <button id="submitButton" class="submit-button">Submit PUT Request</button></div><script>-->
-<!--            document.getElementById("submitButton").addEventListener("click", function () {const data = document.getElementById("data").value;-->
-<!--            // Make a PUT request using the Fetch API-->
-<!--            fetch(`http://${hostname}:${port}/${encodeURIComponent(filePath)}`, {method: "PUT", body: JSON.stringify({ data }), // Convert data to JSON-->
-<!--            headers: {"Content-Type": "application/json",},})-->
-<!--            .then((response) => response.json())-->
-<!--            .then((result) => {console.log("Response from server:", result);})-->
-<!--            .catch((error) => {console.error("Error:", error);});});</script>-->
-        <!--&lt;!&ndash; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * &ndash;&gt;-->
-
 
     <div class="form-section"><br><br>
         <h3>Delete File</h3>

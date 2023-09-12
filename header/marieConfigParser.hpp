@@ -7,7 +7,7 @@
 #define PORT1 1010
 #define PORT2 2020
 #define PORT3 3030
-#define PORT4 4444
+#define PORT4 4040
 
 #define CLIENT_BODY 8000
 #define ROOT_FOLDER "root/"
@@ -15,7 +15,7 @@
 #define INDEX_FILE "index.html"
 #define POST_ALLOWED true
 #define GET_ALLOWED true
-#define DELETE_ALLOWED true
+#define DELETE_ALLOWED false
 // -----------------------------------
 
 

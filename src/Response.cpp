@@ -33,8 +33,8 @@ void Response::deleteFile()
     #endif
     Logging::log("Received Data  --  DELETE  /" + _info._url, 200);
 
-//    if (!_info._configInfo._deleteAllowed)
-//        return mySend(METHOD_NOT_ALLOWED);
+    if (!_info._configInfo._deleteAllowed)
+        return mySend(METHOD_NOT_ALLOWED);
     if (_info._configInfo._indexFile.empty() && _info._configInfo._autoIndex)
     {
         if (std::remove((UPLOAD_FOLDER + _info._url).c_str()) != 0)
@@ -268,7 +268,7 @@ void Response::mySend(int statusCode)
         }
         else if (statusCode == METHOD_NOT_ALLOWED)
         {
-            statusCode = 405;
+            statusCode = 405;// 405!!!
             _file = readFile(PATH_METHOD_NOT_ALLOWED);
         }
         else if (statusCode == 500)

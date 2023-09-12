@@ -17,12 +17,14 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="05726d74-3e7a-4bfb-b43b-4df32fa81e24" name="Changes" comment="more log">
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    <list default="true" id="05726d74-3e7a-4bfb-b43b-4df32fa81e24" name="Changes" comment="delete method works again">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/header/marieConfigParser.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/header/marieConfigParser.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/log/log.log" beforeDir="false" afterPath="$PROJECT_DIR$/log/log.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/root/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/root/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/root/scripts/deleteScript.js" beforeDir="false" afterPath="$PROJECT_DIR$/root/scripts/deleteScript.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/root/scripts/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/root/scripts/script.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Response.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Response.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -177,7 +179,7 @@
       <workItem from="1694182487155" duration="3098000" />
       <workItem from="1694255775161" duration="131000" />
       <workItem from="1694257496023" duration="8533000" />
-      <workItem from="1694527029489" duration="2955000" />
+      <workItem from="1694527029489" duration="7556000" />
     </task>
     <task id="LOCAL-00001" summary="check application, audio and font, everything else works :))">
       <created>1692823969394</created>
@@ -256,7 +258,14 @@
       <option name="project" value="LOCAL" />
       <updated>1693399095794</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="delete method works again">
+      <created>1694530691996</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1694530691996</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -319,7 +328,8 @@
     <MESSAGE value="cleaning" />
     <MESSAGE value="started implementing log" />
     <MESSAGE value="more log" />
-    <option name="LAST_COMMIT_MESSAGE" value="more log" />
+    <MESSAGE value="delete method works again" />
+    <option name="LAST_COMMIT_MESSAGE" value="delete method works again" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -348,6 +358,26 @@
           <url>file://$PROJECT_DIR$/src/connectClients.cpp</url>
           <line>193</line>
           <option name="timeStamp" value="25" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/Response.cpp</url>
+          <line>35</line>
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/Response.cpp</url>
+          <line>127</line>
+          <option name="timeStamp" value="27" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/Request.cpp</url>
+          <line>46</line>
+          <option name="timeStamp" value="28" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/Response.cpp</url>
+          <line>268</line>
+          <option name="timeStamp" value="29" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

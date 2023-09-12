@@ -12,9 +12,12 @@ document.getElementById("deleteButton").addEventListener("click", function() {
         })
             .then(response => {
                 if (response.ok)
-                    resultMessage.textContent = " 🔥 File deleted successfully";
+                    resultMessage.textContent = " 🔥  File deleted successfully";
+                else if (response.status === 405) {
+                    resultMessage.textContent = " ❌  Delete Method not allowed!"
+                }
                 else {
-                    resultMessage.textContent = " 🥴 Error, file does not exist";
+                    resultMessage.textContent = " 🥴  Error, file does not exist";
                 }
             })
             .catch(error => {
