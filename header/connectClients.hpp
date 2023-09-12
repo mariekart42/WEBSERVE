@@ -13,7 +13,7 @@
 
 #define MAX_USERS 10
 #define DATA_TO_READ (_fdList[i].revents & POLLIN)
-#define CURRENT_FD (_fdList[i].fd)
+//#define CURRENT_FD (_fdList[i].fd)
 
 
 class ConnectClients
@@ -44,6 +44,7 @@ class ConnectClients
         void closeConnection(int*);
 
         bool newConnection(int);
+        void handleData(int);
 };
 
 #endif

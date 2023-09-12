@@ -3,22 +3,15 @@ const hostname = window.location.hostname;
 const port = window.location.port;
 filePaths.forEach(filePath => {
     const fileItem = document.createElement("div");
-    fileItem.className = "file-item"; // Add the "file-item" class
+    fileItem.className = "file-item";
 
     const fileLink = document.createElement("a");
     fileLink.href = filePath;
     fileLink.textContent = filePath;
     fileLink.className = "file-link";
 
-
-    // Here you can set the href attribute to a different variable
-    // Let's assume your different variable is named 'downloadPath'
-    // const downloadPath = filePath;
-    // fileLink.href = downloadPath;
-
-
     const spacer = document.createElement("span");
-    spacer.className = "spacer"; // Apply spacer class
+    spacer.className = "spacer";
 
     const deleteButton = document.createElement("button");
     deleteButton.className = "delete-button";
@@ -41,34 +34,29 @@ filePaths.forEach(filePath => {
 
 function confirmDelete(filePath) {
     const confirmation = confirm(`Are you sure you want to delete the file at path: ${filePath}?`);
-    if (confirmation)
-    {
-        fetch(`http://${hostname}:${port}/${customEncodeURIComponent(filePath)}`,
-            {
+    if (confirmation) {
+        fetch(`http://${hostname}:${port}/${customEncodeURIComponent(filePath)}`, {
             method: "DELETE"
         })
-            .then(response =>
-            {
-                const resultMessage = document.querySelector(`[href="${filePath}"]`).nextSibling;
-                if (response.ok) {
-                    resultMessage.textContent = "File deleted successfully";
-                    resultMessage.classList.add("success"); // Apply the success class
-                } else if (response.status === 403) {
-                    resultMessage.textContent = "Sowwy, mom said no";
-                    resultMessage.classList.add("permission-denied");
-                } else if (response.status === 405){
-                    resultMessage.textContent = "Delete Method not allowed!";
-                    resultMessage.classList.add("error");
-                } else{
-                    resultMessage.textContent = "Error, file does not exist";
-                    resultMessage.classList.add("error"); // Apply the error class
-                }
-            })
-            .catch(error =>
-            {
-                console.error("An error occurred:", error);
-            });
-
+        .then(response => {
+            const resultMessage = document.querySelector(`[href="${filePath}"]`).nextSibling;
+            if (response.ok) {
+                resultMessage.textContent = "File deleted successfully";
+                resultMessage.classList.add("success"); // Apply the success class
+            } else if (response.status === 403) {
+                resultMessage.textContent = "Sowwy, mom said no";
+                resultMessage.classList.add("permission-denied");
+            } else if (response.status === 405){
+                resultMessage.textContent = "Delete Method not allowed!";
+                resultMessage.classList.add("error");
+            } else{
+                resultMessage.textContent = "Error, file does not exist";
+                resultMessage.classList.add("error"); // Apply the error class
+            }
+        })
+        .catch(error => {
+            console.error("An error occurred:", error);
+        });
     }
 }
 

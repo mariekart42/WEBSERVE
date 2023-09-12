@@ -15,8 +15,7 @@ document.getElementById("deleteButton").addEventListener("click", function() {
                     resultMessage.textContent = " 🔥  File deleted successfully";
                 else if (response.status === 405) {
                     resultMessage.textContent = " ❌  Delete Method not allowed!"
-                }
-                else {
+                } else {
                     resultMessage.textContent = " 🥴  Error, file does not exist";
                 }
             })
