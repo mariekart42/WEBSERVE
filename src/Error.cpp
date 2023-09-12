@@ -16,6 +16,7 @@ void ErrorResponse::initializeErrorMessages()
     errorMessages[400] = "Bad Request";
     errorMessages[403] = "Forbidden";
     errorMessages[404] = "Not Found";
+    errorMessages[405] = "Method not allowed";
     errorMessages[409] = "Conflict";
     errorMessages[500] = "Internal Server Error";
 }

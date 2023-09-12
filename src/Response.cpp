@@ -33,6 +33,8 @@ void Response::deleteFile()
     #endif
     Logging::log("Received Data  --  DELETE  /" + _info._url, 200);
 
+//    if (!_info._configInfo._deleteAllowed)
+//        return mySend(METHOD_NOT_ALLOWED);
     if (_info._configInfo._indexFile.empty() && _info._configInfo._autoIndex)
     {
         if (std::remove((UPLOAD_FOLDER + _info._url).c_str()) != 0)
@@ -160,6 +162,8 @@ void Response::sendRequestedFile()
     std::cout << YEL " . . . Received Data  --  GET  /" <<_info._url<<""RESET<< std::endl;
 #endif
     Logging::log("Received Data  --  GET  /" + _info._url, 200);
+    if (!_info._configInfo._getAllowed)
+        return (mySend(METHOD_NOT_ALLOWED));
     if (_info._url.empty())
         return (sendIndexPage());
 
@@ -206,7 +210,7 @@ std::string Response::getContentType()
        else
            fileExtension = (_info._url.substr(startPos));
        std::string contentType = comparerContentType(fileExtension);
-       if (contentType == "FAILURE")
+       if (contentType == FAILURE)
            mySend(404);
        return (contentType);
    }
@@ -262,6 +266,11 @@ void Response::mySend(int statusCode)
             statusCode = 400;
             _file = readFile(PATH_BAD_REQUEST);
         }
+        else if (statusCode == METHOD_NOT_ALLOWED)
+        {
+            statusCode = 405;
+            _file = readFile(PATH_METHOD_NOT_ALLOWED);
+        }
         else if (statusCode == 500)
             _file = readFile(PATH_500_ERRORWEBSITE);
         else if (statusCode == 404)
@@ -288,6 +297,7 @@ void Response::mySend(int statusCode)
 
     send(_info._clientSocket, header.c_str(), header.size(), 0);
     send(_info._clientSocket, (std::string(_file.begin(), _file.end())).c_str(), _file.size(), 0);
+    // TODO: check if send returns 0 or -1
 }
 
 
@@ -388,6 +398,11 @@ bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boun
         {
             std::remove((_info._configInfo._rootFolder+ _info._url + "/"+ _info._postInfo._filename).c_str());
             return mySend(BAD_REQUEST), false;
+        }
+        if (_info._configInfo._postAllowed == false)
+        {
+            std::remove((_info._configInfo._rootFolder+ _info._url + "/"+ _info._postInfo._filename).c_str());
+            return mySend(METHOD_NOT_ALLOWED), false;
         }
         return mySend(FILE_SAVED), false;
     }

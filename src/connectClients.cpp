@@ -94,6 +94,7 @@ void ConnectClients::initClientInfo(int _clientSocket)
         if (initNewInfo._myHTTPMethod == M_POST)
         {
             initNewInfo._postInfo._input = input;
+            initNewInfo._configInfo._postAllowed = config.getPostAllowed(currentPort);// TODO: implement correctly from Valentin
             initNewInfo._postInfo._filename = request.getFileName(initNewInfo._contentType, initNewInfo._postInfo._filename, UPLOAD_FOLDER);
             initNewInfo._postInfo._outfile = new std::ofstream (UPLOAD_FOLDER+initNewInfo._postInfo._filename, std::ofstream::out | std::ofstream::app  | std::ofstream::binary);
             if (initNewInfo._contentType == "multipart/form-data")
@@ -108,7 +109,10 @@ void ConnectClients::initClientInfo(int _clientSocket)
         {
             if (!Request::checkPathInFolder(initNewInfo._url, UPLOAD_FOLDER))
                 initNewInfo._url = FAILURE;
+            initNewInfo._configInfo._deleteAllowed = config.getDeleteAllowed(currentPort);
         }
+        else
+            initNewInfo._configInfo._getAllowed = config.getGetAllowed(currentPort);
         _clientInfo[_clientSocket] = initNewInfo;
     }
     else if (it->second._isMultiPart)   // only for multipart!!

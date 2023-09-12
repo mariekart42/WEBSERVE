@@ -5,14 +5,17 @@
 
 // DON'T USE!! it's for me for testing
 #define PORT1 1010
-#define PORT2 2222
-#define PORT3 3333
+#define PORT2 2020
+#define PORT3 3030
 #define PORT4 4444
 
 #define CLIENT_BODY 8000
 #define ROOT_FOLDER "root/"
 #define AUTO_INDEX true
 #define INDEX_FILE "index.html"
+#define POST_ALLOWED true
+#define GET_ALLOWED true
+#define DELETE_ALLOWED true
 // -----------------------------------
 
 
@@ -126,6 +129,12 @@ class MarieConfigParser
         //- return first element from vector _indexFiles
         //- if no index file provided in configfile
         //--> return empty string!
+
+
+        bool getPostAllowed(int port);
+        bool getGetAllowed(int port);
+        bool getDeleteAllowed(int port);
+
 };
 
 

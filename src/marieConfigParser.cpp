@@ -47,3 +47,19 @@ std::string MarieConfigParser::getIndexFile(int port)
     std::string emprty= "";
         return emprty;
 }
+
+bool MarieConfigParser::getPostAllowed(int port)
+{
+    (void)port;
+    return POST_ALLOWED;
+}
+bool MarieConfigParser::getGetAllowed(int port)
+{
+    (void)port;
+    return GET_ALLOWED;
+}
+bool MarieConfigParser::getDeleteAllowed(int port)
+{
+    (void)port;
+    return DELETE_ALLOWED;
+}
