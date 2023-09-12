@@ -1,13 +1,7 @@
 #include "../header/setServer.hpp"
 
-SetServer::SetServer()
-{
-
-}
-
-SetServer::~SetServer()
-{
-}
+SetServer::SetServer() {}
+SetServer::~SetServer() {}
 
 
 int SetServer::getNewServerSocket(int port)
