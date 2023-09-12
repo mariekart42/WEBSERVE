@@ -115423,3 +115423,3447 @@ Content-Length: 2437120
 
 === Tue Sep 12 14:22:50 2023
 === Done receiving Data
+
+=== Tue Sep 12 15:58:31 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 15:58:31 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 4522
+
+
+
+=== Tue Sep 12 15:58:31 2023
+=== Done receiving Data
+
+=== Tue Sep 12 15:58:31 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 15:58:31 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 15:58:31 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 15:58:31 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 967
+
+
+
+=== Tue Sep 12 15:58:31 2023
+=== Done receiving Data
+
+=== Tue Sep 12 15:58:31 2023
+=== Done receiving Data
+
+=== Tue Sep 12 15:58:31 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 15:58:31 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 967
+
+
+
+=== Tue Sep 12 15:58:31 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 15:58:31 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 15:58:31 2023
+=== Done receiving Data
+
+=== Tue Sep 12 15:58:31 2023
+=== Done receiving Data
+
+=== Tue Sep 12 15:58:31 2023
+=== Received Data  --  GET  /favicon.ico
+
+=== Tue Sep 12 15:58:32 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/vnd.microsoft.icon
+Content-Length: 15406
+
+
+
+=== Tue Sep 12 15:58:32 2023
+=== Done receiving Data
+
+=== Tue Sep 12 15:58:34 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 15:58:34 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 4522
+
+
+
+=== Tue Sep 12 15:58:34 2023
+=== Done receiving Data
+
+=== Tue Sep 12 15:58:34 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 15:58:34 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 15:58:34 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 15:58:34 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 967
+
+
+
+=== Tue Sep 12 15:58:34 2023
+=== Done receiving Data
+
+=== Tue Sep 12 15:58:34 2023
+=== Done receiving Data
+
+=== Tue Sep 12 15:58:34 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 15:58:34 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 967
+
+
+
+=== Tue Sep 12 15:58:34 2023
+=== Done receiving Data
+
+=== Tue Sep 12 15:58:34 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 15:58:34 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 15:58:34 2023
+=== Done receiving Data
+
+=== Tue Sep 12 15:58:41 2023
+=== Received Data  --  POST  /upload
+
+=== Tue Sep 12 15:58:41 2023
+=== Received Data  --  POST  /upload
+
+=== Tue Sep 12 15:58:41 2023
+=== send Data:
+HTTP/1.1 201 Created
+Connection: close
+Content-Type: text/html
+Content-Length: 1500
+
+
+
+=== Tue Sep 12 15:58:41 2023
+=== Done receiving Data
+
+=== Tue Sep 12 15:58:41 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 15:58:41 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 15:58:41 2023
+=== Done receiving Data
+
+=== Tue Sep 12 15:58:41 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 15:58:42 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 15:58:42 2023
+=== Done receiving Data
+
+=== Tue Sep 12 15:58:42 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 15:58:42 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 4522
+
+
+
+=== Tue Sep 12 15:58:42 2023
+=== Done receiving Data
+
+=== Tue Sep 12 15:58:42 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 15:58:42 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 15:58:42 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 15:58:42 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 967
+
+
+
+=== Tue Sep 12 15:58:42 2023
+=== Done receiving Data
+
+=== Tue Sep 12 15:58:42 2023
+=== Done receiving Data
+
+=== Tue Sep 12 15:58:42 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 15:58:42 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 967
+
+
+
+=== Tue Sep 12 15:58:42 2023
+=== Done receiving Data
+
+=== Tue Sep 12 15:58:42 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 15:58:43 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 15:58:43 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:07:50 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:07:50 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 4522
+
+
+
+=== Tue Sep 12 16:07:50 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:07:50 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:07:50 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:07:51 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:07:51 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 967
+
+
+
+=== Tue Sep 12 16:07:51 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:07:51 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:07:51 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:07:51 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 967
+
+
+
+=== Tue Sep 12 16:07:51 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:07:51 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:07:51 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:07:51 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:08:06 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:12:20 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:12:20 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 4522
+
+
+
+=== Tue Sep 12 16:12:20 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:12:20 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:12:20 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:12:20 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:12:20 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:12:20 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:12:20 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:12:20 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:12:20 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:12:20 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:12:20 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:12:20 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:12:20 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:19:01 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:19:01 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 4526
+
+
+
+=== Tue Sep 12 16:19:01 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:19:01 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:19:01 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:19:01 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:19:01 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:19:01 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:19:01 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:19:01 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:19:01 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:19:01 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:19:01 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:19:01 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:19:01 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:25:14 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:25:14 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5021
+
+
+
+=== Tue Sep 12 16:25:14 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:25:14 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:25:14 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:25:14 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:25:14 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:25:14 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:25:14 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:25:14 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:25:14 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:25:14 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:29:32 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:29:32 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5021
+
+
+
+=== Tue Sep 12 16:29:32 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:29:32 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:29:32 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:29:32 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:29:32 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:29:32 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:29:32 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:29:32 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:29:32 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:29:32 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:30:01 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:31:02 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:31:02 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5021
+
+
+
+=== Tue Sep 12 16:31:02 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:31:02 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:31:02 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:31:02 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:31:02 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:31:02 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:31:02 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:31:02 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:31:02 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:31:02 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:31:26 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:31:26 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5021
+
+
+
+=== Tue Sep 12 16:31:26 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:31:26 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:31:26 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:31:26 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:31:26 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:31:26 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:31:26 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:31:27 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:31:27 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:31:27 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:31:28 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:31:28 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5021
+
+
+
+=== Tue Sep 12 16:31:28 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:31:28 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:31:28 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:31:28 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:31:28 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:31:28 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:31:28 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:31:28 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:31:28 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:31:28 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:32:12 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:32:12 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5021
+
+
+
+=== Tue Sep 12 16:32:12 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:32:12 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:32:12 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:32:12 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:32:12 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:32:12 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:32:12 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:32:12 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:32:12 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:32:12 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:32:37 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:32:37 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 4907
+
+
+
+=== Tue Sep 12 16:32:37 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:32:37 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:32:37 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:32:37 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:32:37 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:32:37 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:32:37 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:32:37 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:32:37 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:32:37 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:32:37 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:32:38 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:32:38 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:34:06 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:34:06 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 4914
+
+
+
+=== Tue Sep 12 16:34:06 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:34:06 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:34:06 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:34:06 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:34:06 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:34:06 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:34:06 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:34:06 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:34:06 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:34:06 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:34:20 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:34:20 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 4914
+
+
+
+=== Tue Sep 12 16:34:20 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:34:20 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:34:20 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:34:20 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:34:20 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:34:20 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:34:20 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:34:20 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:34:20 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:34:20 2023
+=== Done receiving Data
+
+Tue Sep 12 16:34:33 2023
+=== ERROR: cant detect HTTPMethod
+
+Tue Sep 12 16:34:33 2023
+=== ERROR: cant detect HTTPMethod
+
+=== Tue Sep 12 16:35:13 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:35:13 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:35:13 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5006
+
+
+
+=== Tue Sep 12 16:35:13 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:35:13 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:35:13 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:35:13 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:35:13 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:35:13 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:35:13 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:35:13 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:35:13 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:35:13 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:35:14 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:35:28 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:35:28 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 4999
+
+
+
+=== Tue Sep 12 16:35:28 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:35:28 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:35:28 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:35:28 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:35:28 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:35:28 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:35:28 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:35:28 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:35:28 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:35:28 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:35:28 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:35:28 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:35:28 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:35:38 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:35:38 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5006
+
+
+
+=== Tue Sep 12 16:35:38 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:35:38 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:35:38 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:35:38 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:35:38 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:35:38 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:35:38 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:35:38 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:35:39 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:35:39 2023
+=== Done receiving Data
+
+Tue Sep 12 16:35:45 2023
+=== ERROR: cant detect HTTPMethod
+
+Tue Sep 12 16:35:45 2023
+=== ERROR: cant detect HTTPMethod
+
+=== Tue Sep 12 16:36:20 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:36:20 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:36:22 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:36:22 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5006
+
+
+
+=== Tue Sep 12 16:36:22 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:36:22 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:36:22 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:36:22 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:36:22 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:36:22 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:36:22 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:36:22 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:36:22 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:36:22 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:36:29 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:36:29 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5006
+
+
+
+=== Tue Sep 12 16:36:29 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:36:29 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:36:29 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:36:29 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:36:29 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:36:29 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:36:29 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:36:29 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:36:29 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:36:30 2023
+=== Done receiving Data
+
+Tue Sep 12 16:36:33 2023
+=== ERROR: cant detect HTTPMethod
+
+Tue Sep 12 16:36:33 2023
+=== ERROR: cant detect HTTPMethod
+
+=== Tue Sep 12 16:39:19 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:39:19 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:39:19 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5056
+
+
+
+=== Tue Sep 12 16:39:19 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:39:19 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:39:19 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:39:19 2023
+=== Received Data  --  GET  /scripts/script.js
+
+=== Tue Sep 12 16:39:19 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 6086
+
+
+
+=== Tue Sep 12 16:39:19 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:39:19 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:39:19 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:39:19 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:39:19 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:39:19 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:39:19 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:39:19 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:39:19 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:40:46 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:40:46 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 4993
+
+
+
+=== Tue Sep 12 16:40:46 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:40:46 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:40:46 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:40:46 2023
+=== Received Data  --  GET  /scripts/script.js
+
+=== Tue Sep 12 16:40:46 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 6086
+
+
+
+=== Tue Sep 12 16:40:46 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:40:46 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:40:46 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:40:46 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:40:46 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:40:46 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:40:46 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:40:46 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:41:24 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:41:24 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5007
+
+
+
+=== Tue Sep 12 16:41:24 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:41:24 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:41:24 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:41:24 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:41:24 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:41:24 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:41:24 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:41:38 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:41:38 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5000
+
+
+
+=== Tue Sep 12 16:41:39 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:41:39 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:41:39 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:41:39 2023
+=== Received Data  --  GET  /scripts/script.js
+
+=== Tue Sep 12 16:41:39 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 6086
+
+
+
+=== Tue Sep 12 16:41:39 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:41:39 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:41:39 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:41:39 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:41:39 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:42:06 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:42:06 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5071
+
+
+
+=== Tue Sep 12 16:42:06 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:42:06 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:42:06 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:42:06 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:42:06 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:42:06 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:42:06 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:42:06 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:42:06 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:42:06 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:42:25 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:42:25 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5071
+
+
+
+=== Tue Sep 12 16:42:25 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:42:25 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:42:25 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:42:25 2023
+=== Received Data  --  GET  /scripts/script.js
+
+=== Tue Sep 12 16:42:25 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 6086
+
+
+
+=== Tue Sep 12 16:42:25 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:42:25 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:42:25 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:42:25 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:42:25 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:42:36 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:42:36 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5064
+
+
+
+=== Tue Sep 12 16:42:36 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:42:36 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:42:36 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:42:36 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:42:36 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:42:36 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:42:36 2023
+=== Received Data  --  GET  /scripts/script.js
+
+=== Tue Sep 12 16:42:36 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 6086
+
+
+
+=== Tue Sep 12 16:42:36 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:42:36 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:42:37 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:42:37 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:42:37 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:42:52 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:42:52 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5071
+
+
+
+=== Tue Sep 12 16:42:52 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:42:52 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:42:52 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:42:52 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:42:52 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:42:52 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:42:52 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:42:52 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:42:53 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:42:53 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:43:00 2023
+=== Received Data  --  POST  /upload
+
+=== Tue Sep 12 16:43:00 2023
+=== Received Data  --  POST  /upload
+
+=== Tue Sep 12 16:43:00 2023
+=== send Data:
+HTTP/1.1 201 Created
+Connection: close
+Content-Type: text/html
+Content-Length: 1500
+
+
+
+=== Tue Sep 12 16:43:00 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:43:01 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:43:01 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:43:01 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:43:01 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:43:01 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:43:01 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:43:02 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:43:02 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5071
+
+
+
+=== Tue Sep 12 16:43:02 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:43:02 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:43:02 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:43:02 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:43:02 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:43:02 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:43:02 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:43:02 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:43:02 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:43:02 2023
+=== Done receiving Data
+
+Tue Sep 12 16:43:10 2023
+=== ERROR: cant detect HTTPMethod
+
+Tue Sep 12 16:43:10 2023
+=== ERROR: cant detect HTTPMethod
+
+=== Tue Sep 12 16:44:04 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:44:04 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:44:43 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:44:43 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5127
+
+
+
+=== Tue Sep 12 16:44:43 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:44:43 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:44:43 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:44:43 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:44:43 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:44:43 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:44:43 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:44:43 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:44:43 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:44:43 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:44:43 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:44:44 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:44:44 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:45:00 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:45:00 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5071
+
+
+
+=== Tue Sep 12 16:45:00 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:45:00 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:45:00 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:45:00 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:45:00 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:45:00 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:45:00 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:45:00 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:45:00 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:45:00 2023
+=== Done receiving Data
+
+Tue Sep 12 16:45:03 2023
+=== ERROR: cant detect HTTPMethod
+
+Tue Sep 12 16:45:03 2023
+=== ERROR: cant detect HTTPMethod
+
+=== Tue Sep 12 16:45:14 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:45:14 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:45:14 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5071
+
+
+
+=== Tue Sep 12 16:45:14 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:45:14 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:45:14 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:45:14 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:45:14 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:45:14 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:45:14 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:45:14 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:45:15 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:45:15 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:45:27 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:45:27 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:45:27 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:45:32 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:45:34 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:45:38 2023
+=== Done receiving Data
+
+Tue Sep 12 16:46:11 2023
+=== ERROR: cant detect HTTPMethod
+
+Tue Sep 12 16:46:11 2023
+=== ERROR: cant detect HTTPMethod
+
+=== Tue Sep 12 16:46:18 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:46:18 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:46:18 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5071
+
+
+
+=== Tue Sep 12 16:46:18 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:46:18 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:46:18 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:46:18 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:46:18 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:46:18 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:46:18 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:46:18 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:46:19 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:46:19 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:47:03 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:47:03 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5071
+
+
+
+=== Tue Sep 12 16:47:03 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:47:03 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:47:03 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:47:03 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:47:03 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:47:03 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:47:03 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:47:03 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:47:03 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:47:03 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:47:04 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:47:08 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:47:23 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:47:23 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5071
+
+
+
+=== Tue Sep 12 16:47:23 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:47:23 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:47:23 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:47:23 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:47:23 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:47:23 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:47:23 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:47:23 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:47:23 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:47:23 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:47:29 2023
+=== Done receiving Data
+
+Tue Sep 12 16:49:42 2023
+=== ERROR: cant detect HTTPMethod
+
+Tue Sep 12 16:49:42 2023
+=== ERROR: cant detect HTTPMethod
+
+=== Tue Sep 12 16:50:19 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:50:19 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:50:35 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:50:35 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5071
+
+
+
+=== Tue Sep 12 16:50:35 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:50:35 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:50:35 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:50:35 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:50:35 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 967
+
+
+
+=== Tue Sep 12 16:50:35 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:50:35 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:50:35 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:50:36 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:50:36 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:50:49 2023
+=== Received Data  --  DELETE  /01.jpeg
+
+=== Tue Sep 12 16:50:49 2023
+=== send Data:
+HTTP/1.1 204 No Content
+Connection: close
+Content-Type: text/html
+Content-Length: 168
+
+
+
+=== Tue Sep 12 16:50:49 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:52:18 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:52:18 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5071
+
+
+
+=== Tue Sep 12 16:52:18 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:52:18 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:52:18 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:52:18 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:52:18 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 990
+
+
+
+=== Tue Sep 12 16:52:18 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:52:18 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:52:18 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:52:19 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:52:19 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:53:13 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:53:13 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5071
+
+
+
+=== Tue Sep 12 16:53:13 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:53:13 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:53:13 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:53:13 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:53:13 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 1013
+
+
+
+=== Tue Sep 12 16:53:13 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:53:13 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:53:13 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:53:13 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:53:13 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:53:41 2023
+=== Received Data  --  DELETE  /FAILURE
+
+=== Tue Sep 12 16:53:41 2023
+=== send Data:
+HTTP/1.1 404 Not Found
+Connection: close
+Content-Type: text/html
+Content-Length: 168
+
+
+
+=== Tue Sep 12 16:53:41 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:53:56 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:53:56 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:53:56 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:54:11 2023
+=== Received Data  --  POST  /upload
+
+=== Tue Sep 12 16:54:11 2023
+=== Received Data  --  POST  /upload
+
+=== Tue Sep 12 16:54:11 2023
+=== Received Data  --  POST  /upload
+
+=== Tue Sep 12 16:54:11 2023
+=== Received Data  --  POST  /upload
+
+=== Tue Sep 12 16:54:11 2023
+=== Received Data  --  POST  /upload
+
+=== Tue Sep 12 16:54:11 2023
+=== send Data:
+HTTP/1.1 201 Created
+Connection: close
+Content-Type: text/html
+Content-Length: 1500
+
+
+
+=== Tue Sep 12 16:54:11 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:54:11 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:54:11 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:54:11 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:54:11 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:54:11 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:54:11 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:54:12 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:54:12 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5071
+
+
+
+=== Tue Sep 12 16:54:12 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:54:12 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:54:12 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:54:12 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:54:12 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 1013
+
+
+
+=== Tue Sep 12 16:54:12 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:54:12 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:54:12 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:54:12 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:54:12 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:54:24 2023
+=== Received Data  --  DELETE  /02.jpeg
+
+=== Tue Sep 12 16:54:24 2023
+=== send Data:
+HTTP/1.1 204 No Content
+Connection: close
+Content-Type: text/html
+Content-Length: 168
+
+
+
+=== Tue Sep 12 16:54:24 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:54:38 2023
+=== Received Data  --  POST  /upload
+
+=== Tue Sep 12 16:54:38 2023
+=== Received Data  --  POST  /upload
+
+=== Tue Sep 12 16:54:38 2023
+=== send Data:
+HTTP/1.1 201 Created
+Connection: close
+Content-Type: text/html
+Content-Length: 1500
+
+
+
+=== Tue Sep 12 16:54:38 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:54:38 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:54:38 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:54:38 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:54:38 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:54:38 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:54:39 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:54:40 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:54:40 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5071
+
+
+
+=== Tue Sep 12 16:54:40 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:54:40 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:54:40 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:54:40 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:54:40 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 1013
+
+
+
+=== Tue Sep 12 16:54:40 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:54:40 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:54:40 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:54:40 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:54:40 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:54:50 2023
+=== Received Data  --  DELETE  /01.jpeg
+
+=== Tue Sep 12 16:54:50 2023
+=== send Data:
+HTTP/1.1 204 No Content
+Connection: close
+Content-Type: text/html
+Content-Length: 168
+
+
+
+=== Tue Sep 12 16:54:50 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:55:06 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:55:06 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5071
+
+
+
+=== Tue Sep 12 16:55:06 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:55:06 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:55:06 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:55:06 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:55:06 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:55:06 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:55:06 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:55:06 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:55:06 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:55:06 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:55:10 2023
+=== Received Data  --  POST  /upload
+
+=== Tue Sep 12 16:55:10 2023
+=== Received Data  --  POST  /upload
+
+=== Tue Sep 12 16:55:10 2023
+=== send Data:
+HTTP/1.1 201 Created
+Connection: close
+Content-Type: text/html
+Content-Length: 1500
+
+
+
+=== Tue Sep 12 16:55:10 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:55:10 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:55:10 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:55:10 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:55:10 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:55:10 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:55:10 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:55:11 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:55:11 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5071
+
+
+
+=== Tue Sep 12 16:55:11 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:55:11 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:55:11 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:55:11 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:55:11 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 968
+
+
+
+=== Tue Sep 12 16:55:11 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:55:11 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:55:11 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:55:11 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:55:11 2023
+=== Done receiving Data
+
+Tue Sep 12 16:55:17 2023
+=== ERROR: cant detect HTTPMethod
+
+Tue Sep 12 16:55:17 2023
+=== ERROR: cant detect HTTPMethod
+
+=== Tue Sep 12 16:55:24 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:55:24 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:55:24 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5071
+
+
+
+=== Tue Sep 12 16:55:24 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:55:24 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:55:24 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:55:24 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:55:24 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 967
+
+
+
+=== Tue Sep 12 16:55:24 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:55:24 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:55:24 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:55:24 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:55:24 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:55:27 2023
+=== Received Data  --  DELETE  /01.jpeg
+
+=== Tue Sep 12 16:55:27 2023
+=== send Data:
+HTTP/1.1 204 No Content
+Connection: close
+Content-Type: text/html
+Content-Length: 168
+
+
+
+=== Tue Sep 12 16:55:27 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:56:01 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:56:46 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:56:46 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 6079
+
+
+
+=== Tue Sep 12 16:56:46 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:56:46 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:56:46 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:56:46 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:56:46 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 967
+
+
+
+=== Tue Sep 12 16:56:46 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:56:46 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:56:46 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:56:46 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:56:46 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:56:49 2023
+=== Received Data  --  DELETE  /FAILURE
+
+=== Tue Sep 12 16:56:49 2023
+=== send Data:
+HTTP/1.1 404 Not Found
+Connection: close
+Content-Type: text/html
+Content-Length: 168
+
+
+
+=== Tue Sep 12 16:56:49 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:57:00 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:57:00 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5779
+
+
+
+=== Tue Sep 12 16:57:00 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:57:01 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:57:01 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:57:01 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:57:01 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 967
+
+
+
+=== Tue Sep 12 16:57:01 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:57:01 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:57:01 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:57:01 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:57:01 2023
+=== Done receiving Data
+
+Tue Sep 12 16:57:03 2023
+=== ERROR: cant detect HTTPMethod
+
+=== Tue Sep 12 16:57:16 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:57:16 2023
+=== Received Data  --  GET  /
+
+=== Tue Sep 12 16:57:16 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 5849
+
+
+
+=== Tue Sep 12 16:57:16 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:57:16 2023
+=== Received Data  --  GET  /styles/styles.css
+
+=== Tue Sep 12 16:57:16 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 3190
+
+
+
+=== Tue Sep 12 16:57:16 2023
+=== Received Data  --  GET  /scripts/deleteScript.js
+
+=== Tue Sep 12 16:57:16 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 967
+
+
+
+=== Tue Sep 12 16:57:16 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:57:16 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:57:16 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Tue Sep 12 16:57:16 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/jpeg
+Content-Length: 2437120
+
+
+
+=== Tue Sep 12 16:57:16 2023
+=== Done receiving Data
+
+=== Tue Sep 12 16:57:18 2023
+=== Received Data  --  DELETE  /FAILURE
+
+=== Tue Sep 12 16:57:18 2023
+=== send Data:
+HTTP/1.1 404 Not Found
+Connection: close
+Content-Type: text/html
+Content-Length: 168
+
+
+
+=== Tue Sep 12 16:57:18 2023
+=== Done receiving Data
