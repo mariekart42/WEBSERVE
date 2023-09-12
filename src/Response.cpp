@@ -7,24 +7,17 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
-//Response::Response(const std::vector<uint8_t>& input, int clientSocket, const std::string& url, const clientInfo& cInfo):
-//        _info(cInfo)
-//{
-//    _info._postInfo._input = input;
-//    _info._clientSocket = clientSocket;
-//    _info._statusCode = 200;
-//    _info._url = url;
-//}
-
 Response::Response(int clientSocket, const clientInfo& cInfo):
         _info(cInfo)
 {
     _info._clientSocket = clientSocket;
 }
 
-Response::~Response()
-{
-}
+Response::~Response() {}
+
+
+
+
 
 void Response::deleteFile()
 {
@@ -89,38 +82,6 @@ std::string Response::generateList(const std::string& rootFolder, const std::str
     return filePaths;
 }
 
-
-//std::string Response::generateList2(const std::string& path)
-//{
-//    std::string filePaths;
-//
-//    DIR* dir = opendir(path.c_str());
-//
-//    if (dir) {
-//        struct dirent* entry;
-//        while ((entry = readdir(dir)) != NULL) {
-//            std::string itemName = entry->d_name;
-//
-//            if (itemName != "." && itemName != "..") {
-//                std::string itemPath = path + "/" + itemName;
-//                struct stat itemStat;
-//
-//                if (stat(itemPath.c_str(), &itemStat) == 0) {
-//                    if (S_ISREG(itemStat.st_mode)) {
-//                        filePaths += "\"" + itemName + "\",";
-//                    } else if (S_ISDIR(itemStat.st_mode)) {
-//                        // Add directory path with a trailing slash
-//                        filePaths += "\"" + itemName + "/" + "\",";
-//                    }
-//                }
-//            }
-//        }
-//        closedir(dir);
-//    }
-//    if (!filePaths.empty())
-//        filePaths = filePaths.substr(0, filePaths.size() - 1);
-//    return filePaths;
-//}
 
 
 int Response::getDirectoryIndexPage(const std::string& directory)
@@ -200,10 +161,9 @@ std::string Response::getContentType()
 {
    if (_info._url.find('.') != std::string::npos)
    {
+       std::string fileExtension;
        size_t startPos = _info._url.find_last_of('.');
        size_t endPos = _info._url.size();
-
-       std::string fileExtension;
 
        if (endPos != std::string::npos)
            fileExtension = (_info._url.substr(startPos + 1, endPos - (startPos)));
@@ -219,11 +179,10 @@ std::string Response::getContentType()
 }
 
 
-
 // if statusCode 200, _file NEEDS so be initialized!!
 void Response::mySend(int statusCode)
 {
-    if (statusCode != 200)     // WRITE FUNCTION THAT RETURNS FILE SPECIFIED ON STATUS CODE
+    if (statusCode != 200)    // WRITE FUNCTION THAT RETURNS FILE SPECIFIED ON STATUS CODE
     {
         _info._fileContentType = "text/html";
 
@@ -268,7 +227,7 @@ void Response::mySend(int statusCode)
         }
         else if (statusCode == METHOD_NOT_ALLOWED)
         {
-            statusCode = 405;// 405!!!
+            statusCode = 405;
             _file = readFile(PATH_METHOD_NOT_ALLOWED);
         }
         else if (statusCode == 500)
@@ -399,9 +358,9 @@ bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boun
             std::remove((_info._configInfo._rootFolder+ _info._url + "/"+ _info._postInfo._filename).c_str());
             return mySend(BAD_REQUEST), false;
         }
-        if (_info._configInfo._postAllowed == false)
+        if (!_info._configInfo._postAllowed)
         {
-            std::remove((_info._configInfo._rootFolder+ _info._url + "/"+ _info._postInfo._filename).c_str());
+            std::remove((_info._configInfo._rootFolder + _info._url + "/"+ _info._postInfo._filename).c_str());
             return mySend(METHOD_NOT_ALLOWED), false;
         }
         return mySend(FILE_SAVED), false;

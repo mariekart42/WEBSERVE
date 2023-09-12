@@ -108,23 +108,18 @@ class Response
 
 
         std::string decodeURL(const std::string&);
-
-        std::string generateList(const std::string &, const std::string&);
-//        std::string generateList2(const std::string &);
-//    void generateList(const std::string& rootFolder, const std::string& currentFolder, std::string& filePaths, int);
-
-
+        std::string generateList(const std::string&, const std::string&);
         int getDirectoryIndexPage(const std::string&);
         void sendIndexPage();
 
         // POST
-        void sendRequestedFile();
-        bool uploadFile(const std::string&, const std::string&, std::ofstream*);
-        bool saveRequestToFile(std::ofstream&, const std::string&);
-        void urlDecodedInput();
+        void    sendRequestedFile();
+        bool    uploadFile(const std::string&, const std::string&, std::ofstream*);
+        bool    saveRequestToFile(std::ofstream&, const std::string&);
+        void    urlDecodedInput();
 
         // DELETE
-        void deleteFile();
+        void    deleteFile();
 
 };
 
