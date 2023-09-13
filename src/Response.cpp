@@ -22,7 +22,7 @@ Response::~Response() {}
 void Response::deleteFile()
 {
     #ifdef INFO
-        std::cout << RED " . . . Received Data  --  DELETE  /" <<_info._url<<""RESET<< std::endl;
+        std::cout << RED " . . . Received Data  --  DELETE  " <<_info._url<<""RESET<< std::endl;
     #endif
     Logging::log("Received Data  --  DELETE  /" + _info._url, 200);
 
@@ -30,7 +30,8 @@ void Response::deleteFile()
         return mySend(METHOD_NOT_ALLOWED);
     if (_info._configInfo._indexFile.empty() && _info._configInfo._autoIndex)
     {
-        if (std::remove((UPLOAD_FOLDER + _info._url).c_str()) != 0)
+        std::cout << "HERE: "<< _info._configInfo._rootFolder + _info._url<<std::endl;
+        if (std::remove((_info._configInfo._rootFolder + _info._url).c_str()) != 0)
             return (mySend(FORBIDDEN));
         return (mySend(FILE_DELETED));
     }
@@ -46,7 +47,43 @@ void Response::deleteFile()
 
 
 
-std::string Response::generateList(const std::string& rootFolder, const std::string& currentFolder = "")
+//std::string Response::generateList(const std::string& rootFolder, const std::string& currentFolder = "")
+//{
+//    std::string filePaths;
+//
+//    std::string folderPath = rootFolder + "/" + currentFolder;
+//    DIR* dir = opendir(folderPath.c_str());
+//
+//    if (dir)
+//    {
+//        struct dirent* entry;
+//        while ((entry = readdir(dir)) != NULL) {
+//            std::string itemName = entry->d_name;
+//
+//            if (itemName != "." && itemName != "..") {
+//                std::string itemPath = folderPath + "/" + itemName;
+//                struct stat itemStat;
+//
+//                if (stat(itemPath.c_str(), &itemStat) == 0)
+//                {
+//                    if (S_ISDIR(itemStat.st_mode))
+//                    {
+//                        // Recurse into subfolder
+//                        std::string subfolderPaths = generateList(rootFolder, currentFolder + "/" + itemName);
+//                        filePaths += subfolderPaths;
+//                    } else if (S_ISREG(itemStat.st_mode)) {
+//                        std::string linkPath = currentFolder.empty() ? itemName : currentFolder.substr(1) + "/" + itemName;
+//                        filePaths += "\""+linkPath+"\",";
+//                    }
+//                }
+//            }
+//        }
+//        closedir(dir);
+//    }
+//    return filePaths;
+//}
+
+std::string Response::generateList(const std::string& rootFolder, const std::string& currentFolder)
 {
     std::string filePaths;
 
@@ -67,12 +104,12 @@ std::string Response::generateList(const std::string& rootFolder, const std::str
                 {
                     if (S_ISDIR(itemStat.st_mode))
                     {
-                        // Recurse into subfolder
+                        // Recurse into subfolder, passing the current folder
                         std::string subfolderPaths = generateList(rootFolder, currentFolder + "/" + itemName);
                         filePaths += subfolderPaths;
                     } else if (S_ISREG(itemStat.st_mode)) {
-                        std::string linkPath = currentFolder.empty() ? itemName : currentFolder.substr(1) + "/" + itemName;
-                        filePaths += "\""+linkPath+"\",";
+                        std::string linkPath = currentFolder + "/" + itemName;
+                        filePaths += "\"" + linkPath + "\",";
                     }
                 }
             }
@@ -83,20 +120,17 @@ std::string Response::generateList(const std::string& rootFolder, const std::str
 }
 
 
-
 int Response::getDirectoryIndexPage(const std::string& directory)
 {
     std::string startHtml = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\">"
                           "<meta name=\"viewport\" content=\"\"width=device-width, initial-scale=1.0\"\"><title>Index of /</title>\n"
                           "<link rel=\"stylesheet\" href=\"styles/styleIndex.css\"></head><body><div class=\"background-image\"></div>\n"
                           "<div class=\"container\"><h1>Index of  /</h1><br><div id=\"fileItems\"></div></div><script>const filePaths = [";
-    std::string middleHtml = generateList(directory, "");
+    std::string middleHtml = generateList(_info._configInfo._rootFolder, directory);
     std::string endHtml ="];</script><script src=\"scripts/script.js\"></script></body></html>";
-
     std::string result = startHtml + middleHtml + endHtml;
     for (size_t i = 0; i < result.length(); ++i)
         _file.push_back(static_cast<uint8_t>(result[i]));
-
     return (DIRECTORY_LIST);
 }
 
@@ -111,7 +145,7 @@ void Response::sendIndexPage()
             mySend(ERROR_INDEXFILE);
     }
     else if (_info._configInfo._autoIndex)
-        mySend(getDirectoryIndexPage(_info._configInfo._rootFolder));
+        mySend(getDirectoryIndexPage(""));// changed
     else
         mySend(FORBIDDEN);
 }
@@ -129,10 +163,10 @@ void Response::sendRequestedFile()
         return (sendIndexPage());
 
     struct stat s = {};
-    if (stat((_info._configInfo._rootFolder + _info._url).c_str(), &s) == 0)
+    if (stat((_info._configInfo._rootFolder +"/"+ _info._url).c_str(), &s) == 0) // maybe here rootfolder + "/" ...
     {
         if (IS_FOLDER)  //-> LATER if config is parsed
-            mySend(getDirectoryIndexPage(_info._url));
+            mySend(getDirectoryIndexPage(_info._url)); // changed
         else if (IS_FILE)
         {
             if (_info._url == ".DS_Store"){
@@ -140,7 +174,7 @@ void Response::sendRequestedFile()
             }
             else
             {
-                _file = readFile(_info._configInfo._rootFolder + _info._url);
+                _file = readFile(_info._configInfo._rootFolder +"/"+ _info._url);// maybe here rootfolder + "/" ...
                 if (_file.empty())   // if file doesn't exist
                     return (mySend(404));
                 return (mySend(200));
@@ -208,7 +242,7 @@ void Response::mySend(int statusCode)
         else if (statusCode == DEFAULTWEBPAGE)
         {
             statusCode = 200;
-            _file = readFile(_info._configInfo._rootFolder + _info._configInfo._indexFile);
+            _file = readFile(_info._configInfo._rootFolder +"/"+ _info._configInfo._indexFile);// maybe here rootfolder + "/" ...
         }
         else if (statusCode == FORBIDDEN)
         {
@@ -254,9 +288,14 @@ void Response::mySend(int statusCode)
     std::string header = getHeader(statusCode);
     Logging::log("send Data:\n" + header, 200);
 
-    send(_info._clientSocket, header.c_str(), header.size(), 0);
-    send(_info._clientSocket, (std::string(_file.begin(), _file.end())).c_str(), _file.size(), 0);
-    // TODO: check if send returns 0 or -1
+    ssize_t val1 = send(_info._clientSocket, header.c_str(), header.size(), 0);
+    ssize_t val2 = send(_info._clientSocket, (std::string(_file.begin(), _file.end())).c_str(), _file.size(), 0);
+
+    if (val1<=0 || val2<=0)
+    {
+        Logging::log("Failed to send Data to Client", 500);
+        exit(69);
+    }
 }
 
 
@@ -278,7 +317,7 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
 
     if (!file)
     {
-        std::cerr << "Failed to open file: " << fileName << std::endl;
+        Logging::log("Failed to open file: " + fileName, 500);
         return static_cast<std::vector<uint8_t> >(0);
     }
 
@@ -355,12 +394,12 @@ bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boun
         outfile.close();
         if (_info._postInfo._filename == BAD_CONTENT_TYPE)
         {
-            std::remove((_info._configInfo._rootFolder+ _info._url + "/"+ _info._postInfo._filename).c_str());
+            std::remove((_info._configInfo._rootFolder+"/"+ _info._url + "/"+ _info._postInfo._filename).c_str());// maybe here rootfolder + "/" ...
             return mySend(BAD_REQUEST), false;
         }
         if (!_info._configInfo._postAllowed)
         {
-            std::remove((_info._configInfo._rootFolder + _info._url + "/"+ _info._postInfo._filename).c_str());
+            std::remove((_info._configInfo._rootFolder +"/"+ _info._url + "/"+ _info._postInfo._filename).c_str());// maybe here rootfolder + "/" ...
             return mySend(METHOD_NOT_ALLOWED), false;
         }
         return mySend(FILE_SAVED), false;

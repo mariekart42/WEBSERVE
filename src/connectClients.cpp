@@ -105,7 +105,7 @@ void ConnectClients::initClientInfo(int _clientSocket)
         }
         if (initNewInfo._myHTTPMethod == M_DELETE)
         {
-            if (!Request::checkPathInFolder(initNewInfo._url, UPLOAD_FOLDER))
+            if (!Request::checkPathInFolder(initNewInfo._url, initNewInfo._configInfo._rootFolder))//changed
                 initNewInfo._url = FAILURE;
             initNewInfo._configInfo._deleteAllowed = config.getDeleteAllowed(currentPort);
         }
@@ -121,7 +121,7 @@ void ConnectClients::initClientInfo(int _clientSocket)
         it->second._postInfo._filename = request.getFileName(it->second._contentType, it->second._postInfo._filename, UPLOAD_FOLDER);
         if (oldFilename.compare(0, 13, "not_found_yet") == 0 && it->second._postInfo._filename.compare(0, 13, "not_found_yet") != 0)
             rename((UPLOAD_FOLDER+oldFilename).c_str(), (UPLOAD_FOLDER+it->second._postInfo._filename).c_str());
-        it->second._statusCode = request.getStatusCode();
+//        it->second._statusCode = request.getStatusCode();
     }
 }
 

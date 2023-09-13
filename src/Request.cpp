@@ -41,13 +41,20 @@ bool Request::pathExists(const std::string& path)
 
 bool Request::checkPathInFolder(const std::string& filePath, const std::string& rootFolder)
 {
-    if (filePath.find('/') != std::string::npos)
+    std::string filePathTmp = filePath;
+//    if (!filePathTmp.empty() && filePathTmp[0] != '/') {
+//        filePathTmp = '/' + filePathTmp;
+//    }
+    std::cout << "root folder: "<< rootFolder<<"     filepath: "<<filePathTmp<<std::endl;
+//    std::string newFilePath = filePath.substr(1);
+//    std::cout << "root folder: "<< rootFolder<<"     newFilePath: "<<newFilePath<<std::endl;
+    if (filePathTmp.find('/') != std::string::npos)
     {
-        std::string fullPath = rootFolder + "/" + filePath;
+        std::string fullPath = rootFolder + filePathTmp;
         return pathExists(fullPath);
     }
     else
-        return pathExists(rootFolder + "/" + filePath);
+        return pathExists(rootFolder + filePathTmp);
 }
 
 

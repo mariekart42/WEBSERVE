@@ -82,7 +82,6 @@ struct clientInfo
     std::string _contentType;
     bool _isMultiPart;
 
-    int _statusCode;
     postInfo _postInfo;
     configInfo _configInfo;
 };
