@@ -22,7 +22,7 @@ std::string MarieConfigParser::getUrl(int port, std::string prevUrl)
     if (port == -1)
         exitWithError("port is invalid/not found");
     if (!prevUrl.empty() && prevUrl[0] != '/') {
-        prevUrl = '/' + prevUrl;
+        prevUrl = "/" + prevUrl;
     }
 
 

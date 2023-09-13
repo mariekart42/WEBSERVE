@@ -30,18 +30,28 @@ void Response::deleteFile()
         return mySend(METHOD_NOT_ALLOWED);
     if (_info._configInfo._indexFile.empty() && _info._configInfo._autoIndex)
     {
-        std::cout << "HERE: "<< _info._configInfo._rootFolder + _info._url<<std::endl;
-        if (std::remove((_info._configInfo._rootFolder + _info._url).c_str()) != 0)
-            return (mySend(FORBIDDEN));
-        return (mySend(FILE_DELETED));
+        if (_info._url.compare(0, 7, "/upload") == 0)
+        {
+            std::string path = "root" + _info._url;
+            if (std::remove((path).c_str()) != 0)
+                return (mySend(FORBIDDEN));
+            return (mySend(FILE_DELETED));
+        }
+        return (mySend(FORBIDDEN));
     }
     else
     {
         if (_info._url == FAILURE)
             return (mySend(FILE_DELETED_FAIL));
-        if (std::remove((UPLOAD_FOLDER + _info._url).c_str()) != 0)
-            return (mySend(FORBIDDEN));
-        return (mySend(FILE_DELETED));
+
+        if (_info._url.compare(0, 7, "/upload") == 0)
+        {
+            std::string path = "root" + _info._url;
+            if (std::remove((path).c_str()) != 0)
+                return (mySend(FORBIDDEN));
+            return (mySend(FILE_DELETED));
+        }
+        return (mySend(FORBIDDEN));
     }
 }
 
@@ -126,6 +136,7 @@ int Response::getDirectoryIndexPage(const std::string& directory)
                           "<meta name=\"viewport\" content=\"\"width=device-width, initial-scale=1.0\"\"><title>Index of /</title>\n"
                           "<link rel=\"stylesheet\" href=\"styles/styleIndex.css\"></head><body><div class=\"background-image\"></div>\n"
                           "<div class=\"container\"><h1>Index of  /</h1><br><div id=\"fileItems\"></div></div><script>const filePaths = [";
+    std::cout << "root folder: "<<_info._configInfo._rootFolder<< "     directory: "<<directory<<std::endl;
     std::string middleHtml = generateList(_info._configInfo._rootFolder, directory);
     std::string endHtml ="];</script><script src=\"scripts/script.js\"></script></body></html>";
     std::string result = startHtml + middleHtml + endHtml;
@@ -154,9 +165,9 @@ void Response::sendIndexPage()
 void Response::sendRequestedFile()
 {
 #ifdef INFO
-    std::cout << YEL " . . . Received Data  --  GET  /" <<_info._url<<""RESET<< std::endl;
+    std::cout << YEL " . . . Received Data  --  GET  " <<_info._url<<""RESET<< std::endl;
 #endif
-    Logging::log("Received Data  --  GET  /" + _info._url, 200);
+    Logging::log("Received Data  --  GET  " + _info._url, 200);
     if (!_info._configInfo._getAllowed)
         return (mySend(METHOD_NOT_ALLOWED));
     if (_info._url.empty())
@@ -169,7 +180,7 @@ void Response::sendRequestedFile()
             mySend(getDirectoryIndexPage(_info._url)); // changed
         else if (IS_FILE)
         {
-            if (_info._url == ".DS_Store"){
+            if (_info._url == "/.DS_Store"){
                 return (mySend(FORBIDDEN));
             }
             else

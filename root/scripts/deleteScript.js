@@ -7,16 +7,14 @@ document.getElementById("deleteButton").addEventListener("click", function() {
     const filePath = document.getElementById("filePath").value;
     const confirmation = confirm(`Are you sure you want to delete the file at path: ${filePath}?`);
     if (confirmation) {
-        fetch(`http://${hostname}:${port}/${encodeURIComponent(filePath)}`, {
+        fetch(`http://${hostname}:${port}/${customEncodeURIComponent(filePath)}`, {
             method: "DELETE"
         })
             .then(response => {
                 if (response.ok)
-                    resultMessage.textContent = " 🔥  File deleted successfully";
-                else if (response.status === 405) {
-                    resultMessage.textContent = " ❌  Delete Method not allowed!"
-                } else {
-                    resultMessage.textContent = " 🥴  Error, file does not exist";
+                    resultMessage.textContent = " 🔥 File deleted successfully";
+                else {
+                    resultMessage.textContent = " 🥴 Error, file does not exist";
                 }
             })
             .catch(error => {
@@ -24,3 +22,7 @@ document.getElementById("deleteButton").addEventListener("click", function() {
             });
     }
 });
+
+function customEncodeURIComponent(uri) {
+    return encodeURIComponent(uri).replace(/%2F/g, "/");//.replace(/^upload\//, "");
+}

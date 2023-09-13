@@ -4,10 +4,10 @@
 #include "utils.h"
 
 // DON'T USE!! it's for me for testing
-#define PORT1 1010
+#define PORT1 80
 #define PORT2 2020
 #define PORT3 3030
-#define PORT4 5050
+#define PORT4 4040
 
 #define CLIENT_BODY 8000
 #define ROOT_FOLDER "root"

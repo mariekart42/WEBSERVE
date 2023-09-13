@@ -30,7 +30,7 @@ class Request
         std::string getBoundary();
         static bool fileExists(const std::string&, const std::string&);
         static std::string getNewFilename(const std::string&, const std::string&);
-        static bool checkPathInFolder(const std::string&, const std::string&);
+        static bool checkPathInFolder(std::string, const std::string&);
         static bool pathExists(const std::string&);
         bool badFileContentType(const std::string&);
 };
