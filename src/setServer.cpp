@@ -1,13 +1,7 @@
 #include "../header/setServer.hpp"
 
-SetServer::SetServer()
-{
-
-}
-
-SetServer::~SetServer()
-{
-}
+SetServer::SetServer() {}
+SetServer::~SetServer() {}
 
 
 int SetServer::getNewServerSocket(int port)
@@ -17,7 +11,7 @@ int SetServer::getNewServerSocket(int port)
     struct addrinfo *bindAddress;
 
     memset(&socketAddress, 0, sizeof(socketAddress));
-    socketAddress.ai_family = PF_UNSPEC;        // communicate over IPv4 // !CHANGED
+    socketAddress.ai_family = AF_UNSPEC;        // communicate over IPv4 // !CHANGED
     socketAddress.ai_socktype = SOCK_STREAM;  // TCP socket
     socketAddress.ai_flags = AI_PASSIVE;      // any available network interface
 
@@ -78,5 +72,3 @@ std::vector<int> SetServer::setUpServer()
 
     return serverSockets;
 }
-
-

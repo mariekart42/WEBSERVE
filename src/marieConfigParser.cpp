@@ -21,6 +21,12 @@ std::string MarieConfigParser::getUrl(int port, std::string prevUrl)
 {
     if (port == -1)
         exitWithError("port is invalid/not found");
+    if (!prevUrl.empty() && prevUrl[0] != '/') {
+        prevUrl = "/" + prevUrl;
+    }
+
+
+    // TODO: @Valentin always put / in the beginning of path
     return prevUrl;
 }
 
@@ -46,4 +52,20 @@ std::string MarieConfigParser::getIndexFile(int port)
 //    if (port == PORT2)
     std::string emprty= "";
         return emprty;
+}
+
+bool MarieConfigParser::getPostAllowed(int port)
+{
+    (void)port;
+    return POST_ALLOWED;
+}
+bool MarieConfigParser::getGetAllowed(int port)
+{
+    (void)port;
+    return GET_ALLOWED;
+}
+bool MarieConfigParser::getDeleteAllowed(int port)
+{
+    (void)port;
+    return DELETE_ALLOWED;
 }

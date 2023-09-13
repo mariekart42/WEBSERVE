@@ -66,11 +66,11 @@ void ConnectClients::initNewConnection(int serverSocket)
 void ConnectClients::initClientInfo(int _clientSocket)
 {
     std::vector<uint8_t> input = _byteVector;
-    std::map<int, clientInfo>::iterator it1 = _clientInfo.find(_clientSocket);
-    if (it1 != _clientInfo.end() && it1->second._isMultiPart == false)
-    {
-        _clientInfo.erase(it1);
-    }
+
+    std::map<int, clientInfo>::iterator rm = _clientInfo.find(_clientSocket);
+    if (rm != _clientInfo.end() && !rm->second._isMultiPart)
+        _clientInfo.erase(rm);
+
     std::map<int, clientInfo>::iterator it = _clientInfo.find(_clientSocket);
     if (it == _clientInfo.end())   // IF NOT INITTED YET
     {
@@ -79,7 +79,6 @@ void ConnectClients::initClientInfo(int _clientSocket)
         MarieConfigParser config;
 
         int currentPort = request.getPort();
-
         // httpMethod getHTTP(myHHTTP, Port, Url);
         initNewInfo._myHTTPMethod = request.getHTTPMethod();
         initNewInfo._clientSocket = _clientSocket;
@@ -90,10 +89,10 @@ void ConnectClients::initClientInfo(int _clientSocket)
         initNewInfo._configInfo._rootFolder = config.getRootFolder(currentPort);
         initNewInfo._configInfo._autoIndex = config.getAutoIndex(currentPort);
         initNewInfo._configInfo._indexFile = config.getIndexFile(currentPort);
-
         if (initNewInfo._myHTTPMethod == M_POST)
         {
             initNewInfo._postInfo._input = input;
+            initNewInfo._configInfo._postAllowed = config.getPostAllowed(currentPort);// TODO: implement correctly from Valentin
             initNewInfo._postInfo._filename = request.getFileName(initNewInfo._contentType, initNewInfo._postInfo._filename, UPLOAD_FOLDER);
             initNewInfo._postInfo._outfile = new std::ofstream (UPLOAD_FOLDER+initNewInfo._postInfo._filename, std::ofstream::out | std::ofstream::app  | std::ofstream::binary);
             if (initNewInfo._contentType == "multipart/form-data")
@@ -106,9 +105,12 @@ void ConnectClients::initClientInfo(int _clientSocket)
         }
         if (initNewInfo._myHTTPMethod == M_DELETE)
         {
-            if (!Request::checkPathInFolder(initNewInfo._url, UPLOAD_FOLDER))
+            if (!Request::checkPathInFolder(initNewInfo._url, initNewInfo._configInfo._rootFolder))//changed
                 initNewInfo._url = FAILURE;
+            initNewInfo._configInfo._deleteAllowed = config.getDeleteAllowed(currentPort);
         }
+        else
+            initNewInfo._configInfo._getAllowed = config.getGetAllowed(currentPort);
         _clientInfo[_clientSocket] = initNewInfo;
     }
     else if (it->second._isMultiPart)   // only for multipart!!
@@ -119,7 +121,7 @@ void ConnectClients::initClientInfo(int _clientSocket)
         it->second._postInfo._filename = request.getFileName(it->second._contentType, it->second._postInfo._filename, UPLOAD_FOLDER);
         if (oldFilename.compare(0, 13, "not_found_yet") == 0 && it->second._postInfo._filename.compare(0, 13, "not_found_yet") != 0)
             rename((UPLOAD_FOLDER+oldFilename).c_str(), (UPLOAD_FOLDER+it->second._postInfo._filename).c_str());
-        it->second._statusCode = request.getStatusCode();
+//        it->second._statusCode = request.getStatusCode();
     }
 }
 
@@ -127,6 +129,11 @@ int ConnectClients::receiveData(int i)
 {
     memset(_clientData, 0, MAX_REQUESTSIZE);
     ssize_t bytesRead = recv(_fdList[i].fd, _clientData, sizeof(_clientData), O_NONBLOCK);
+    if (bytesRead < 0)
+        return -1;
+    if (bytesRead == 0)
+        return 0;
+
     #ifdef DEBUG
         std::cout << "Client Data:\n"<<_clientData<<std::endl;
     #endif
@@ -137,7 +144,7 @@ int ConnectClients::receiveData(int i)
     _byteVector.reserve(charArraySize); // Reserve space to avoid reallocations
     for (size_t k = 0; k < charArraySize; ++k)
         _byteVector.push_back(static_cast<uint8_t>(_clientData[k]));
-    return bytesRead;
+    return 69;
 }
 
 
@@ -159,46 +166,56 @@ bool ConnectClients::newConnection(int fdListFd)
     return false;
 }
 
+void ConnectClients::handleData(int fd)
+{
+    initClientInfo(fd);
+
+    std::map<int, clientInfo>::iterator it;
+    it = _clientInfo.find(fd);
+    Response response(fd, it->second);
+
+    switch (it->second._myHTTPMethod)
+    {
+        case M_GET:
+            response.sendRequestedFile();
+            break;
+        case M_POST:
+            it->second._isMultiPart = response.uploadFile(it->second._contentType,
+                                                          it->second._postInfo._boundary,
+                                                          it->second._postInfo._outfile);
+            break;
+        case M_DELETE:
+            response.deleteFile();
+            break;
+        default:
+            Logging::log("cant detect HTTPMethod", 500);
+            break;
+    }
+}
+
 void ConnectClients::clientConnected()
 {
-    std::map<int, clientInfo>::iterator it;
-    int bytesRead;
     for (int i = 0; i < _fdList.size(); ++i)
     {
+        int fd = _fdList[i].fd;
         if (DATA_TO_READ)   //_fdList[i].revents & POLLIN
         {
-            if (newConnection(CURRENT_FD))
-                initNewConnection(CURRENT_FD);
+            if (newConnection(fd))
+                initNewConnection(fd);
             else
             {
-                if ((bytesRead = receiveData(i) > 0))
+                switch (receiveData(i))
                 {
-                    initClientInfo(CURRENT_FD);
-                    it = _clientInfo.find(CURRENT_FD);
-                    Response response(CURRENT_FD, it->second);
-
-                    switch (it->second._myHTTPMethod) {
-                        case M_GET:
-                            response.sendRequestedFile();
-                            break;
-                        case M_POST:
-                            it->second._isMultiPart = response.uploadFile(it->second._contentType,
-                                                                          it->second._postInfo._boundary,
-                                                                          it->second._postInfo._outfile);
-                            break;
-                        case M_DELETE:
-                            response.deleteFile();
-                            break;
-                        default:
-
-                            Logging::log("cant detect HTTPMethod", 500);
-                            break;
-                    }
+                    case 69:
+                        handleData(fd);
+                        break;
+                    case 0:
+                        closeConnection(&i);
+                        break;
+                    default:
+                        Logging::log("Unable to read Data from connected Client", 500);
+                        exit(69);
                 }
-                else if (bytesRead == 0)
-                    closeConnection(&i);
-                else
-                    Logging::log("Unable to read Data from connected Client", 500);
             }
         }
     }

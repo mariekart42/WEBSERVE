@@ -24,6 +24,7 @@
 #define ERROR_INDEXFILE 4036
 #define DIRECTORY_LIST 2007
 #define BAD_REQUEST 4008
+#define METHOD_NOT_ALLOWED 4059
 
 #define POLL_TIMEOUT 200
 #define MAX_REQUESTSIZE 8000         // max for recv() is 1048576 bytes
@@ -37,7 +38,7 @@
 #define PATH_FORBIDDEN "error/403.html"
 #define PATH_BAD_REQUEST "error/400.html"
 #define PATH_HANDLEFOLDERSLATER "error/handleFoldersLater.html"// delete later
-
+#define PATH_METHOD_NOT_ALLOWED "error/405.html"
 
 // NEED FROM CONFIG PARSER!
 
@@ -57,6 +58,9 @@ struct configInfo
     std::string _indexFile; // set to index.html/php... or FAILURE
     std::string _rootFolder;
     bool _autoIndex;
+    bool _postAllowed;
+    bool _getAllowed;
+    bool _deleteAllowed;
 };
 
 struct postInfo
@@ -78,7 +82,6 @@ struct clientInfo
     std::string _contentType;
     bool _isMultiPart;
 
-    int _statusCode;
     postInfo _postInfo;
     configInfo _configInfo;
 };
@@ -104,23 +107,18 @@ class Response
 
 
         std::string decodeURL(const std::string&);
-
-        std::string generateList(const std::string &, const std::string&);
-//        std::string generateList2(const std::string &);
-//    void generateList(const std::string& rootFolder, const std::string& currentFolder, std::string& filePaths, int);
-
-
+        std::string generateList(const std::string&, const std::string&);
         int getDirectoryIndexPage(const std::string&);
         void sendIndexPage();
 
         // POST
-        void sendRequestedFile();
-        bool uploadFile(const std::string&, const std::string&, std::ofstream*);
-        bool saveRequestToFile(std::ofstream&, const std::string&);
-        void urlDecodedInput();
+        void    sendRequestedFile();
+        bool    uploadFile(const std::string&, const std::string&, std::ofstream*);
+        bool    saveRequestToFile(std::ofstream&, const std::string&);
+        void    urlDecodedInput();
 
         // DELETE
-        void deleteFile();
+        void    deleteFile();
 
 };
 

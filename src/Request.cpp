@@ -33,23 +33,24 @@ std::string Request::getFileContentType(const std::string& url)
 }
 
 
-bool Request::pathExists(const std::string& path) {
+bool Request::pathExists(const std::string& path)
+{
     struct stat buffer;
     return stat(path.c_str(), &buffer) == 0;
 }
 
-bool Request::checkPathInFolder(const std::string& filePath, const std::string& rootFolder)
+bool Request::checkPathInFolder(std::string filePath, const std::string& rootFolder)
 {
-    //THIS WORKED BEFORE:
-//    std::string fullPath = rootFolder + "/" + filePath;
-//    return pathExists(fullPath);
-
-    if (filePath.find('/') != std::string::npos) {
-        std::string fullPath = rootFolder + "/" + filePath;
-        return pathExists(fullPath);
-    } else {
-        return pathExists(rootFolder + "/" + filePath);
+    if (!filePath.empty() && filePath[0] != '/') {
+        filePath = "/" + filePath;
     }
+    if (filePath.find('/') != std::string::npos)
+    {
+        std::string fullPath = rootFolder + filePath;
+        return pathExists(fullPath);
+    }
+    else
+        return pathExists(rootFolder + filePath);
 }
 
 
@@ -73,7 +74,6 @@ bool Request::fileExists(const std::string& checkFilename, const std::string& up
             return true;
         }
     }
-
     closedir(dir);
     return false;
 }
@@ -95,13 +95,6 @@ std::string Request::getNewFilename(const std::string& checkFilename, const std:
     return (filename + "(" + std::to_string(fileCount) + ")"+ fileExtension);
 }
 
-//bool Request::badFileContentType(const std::string &filename)
-//{
-//    // check with existing filen
-//    std::string contentType = comparerContentType(filename);
-//    if (contentType == "FAILURE")
-//        return FAILURE;
-//}
 
 /* only for POST && multipart
  * extracts the filename defined in the header of the body      */
@@ -159,7 +152,7 @@ std::string Request::getContentType()
 
     if (foundPos != std::string::npos)
     {
-        size_t endPos = _tmp.find(';', foundPos);// CHanged from ; to \r
+        size_t endPos = _tmp.find(';', foundPos);
         if (endPos != std::string::npos)
         {
             std::string contentType = _tmp.substr(foundPos + 14, endPos - (foundPos + 14));
@@ -215,7 +208,7 @@ std::string Request::getUrlString()
         return (_tmp.substr(startPos, endPos - (startPos)));
     }
     else
-        return (_tmp.substr(startPos));// dis was before
+        return (_tmp.substr(startPos));
 }
 
 int Request::getPort()
