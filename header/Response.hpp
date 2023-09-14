@@ -37,7 +37,7 @@
 #define PATH_ERROR_INDEXFILE "error/PATH_ERROR_INDEXFILE.html"
 #define PATH_FORBIDDEN "error/403.html"
 #define PATH_BAD_REQUEST "error/400.html"
-#define PATH_HANDLEFOLDERSLATER "error/handleFoldersLater.html"// delete later
+//#define PATH_HANDLEFOLDERSLATER "error/handleFoldersLater.html"// delete later
 #define PATH_METHOD_NOT_ALLOWED "error/405.html"
 
 // NEED FROM CONFIG PARSER!
@@ -92,6 +92,7 @@ class Response
     private:
         std::vector<uint8_t> _file;
         clientInfo _info;
+        int _statusCode;
         std::map<int, std::ofstream> _fileStreams;
 
     public:
@@ -102,9 +103,9 @@ class Response
         std::string getContentType();
 
         static std::vector<uint8_t> readFile(const std::string&);
-        std::string getHeader(int statusCode);
+        std::string getHeader();
         void mySend(int);
-
+        int initFile(int);
 
         std::string decodeURL(const std::string&);
         std::string generateList(const std::string&, const std::string&);
@@ -115,7 +116,7 @@ class Response
         void    sendRequestedFile();
         bool    uploadFile(const std::string&, const std::string&, std::ofstream*);
         bool    saveRequestToFile(std::ofstream&, const std::string&);
-        void    urlDecodedInput();
+//        void    urlDecodedInput();
 
         // DELETE
         void    deleteFile();

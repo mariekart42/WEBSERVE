@@ -52,7 +52,7 @@ std::vector<int> SetServer::setUpServer()
 {
 
 //    Config config;
-//    if (!config.getStartServer())
+//    if (!config.validConfig(ac, av))
 //    {
 //        // error, dont start Server
 //    }
