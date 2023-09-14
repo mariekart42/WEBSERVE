@@ -6,7 +6,7 @@
 /*   By: vfuhlenb <vfuhlenb@students.42wolfsburg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 23:17:00 by vfuhlenb          #+#    #+#             */
-/*   Updated: 2023/09/14 17:37:22 by vfuhlenb         ###   ########.fr       */
+/*   Updated: 2023/09/14 19:25:18 by vfuhlenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,12 @@ configParser::configParser(int argc, char **argv) : _context(GLOBAL), _directive
 	_settings.max_events = MAX_EVENTS;
 	_settings.backlog = BACKLOG;
 
+	// setting settings_check struct members to false
 	for (bool* p = &_settings_check.timeout; p <= &_settings_check.backlog; p++)
 		*p = false;
-
-	parsing();
-
-	std::cout << GREEN << "\nInfo: webserv running using configuration \"" << _file_path << "\"" << RESET << std::endl;
-	printGlobalSettings();
-	printServerDetails();
 }
 
-void configParser::parsing()
+bool configParser::validConfig()
 {
 	_file.open(_file_path.c_str());
 	try
@@ -97,8 +92,12 @@ void configParser::parsing()
 	catch (std::exception &e)
 	{
 		std::cerr << BOLDRED << "Error: in \"" << _file_path << "\" on line " << _directive_line_nbr << " : " << e.what() << RESET << std::endl;
-		exit(1);
+		return false;
 	}
+	std::cout << BOLDGREEN << "\nInfo: webserv running using configuration \"" << _file_path << "\"" << RESET << std::endl;
+	printGlobalSettings();
+	printServerDetails();
+	return true;
 }
 
 configParser::~configParser() {}

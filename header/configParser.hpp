@@ -6,7 +6,7 @@
 /*   By: vfuhlenb <vfuhlenb@students.42wolfsburg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 23:16:58 by vfuhlenb          #+#    #+#             */
-/*   Updated: 2023/09/14 17:40:38 by vfuhlenb         ###   ########.fr       */
+/*   Updated: 2023/09/14 19:57:26 by vfuhlenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,17 @@ class configParser {
 		int					getBacklog() const;
 		int					getBuffSize() const;
 		int					getMaxEvents() const;
-		int					getMaxClients() const;	
+		int					getMaxClients() const;
+
+		// TODO VF getters for marie
+		std::string			getUrl(const int currentPort, std::string url) const; // TODO: @Valentin always put / in the beginning of path, if redirection is set - then change the URL
+		std::string			getRootFolder(const int currentPort) const;
+		bool				getAutoIndex(const int currentPort) const;
+		std::string			getIndexFile(const int currentPort) const;
+		bool				getPostAllowed(const int currentPort) const;
+		bool				getDeleteAllowed(const int currentPort) const;
+		bool				getGetAllowed(const int currentPort) const;
+		std::vector<int>&	getPortVector() const;
 
 		// DEBUG
 
@@ -155,7 +165,7 @@ class configParser {
 	private:
 
 		configParser();
-		void			parsing();
+		bool			validConfig();
 		void			setDirective(Server&, const std::string&);
 		void			setGlobal();
 		void			validate_minimal_server_configuration(Server& server);
