@@ -17,15 +17,13 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="05726d74-3e7a-4bfb-b43b-4df32fa81e24" name="Changes" comment="POST response code cleaned up, check for all recv()&amp;&amp;send() done,  next:implement CGI + get Parser data">
+    <list default="true" id="05726d74-3e7a-4bfb-b43b-4df32fa81e24" name="Changes" comment="fixed case where bodySize%maxRequestSize is 0 [last boundary was part of prev request AND current request]">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/header/Response.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/header/Response.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/header/marieConfigParser.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/header/marieConfigParser.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/header/utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/header/utils.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/log/log.log" beforeDir="false" afterPath="$PROJECT_DIR$/log/log.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Request.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Request.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Response.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Response.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/marieConfigParser.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/marieConfigParser.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -192,7 +190,7 @@
       <workItem from="1694600164073" duration="6750000" />
       <workItem from="1694630518845" duration="2654000" />
       <workItem from="1694634433559" duration="4649000" />
-      <workItem from="1694697759115" duration="10453000" />
+      <workItem from="1694697759115" duration="11889000" />
     </task>
     <task id="LOCAL-00001" summary="check application, audio and font, everything else works :))">
       <created>1692823969394</created>
@@ -320,7 +318,14 @@
       <option name="project" value="LOCAL" />
       <updated>1694705747887</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="fixed case where bodySize%maxRequestSize is 0 [last boundary was part of prev request AND current request]">
+      <created>1694711599093</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1694711599093</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -388,7 +393,8 @@
     <MESSAGE value="same but clean" />
     <MESSAGE value="deleting files works, siege is at 99%, maybe change socket settings &amp;&amp; dynamically client connections otherwise SHEEEEESH" />
     <MESSAGE value="POST response code cleaned up, check for all recv()&amp;&amp;send() done,  next:implement CGI + get Parser data" />
-    <option name="LAST_COMMIT_MESSAGE" value="POST response code cleaned up, check for all recv()&amp;&amp;send() done,  next:implement CGI + get Parser data" />
+    <MESSAGE value="fixed case where bodySize%maxRequestSize is 0 [last boundary was part of prev request AND current request]" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed case where bodySize%maxRequestSize is 0 [last boundary was part of prev request AND current request]" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -415,17 +421,17 @@
         </line-breakpoint>
         <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/Response.cpp</url>
-          <line>390</line>
+          <line>395</line>
           <option name="timeStamp" value="42" />
         </line-breakpoint>
         <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/Response.cpp</url>
-          <line>360</line>
+          <line>365</line>
           <option name="timeStamp" value="45" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/Response.cpp</url>
-          <line>358</line>
+          <line>363</line>
           <option name="timeStamp" value="47" />
         </line-breakpoint>
       </breakpoints>
