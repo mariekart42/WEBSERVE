@@ -126,7 +126,11 @@ void ConnectClients::initClientInfo(int _clientSocket)
 
 int ConnectClients::receiveData(int i)
 {
-    memset(_clientData, 0, MAX_REQUESTSIZE);
+    // TODO implement maxClientBodySize from valentin config parser
+    // problem: we don't know port yet
+    // if maxClientBodySize is not global for all server, we can't know it here
+    // -> dont implement _clientData in class, but here (afterwards we write it to vector so alles toggo)
+    memset(_clientData, 0, sizeof(_clientData));
     ssize_t bytesRead = recv(_fdList[i].fd, _clientData, sizeof(_clientData), O_NONBLOCK);
     if (bytesRead < 0)
         return -1;
