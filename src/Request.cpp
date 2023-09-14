@@ -203,12 +203,16 @@ std::string Request::getUrlString()
     size_t startPos = _tmp.find('/', 0) + 1;
     size_t endPos = _tmp.find(' ', startPos);
 
-    // MAKE URL LOWERCASE HERE
-    if (endPos != std::string::npos){
-        return (_tmp.substr(startPos, endPos - (startPos)));
-    }
+    std::string url;
+    if (endPos != std::string::npos)
+        url = _tmp.substr(startPos, endPos - (startPos));
     else
-        return (_tmp.substr(startPos));
+        url = _tmp.substr(startPos);
+
+//    size_t found;
+//    while ((found = url.find("%20")) != std::string::npos)
+//        url.replace(found, 3, " ");
+    return url;
 }
 
 int Request::getPort()

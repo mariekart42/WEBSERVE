@@ -211,7 +211,10 @@ int Response::initFile(int statusCode)
     if (statusCode == 200)
     {
         if ((_info._fileContentType = getContentType()) == FAILURE)
-            mySend(404);
+        {
+            _file = readFile(PATH_404_ERRORWEBSITE);
+            return 404;
+        }
         return 200;
     }
 
@@ -331,7 +334,7 @@ bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boun
 
     std::string convert(_info._postInfo._input.begin(), _info._postInfo._input.end());
     std::string startBoundary = "--"+boundary+"\r\n";
-    std::string endBoundary = "\r\n--"+boundary+"--";
+    std::string endBoundary = "--"+boundary+"--";
     std::vector<uint8_t>::iterator startPos69 = _info._postInfo._input.begin();
     std::vector<uint8_t>::iterator endPos69 = _info._postInfo._input.end();
     size_t posStartBoundary = convert.find(startBoundary);
@@ -359,26 +362,44 @@ bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boun
         endOfFile = true;
     }
     std::vector<uint8_t>::iterator it;
-    for (it = startPos69; it != endPos69; it++)
+    for (it = startPos69; it != endPos69-2; it++)
         outfile << *it;
+
+//    if (endOfFile)
+//    {
+//        outfile.close();
+//
+//        //try CGI
+//
+//        if (_info._postInfo._filename == BAD_CONTENT_TYPE || !_info._configInfo._postAllowed)
+//        {
+//            std::remove((_info._configInfo._rootFolder + "/" + _info._url + "/" + _info._postInfo._filename).c_str());
+//            if (_info._postInfo._filename == BAD_CONTENT_TYPE)
+//                mySend(BAD_REQUEST);
+//            else
+//                mySend(METHOD_NOT_ALLOWED);
+//        }
+//        else
+//            mySend(FILE_SAVED);
+//        return false;
+//    }
 
     if (endOfFile)
     {
+        std::cout << "END OF FILE"<<std::endl;
         outfile.close();
-
-        //try CGI
-
-        if (_info._postInfo._filename == BAD_CONTENT_TYPE || !_info._configInfo._postAllowed)
+        if (_info._postInfo._filename == BAD_CONTENT_TYPE)
         {
-            std::remove((_info._configInfo._rootFolder + "/" + _info._url + "/" + _info._postInfo._filename).c_str());
-            if (_info._postInfo._filename == BAD_CONTENT_TYPE)
-                mySend(BAD_REQUEST);
-            else
-                mySend(METHOD_NOT_ALLOWED);
+            std::remove((_info._configInfo._rootFolder+"/"+ _info._url + "/"+ _info._postInfo._filename).c_str());// maybe here rootfolder + "/" ...
+            return mySend(BAD_REQUEST), false;
         }
-        else
-            mySend(FILE_SAVED);
-        return false;
+        if (!_info._configInfo._postAllowed)
+        {
+            std::remove((_info._configInfo._rootFolder +"/"+ _info._url + "/"+ _info._postInfo._filename).c_str());// maybe here rootfolder + "/" ...
+            return mySend(METHOD_NOT_ALLOWED), false;
+        }
+        return mySend(FILE_SAVED), false;
     }
+
     return true;
 }

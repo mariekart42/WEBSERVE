@@ -35,10 +35,10 @@ std::string MarieConfigParser::getRootFolder(int port)
     return (ROOT_FOLDER);
 }
 
-int MarieConfigParser::getClientBodysize(int port)
-{
-    return (CLIENT_BODY);
-}
+//int MarieConfigParser::getClientBodysize(int port)
+//{
+//    return (CLIENT_BODY);
+//}
 
 bool MarieConfigParser::getAutoIndex(int port)
 {

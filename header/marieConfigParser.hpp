@@ -5,11 +5,12 @@
 
 // DON'T USE!! it's for me for testing
 #define PORT1 80
-#define PORT2 2020
+#define PORT2 1010
+
 #define PORT3 3030
 #define PORT4 4040
 
-#define CLIENT_BODY 8000
+//#define CLIENT_BODY 10000
 #define ROOT_FOLDER "root"
 #define AUTO_INDEX true
 #define INDEX_FILE "index.html"

@@ -27,7 +27,7 @@
 #define METHOD_NOT_ALLOWED 4059
 
 #define POLL_TIMEOUT 200
-#define MAX_REQUESTSIZE 8000         // max for recv() is 1048576 bytes
+#define MAX_REQUESTSIZE 8080         // max for recv() is 1048576 bytes
 
 
 
