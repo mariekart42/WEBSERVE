@@ -124,6 +124,7 @@ class Response
 		bool	checkForPython(void);
 		bool	validCGIfile();
 		int		CGIpy();
+		void	CGIoutput();
 
         // DELETE
         void    deleteFile();

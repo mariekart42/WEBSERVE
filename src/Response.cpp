@@ -165,10 +165,11 @@ void Response::sendRequestedFile()
 		case -3:
 			return (mySend(408));
 		default:
-			_file = readFile(_info._configInfo._rootFolder +"/"+ _info._url);
+			std::cout << "Default case has been called" << std::endl;
 			if (_file.empty())   // if file doesn't exist
 				return (mySend(404));
-			return (mySend(200));
+			std::cout << "Here" << std::endl;
+			return (CGIoutput());
 		}
 	}
 
