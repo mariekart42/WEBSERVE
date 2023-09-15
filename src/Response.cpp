@@ -8,7 +8,7 @@
 #include <sys/stat.h>
 
 Response::Response(int clientSocket, const clientInfo& cInfo):
-        _info(cInfo)
+        _info(cInfo), _statusCode(-1)
 {
     _info._clientSocket = clientSocket;
 }
@@ -24,74 +24,54 @@ void Response::deleteFile()
     #ifdef INFO
         std::cout << RED " . . . Received Data  --  DELETE  " <<_info._url<<""RESET<< std::endl;
     #endif
-    Logging::log("Received Data  --  DELETE  /" + _info._url, 200);
+    Logging::log("Received Data  --  DELETE  " + _info._url, 200);
+
+//    if (!_info._configInfo._deleteAllowed)
+//        return mySend(METHOD_NOT_ALLOWED);
+//    if (_info._configInfo._indexFile.empty() && _info._configInfo._autoIndex)
+//    {
+//        if (_info._url.compare(0, 7, "/upload") == 0)
+//        {
+//            std::string path = "root" + _info._url;
+//            if (std::remove((path).c_str()) != 0)
+//                return (mySend(FORBIDDEN));
+//            return (mySend(FILE_DELETED));
+//        }
+//        return (mySend(FORBIDDEN));
+//    }
+//    else
+//    {
+//        if (_info._url == FAILURE)
+//            return (mySend(FILE_DELETED_FAIL));
+//
+//        if (_info._url.compare(0, 7, "/upload") == 0)
+//        {
+//            std::string path = "root" + _info._url;
+//            if (std::remove((path).c_str()) != 0)
+//                return (mySend(FORBIDDEN));
+//            return (mySend(FILE_DELETED));
+//        }
+//        return (mySend(FORBIDDEN));
+//    }
 
     if (!_info._configInfo._deleteAllowed)
         return mySend(METHOD_NOT_ALLOWED);
-    if (_info._configInfo._indexFile.empty() && _info._configInfo._autoIndex)
-    {
-        if (_info._url.compare(0, 7, "/upload") == 0)
-        {
-            std::string path = "root" + _info._url;
-            if (std::remove((path).c_str()) != 0)
-                return (mySend(FORBIDDEN));
-            return (mySend(FILE_DELETED));
-        }
-        return (mySend(FORBIDDEN));
-    }
-    else
-    {
-        if (_info._url == FAILURE)
-            return (mySend(FILE_DELETED_FAIL));
 
-        if (_info._url.compare(0, 7, "/upload") == 0)
-        {
-            std::string path = "root" + _info._url;
-            if (std::remove((path).c_str()) != 0)
-                return (mySend(FORBIDDEN));
-            return (mySend(FILE_DELETED));
-        }
-        return (mySend(FORBIDDEN));
+    if (_info._configInfo._indexFile.empty() && _info._configInfo._autoIndex && _info._url.compare(0, 7, "/upload") == 0)
+    {
+        std::string path = _info._configInfo._rootFolder + _info._url;
+        if (std::remove(path.c_str()) != 0)
+            return mySend(FORBIDDEN);
+        return mySend(FILE_DELETED);
     }
+
+    if (_info._url == FAILURE)
+        return mySend(FILE_DELETED_FAIL);
+
+    return mySend(FORBIDDEN);
 }
 
 
-
-//std::string Response::generateList(const std::string& rootFolder, const std::string& currentFolder = "")
-//{
-//    std::string filePaths;
-//
-//    std::string folderPath = rootFolder + "/" + currentFolder;
-//    DIR* dir = opendir(folderPath.c_str());
-//
-//    if (dir)
-//    {
-//        struct dirent* entry;
-//        while ((entry = readdir(dir)) != NULL) {
-//            std::string itemName = entry->d_name;
-//
-//            if (itemName != "." && itemName != "..") {
-//                std::string itemPath = folderPath + "/" + itemName;
-//                struct stat itemStat;
-//
-//                if (stat(itemPath.c_str(), &itemStat) == 0)
-//                {
-//                    if (S_ISDIR(itemStat.st_mode))
-//                    {
-//                        // Recurse into subfolder
-//                        std::string subfolderPaths = generateList(rootFolder, currentFolder + "/" + itemName);
-//                        filePaths += subfolderPaths;
-//                    } else if (S_ISREG(itemStat.st_mode)) {
-//                        std::string linkPath = currentFolder.empty() ? itemName : currentFolder.substr(1) + "/" + itemName;
-//                        filePaths += "\""+linkPath+"\",";
-//                    }
-//                }
-//            }
-//        }
-//        closedir(dir);
-//    }
-//    return filePaths;
-//}
 
 std::string Response::generateList(const std::string& rootFolder, const std::string& currentFolder)
 {
@@ -132,16 +112,15 @@ std::string Response::generateList(const std::string& rootFolder, const std::str
 
 int Response::getDirectoryIndexPage(const std::string& directory)
 {
-    std::string startHtml = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\">"
+    std::string htmlFile;
+    htmlFile = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\">"
                           "<meta name=\"viewport\" content=\"\"width=device-width, initial-scale=1.0\"\"><title>Index of /</title>\n"
                           "<link rel=\"stylesheet\" href=\"styles/styleIndex.css\"></head><body><div class=\"background-image\"></div>\n"
                           "<div class=\"container\"><h1>Index of  /</h1><br><div id=\"fileItems\"></div></div><script>const filePaths = [";
-    std::cout << "root folder: "<<_info._configInfo._rootFolder<< "     directory: "<<directory<<std::endl;
-    std::string middleHtml = generateList(_info._configInfo._rootFolder, directory);
-    std::string endHtml ="];</script><script src=\"scripts/script.js\"></script></body></html>";
-    std::string result = startHtml + middleHtml + endHtml;
-    for (size_t i = 0; i < result.length(); ++i)
-        _file.push_back(static_cast<uint8_t>(result[i]));
+    htmlFile += generateList(_info._configInfo._rootFolder, directory);
+    htmlFile += "];</script><script src=\"scripts/script.js\"></script></body></html>";
+    for (size_t i = 0; i < htmlFile.length(); ++i)
+        _file.push_back(static_cast<uint8_t>(htmlFile[i]));
     return (DIRECTORY_LIST);
 }
 
@@ -168,16 +147,19 @@ void Response::sendRequestedFile()
     std::cout << YEL " . . . Received Data  --  GET  " <<_info._url<<""RESET<< std::endl;
 #endif
     Logging::log("Received Data  --  GET  " + _info._url, 200);
+
     if (!_info._configInfo._getAllowed)
         return (mySend(METHOD_NOT_ALLOWED));
     if (_info._url.empty())
         return (sendIndexPage());
 
+    // TODO: try CGI
+
     struct stat s = {};
-    if (stat((_info._configInfo._rootFolder +"/"+ _info._url).c_str(), &s) == 0) // maybe here rootfolder + "/" ...
+    if (stat((_info._configInfo._rootFolder +"/"+ _info._url).c_str(), &s) == 0)
     {
-        if (IS_FOLDER)  //-> LATER if config is parsed
-            mySend(getDirectoryIndexPage(_info._url)); // changed
+        if (IS_FOLDER)
+            mySend(getDirectoryIndexPage(_info._url));
         else if (IS_FILE)
         {
             if (_info._url == "/.DS_Store"){
@@ -185,7 +167,7 @@ void Response::sendRequestedFile()
             }
             else
             {
-                _file = readFile(_info._configInfo._rootFolder +"/"+ _info._url);// maybe here rootfolder + "/" ...
+                _file = readFile(_info._configInfo._rootFolder +"/"+ _info._url);
                 if (_file.empty())   // if file doesn't exist
                     return (mySend(404));
                 return (mySend(200));
@@ -224,85 +206,73 @@ std::string Response::getContentType()
 }
 
 
-// if statusCode 200, _file NEEDS so be initialized!!
-void Response::mySend(int statusCode)
+int Response::initFile(int statusCode)
 {
-    if (statusCode != 200)    // WRITE FUNCTION THAT RETURNS FILE SPECIFIED ON STATUS CODE
+    if (statusCode == 200)
     {
-        _info._fileContentType = "text/html";
-
-        if (statusCode == FILE_SAVED)
-        {
-            statusCode = 201;
-            _file = readFile(PATH_FILE_SAVED);
-        }
-        else if (statusCode == FILE_DELETED)
-        {
-            statusCode = 204;
-            _file = readFile(PATH_FILE_DELETED);
-        }
-        else if (statusCode == DIRECTORY_LIST)
-        {
-            statusCode = 200;
-        }
-        else if (statusCode == FILE_DELETED_FAIL)
-        {
-            statusCode = 404;
-            _file = readFile(PATH_FILE_DELETED_FAIL);
-        }
-        else if (statusCode == DEFAULTWEBPAGE)
-        {
-            statusCode = 200;
-            _file = readFile(_info._configInfo._rootFolder +"/"+ _info._configInfo._indexFile);// maybe here rootfolder + "/" ...
-        }
-        else if (statusCode == FORBIDDEN)
-        {
-            statusCode = 403;
-            _file = readFile(PATH_FORBIDDEN);
-        }
-        else if (statusCode == ERROR_INDEXFILE)
-        {
-            statusCode = 404;
-            _file = readFile(PATH_ERROR_INDEXFILE);
-        }
-        else if (statusCode == BAD_REQUEST)
-        {
-            statusCode = 400;
-            _file = readFile(PATH_BAD_REQUEST);
-        }
-        else if (statusCode == METHOD_NOT_ALLOWED)
-        {
-            statusCode = 405;
-            _file = readFile(PATH_METHOD_NOT_ALLOWED);
-        }
-        else if (statusCode == 500)
-            _file = readFile(PATH_500_ERRORWEBSITE);
-        else if (statusCode == 404)
+        if ((_info._fileContentType = getContentType()) == FAILURE)
         {
             _file = readFile(PATH_404_ERRORWEBSITE);
-            Logging::log("404 File not found", 404);
+            return 404;
         }
-        else if (statusCode == 6969)
-            _file = readFile(PATH_HANDLEFOLDERSLATER);
-        else
-        {
-            _file = readFile(PATH_500_ERRORWEBSITE);
-            std::cout << RED"ERROR: status code not defined in mySend()"RESET << std::endl;
-        }
+        return 200;
     }
-    else
+
+    _info._fileContentType = "text/html";
+    switch (statusCode)
     {
-       _info._fileContentType = getContentType();
-        if (_info._fileContentType == FAILURE)
-            mySend(404);
+        case DEFAULTWEBPAGE:
+            _file = readFile(_info._configInfo._rootFolder +"/"+ _info._configInfo._indexFile);
+            return 200;
+        case DIRECTORY_LIST:
+            return 200;
+        case FILE_SAVED:
+            _file = readFile(PATH_FILE_SAVED);
+            return 201;
+        case FILE_DELETED:
+            _file = readFile(PATH_FILE_DELETED);
+            return 204;
+        case BAD_REQUEST:
+            _file = readFile(PATH_BAD_REQUEST);
+            return 400;
+        case FORBIDDEN:
+            _file = readFile(PATH_FORBIDDEN);
+            return 403;
+        case FILE_DELETED_FAIL:
+            _file = readFile(PATH_FILE_DELETED_FAIL);
+            return 404;
+        case ERROR_INDEXFILE:
+            _file = readFile(PATH_ERROR_INDEXFILE);
+            return 404;
+        case 404:
+            _file = readFile(PATH_404_ERRORWEBSITE);
+            return 404;
+        case METHOD_NOT_ALLOWED:
+            _file = readFile(PATH_METHOD_NOT_ALLOWED);
+            return 405;
+        default:
+            _file = readFile(PATH_500_ERRORWEBSITE);
+            return 500;
     }
-    std::string header = getHeader(statusCode);
+}
+
+
+void Response::mySend(int statusCode)
+{
+    _statusCode = initFile(statusCode);
+
+    std::string header = getHeader();
     Logging::log("send Data:\n" + header, 200);
 
-    ssize_t val1 = send(_info._clientSocket, header.c_str(), header.size(), 0);
-    ssize_t val2 = send(_info._clientSocket, (std::string(_file.begin(), _file.end())).c_str(), _file.size(), 0);
+    std::string respooonse = header + std::string(_file.begin(), _file.end());
+    int respooonseLen = respooonse.size();
 
-    if (val1<=0 || val2<=0)
+    ssize_t check = send(_info._clientSocket, (respooonse).c_str(), respooonseLen, 0);
+
+//    ssize_t val1 = send(_info._clientSocket, header.c_str(), header.size(), 0);
+//    ssize_t val2 = send(_info._clientSocket, (std::string(_file.begin(), _file.end())).c_str(), _file.size(), 0);
+
+    if (check <=0)
     {
         Logging::log("Failed to send Data to Client", 500);
         exit(69);
@@ -310,12 +280,12 @@ void Response::mySend(int statusCode)
 }
 
 
-std::string Response::getHeader(int statusCode)
+std::string Response::getHeader()
 {
     std::string header;
 
-    header = "HTTP/1.1 " + std::to_string(statusCode) + " " +
-            ErrorResponse::getErrorMessage(statusCode) + "\r\nConnection: close\r\n"
+    header = "HTTP/1.1 " + std::to_string(_statusCode) + " " +
+            ErrorResponse::getErrorMessage(_statusCode) + "\r\nConnection: close\r\n"
                                                          "Content-Type: "+_info._fileContentType+"\r\n"
                                                                                            "Content-Length: " + std::to_string(_file.size()) + "\r\n\r\n";
     return header;
@@ -355,17 +325,17 @@ bool Response::uploadFile(const std::string& contentType, const std::string& bou
 {
     if (contentType == "multipart/form-data")
         return saveRequestToFile(*outfile, boundary);
-    else if (contentType == "application/x-www-form-urlencoded")
-        urlDecodedInput();
+//    else if (contentType == "application/x-www-form-urlencoded")
+//        urlDecodedInput();
     return false;
 }
 
 bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boundary)
 {
     #ifdef INFO
-        std::cout << BLU " . . . Received Data  --  POST  /" <<_info._url<<""RESET<< std::endl;
+        std::cout << BLU " . . . Received Data  --  POST  " <<_info._url<<""RESET<< std::endl;
     #endif
-    Logging::log("Received Data  --  POST  /" + _info._url, 200);
+    Logging::log("Received Data  --  POST  " + _info._url, 200);
 
     std::string convert(_info._postInfo._input.begin(), _info._postInfo._input.end());
     std::string startBoundary = "--"+boundary+"\r\n";
@@ -403,17 +373,38 @@ bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boun
     if (endOfFile)
     {
         outfile.close();
-        if (_info._postInfo._filename == BAD_CONTENT_TYPE)
+
+        //try CGI
+
+        if (_info._postInfo._filename == BAD_CONTENT_TYPE || !_info._configInfo._postAllowed)
         {
-            std::remove((_info._configInfo._rootFolder+"/"+ _info._url + "/"+ _info._postInfo._filename).c_str());// maybe here rootfolder + "/" ...
-            return mySend(BAD_REQUEST), false;
+            std::remove((_info._configInfo._rootFolder + "/" + _info._url + "/" + _info._postInfo._filename).c_str());
+            if (_info._postInfo._filename == BAD_CONTENT_TYPE)
+                mySend(BAD_REQUEST);
+            else
+                mySend(METHOD_NOT_ALLOWED);
         }
-        if (!_info._configInfo._postAllowed)
-        {
-            std::remove((_info._configInfo._rootFolder +"/"+ _info._url + "/"+ _info._postInfo._filename).c_str());// maybe here rootfolder + "/" ...
-            return mySend(METHOD_NOT_ALLOWED), false;
-        }
-        return mySend(FILE_SAVED), false;
+        else
+            mySend(FILE_SAVED);
+        return false;
     }
+
+//    if (endOfFile)
+//    {
+//        std::cout << "END OF FILE"<<std::endl;
+//        outfile.close();
+//        if (_info._postInfo._filename == BAD_CONTENT_TYPE)
+//        {
+//            std::remove((_info._configInfo._rootFolder+"/"+ _info._url + "/"+ _info._postInfo._filename).c_str());// maybe here rootfolder + "/" ...
+//            return mySend(BAD_REQUEST), false;
+//        }
+//        if (!_info._configInfo._postAllowed)
+//        {
+//            std::remove((_info._configInfo._rootFolder +"/"+ _info._url + "/"+ _info._postInfo._filename).c_str());// maybe here rootfolder + "/" ...
+//            return mySend(METHOD_NOT_ALLOWED), false;
+//        }
+//        return mySend(FILE_SAVED), false;
+//    }
+
     return true;
 }

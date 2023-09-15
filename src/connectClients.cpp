@@ -92,7 +92,7 @@ void ConnectClients::initClientInfo(int _clientSocket)
         if (initNewInfo._myHTTPMethod == M_POST)
         {
             initNewInfo._postInfo._input = input;
-            initNewInfo._configInfo._postAllowed = config.getPostAllowed(currentPort);// TODO: implement correctly from Valentin
+            initNewInfo._configInfo._postAllowed = config.getPostAllowed(currentPort);
             initNewInfo._postInfo._filename = request.getFileName(initNewInfo._contentType, initNewInfo._postInfo._filename, UPLOAD_FOLDER);
             initNewInfo._postInfo._outfile = new std::ofstream (UPLOAD_FOLDER+initNewInfo._postInfo._filename, std::ofstream::out | std::ofstream::app  | std::ofstream::binary);
             if (initNewInfo._contentType == "multipart/form-data")
@@ -105,7 +105,7 @@ void ConnectClients::initClientInfo(int _clientSocket)
         }
         if (initNewInfo._myHTTPMethod == M_DELETE)
         {
-            if (!Request::checkPathInFolder(initNewInfo._url, initNewInfo._configInfo._rootFolder))//changed
+            if (!Request::checkPathInFolder(initNewInfo._url, initNewInfo._configInfo._rootFolder))
                 initNewInfo._url = FAILURE;
             initNewInfo._configInfo._deleteAllowed = config.getDeleteAllowed(currentPort);
         }
@@ -121,13 +121,16 @@ void ConnectClients::initClientInfo(int _clientSocket)
         it->second._postInfo._filename = request.getFileName(it->second._contentType, it->second._postInfo._filename, UPLOAD_FOLDER);
         if (oldFilename.compare(0, 13, "not_found_yet") == 0 && it->second._postInfo._filename.compare(0, 13, "not_found_yet") != 0)
             rename((UPLOAD_FOLDER+oldFilename).c_str(), (UPLOAD_FOLDER+it->second._postInfo._filename).c_str());
-//        it->second._statusCode = request.getStatusCode();
     }
 }
 
 int ConnectClients::receiveData(int i)
 {
-    memset(_clientData, 0, MAX_REQUESTSIZE);
+    // TODO implement maxClientBodySize from valentin config parser
+    // problem: we don't know port yet
+    // if maxClientBodySize is not global for all server, we can't know it here
+    // -> dont implement _clientData in class, but here (afterwards we write it to vector so alles toggo)
+    memset(_clientData, 0, sizeof(_clientData));
     ssize_t bytesRead = recv(_fdList[i].fd, _clientData, sizeof(_clientData), O_NONBLOCK);
     if (bytesRead < 0)
         return -1;
