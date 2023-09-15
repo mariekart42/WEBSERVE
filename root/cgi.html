@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>CGI Example</title>
+</head>
+<body>
+	<h1>GET</h1>
+	<h2>Enter your name:</h2>
+	<form action="cgi-bin/simple.py" method="get">
+		<input type="text" name="name">
+		<input type="submit" value="Submit">
+	</form>
+	<h1>POST</h1>
+	<h2>Enter your name:</h2>
+	<form action="/cgi-bin/simple.py" method="post"> <!--  -->
+		<input type="text" name="name">
+		<input type="submit" value="Submit">
+	</form>
+</body>
+</html>

@@ -2,7 +2,7 @@
 // Had to initialize the map with the configuration keys in
 // respect to member variables
 
-Configuration::Configuration() 
+Configuration::Configuration()
     : serverPort(8080),
       rootDirectory(""),
       serverHost(""),

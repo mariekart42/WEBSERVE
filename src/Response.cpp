@@ -153,7 +153,24 @@ void Response::sendRequestedFile()
     if (_info._url.empty())
         return (sendIndexPage());
 
-    // TODO: try CGI
+    if(validCGIfile() == true)
+	{
+		int check = CGIpy();
+		switch (check)
+		{
+		case -1:
+			return(mySend(500));
+		case -2:
+			return (mySend(404));
+		case -3:
+			return (mySend(408));
+		default:
+			_file = readFile(_info._configInfo._rootFolder +"/"+ _info._url);
+			if (_file.empty())   // if file doesn't exist
+				return (mySend(404));
+			return (mySend(200));
+		}
+	}
 
     struct stat s = {};
     if (stat((_info._configInfo._rootFolder +"/"+ _info._url).c_str(), &s) == 0)
@@ -374,7 +391,8 @@ bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boun
     {
         outfile.close();
 
-        //try CGI
+        if (validCGIfile()== true)
+			std::cout << "This correct" << std::endl;
 
         if (_info._postInfo._filename == BAD_CONTENT_TYPE || !_info._configInfo._postAllowed)
         {

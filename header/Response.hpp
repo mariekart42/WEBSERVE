@@ -94,6 +94,8 @@ class Response
         clientInfo _info;
         int _statusCode;
         std::map<int, std::ofstream> _fileStreams;
+		std::string	_cgiPath;
+		std::string	_query;
 
     public:
         Response(int, const clientInfo&);
@@ -117,6 +119,11 @@ class Response
         bool    uploadFile(const std::string&, const std::string&, std::ofstream*);
         bool    saveRequestToFile(std::ofstream&, const std::string&);
 //        void    urlDecodedInput();
+
+		// CGI stuffff
+		bool	checkForPython(void);
+		bool	validCGIfile();
+		int		CGIpy();
 
         // DELETE
         void    deleteFile();
