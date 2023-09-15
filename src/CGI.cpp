@@ -73,13 +73,14 @@ int Response::CGIpy() {
 	int pipefd[2];
 	int status;
 
+
 	struct timeval start;
 	struct timeval end;
 
 	if (checkForPython() == false)
 		return -1;
 	_cgiPath = this->_info._configInfo._rootFolder + _cgiPath;
-	std::cout << "_cgiPath: " << _cgiPath << std::endl;
+	std::cout << "_cgiPath: >>" << _cgiPath<<"<<" << std::endl;
 	if(access(this->_cgiPath.c_str(), F_OK ) != 0){
 		std::cout << "no cgi file" << std::endl;
 		return -2;
@@ -89,8 +90,16 @@ int Response::CGIpy() {
 	envp.push_back(_query.c_str());
 	std::vector<char*> casted;
 	casted.push_back(const_cast<char*>(envp[0]));
-
+	std::cout << "_query=" << _query << std::endl;
+	const char *path_info = "root/cgi-bin/simple.py";
+	std::cout << ">>" << _cgiPath.c_str()<< "<<" << std::endl;
+	std::cout << ">>root/cgi-bin/simple.py<<" << std::endl;
+	const char *pythonexec = "python3";
+	char *python = (char*)pythonexec;
+	char* cmd = (char*)path_info;
+	char* argv[] = {python, cmd, nullptr};
 	int file = open("temp", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+
 	gettimeofday(&start, NULL);
 
 	int pid = fork();
@@ -104,29 +113,25 @@ int Response::CGIpy() {
 
 	if (pid == 0) {
 		close(pipefd[0]);
-		dup2(file, STDOUT_FILENO);
-		close(file);
-
-	const char *path_info = _cgiPath.c_str();
-	const char *pythonexec = "python3";
-	char *python = (char*)pythonexec;
-	char* cmd = (char*)path_info;
-	char* argv[] = {python, cmd, nullptr};
-		if (execve("/usr/bin/python3", argv, casted.data()) == -1) {
+//		dup2(file, STDOUT_FILENO);
+//		close(file);
+		if (execve("/usr/bin/python3", argv, NULL) == -1) {
 			std::cerr << "Error: execve failed" << std::endl;
 			std::cerr << _cgiPath << std::endl;
+			close(file);
 		}
-		else {
+	}
+	else {
 			close(pipefd[1]);
 			waitpid(pid, &status, 0);
 		}
-
+	gettimeofday(&end, NULL);
+	close(file);
 	int diff = (end.tv_sec - start.tv_sec) * 1000.0 + (end.tv_usec - start.tv_usec) / 1000.0;
-	std::cout << "Time out: " << diff  << "ms compared with " << TIMEOUT << "ms" << std::endl;
+	//std::cout << "Time out: " << diff  << "ms compared with " << TIMEOUT << "ms" << std::endl;
 		if (diff >= TIMEOUT ) {
 			remove("temp");
 			return -3;
 		}
-	}
 	return 0;
 }

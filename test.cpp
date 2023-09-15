@@ -46,7 +46,7 @@ void executePythonScript(const std::string& scriptPath) {
 }
 
 int main() {
-    std::string _cgiPath = "/Users/dnguyen/WEBSERVE/root/cgi-bin/simple.py";
+    std::string _cgiPath = "root/cgi-bin/simple.py";
 
     executePythonScript(_cgiPath);
 
