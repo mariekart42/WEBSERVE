@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   configParser.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vfuhlenb <vfuhlenb@students.42wolfsburg    +#+  +:+       +#+        */
+/*   By: vfuhlenb <vfuhlenb@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 23:17:00 by vfuhlenb          #+#    #+#             */
-/*   Updated: 2023/09/16 20:23:36 by vfuhlenb         ###   ########.fr       */
+/*   Updated: 2023/09/16 23:22:06 by vfuhlenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,20 +161,37 @@ std::string	configParser::getIndexFile()
 bool configParser::getPostAllowed()
 {
 	RouteIterator route;
-	bool result = false;
 	route = getServer(_request_data.port)._routes.find(_request_data.route);
 	if (route != getServer(_request_data.port)._routes.end())
 	{
-		StringVector::iterator it;
-		for (it = route->second._methods.begin(); it != route->second._methods.end(); ++it)
-		{
-			if (*it == "POST")
-				result = true;
-			return result;
-		}
-		result = false;
+		if (hasMethod(route->second._methods, "POST"))
+			return true;
 	}
-	return result;
+	return false;
+}
+
+bool configParser::getDeleteAllowed()
+{
+	RouteIterator route;
+	route = getServer(_request_data.port)._routes.find(_request_data.route);
+	if (route != getServer(_request_data.port)._routes.end())
+	{
+		if (hasMethod(route->second._methods, "DELETE"))
+			return true;
+	}
+	return false;
+}
+
+bool configParser::getGetAllowed()
+{
+	RouteIterator route;
+	route = getServer(_request_data.port)._routes.find(_request_data.route);
+	if (route != getServer(_request_data.port)._routes.end())
+	{
+		if (hasMethod(route->second._methods, "GET"))
+			return true;
+	}
+	return false;
 }
 
 Server&	configParser::getServer(const int port)
@@ -584,6 +601,26 @@ RouteIterator	configParser::return_route()
 {
 	RouteIterator it = getServer(_request_data.port)._routes.find(_request_data.route);
 	return it;
+}
+
+bool configParser::hasRoute(Server& server, const std::string& route)
+{
+	StringLocationMap::iterator it;
+	it = server._routes.find(route);
+	if (it == server._routes.end())
+		return false;
+	return true;
+}
+
+bool configParser::hasMethod(StringVector& methods, std::string method)
+{
+
+	for (size_t i = 0; i < methods.size(); ++i)
+	{
+		if (methods[i] == method)
+			return true;
+	}
+	return false;
 }
 
 // DEBUG

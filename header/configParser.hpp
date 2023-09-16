@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   configParser.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vfuhlenb <vfuhlenb@students.42wolfsburg    +#+  +:+       +#+        */
+/*   By: vfuhlenb <vfuhlenb@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 23:16:58 by vfuhlenb          #+#    #+#             */
-/*   Updated: 2023/09/16 20:15:51 by vfuhlenb         ###   ########.fr       */
+/*   Updated: 2023/09/16 23:21:41 by vfuhlenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,8 +149,8 @@ class configParser {
 		bool				getAutoIndex();
 		std::string			getIndexFile(); // returns empty string if not set
 		bool				getPostAllowed();
-		// bool				getDeleteAllowed();
-		// bool				getGetAllowed();
+		bool				getDeleteAllowed();
+		bool				getGetAllowed();
 		// std::vector<int>&	getPortVector();
 		// std::string			getRootFolder();
 
@@ -193,6 +193,8 @@ class configParser {
 		bool			check_route_exist(Server& server, const std::string& route);
 		RouteIterator	return_route(Server& server, const std::string& route);
 		RouteIterator	return_route();
+		bool			hasRoute(Server& server, const std::string& route);
+		bool			hasMethod(StringVector& methods, std::string method);
 		void			printServerDetails();
 		void			printServerDetails(std::ofstream&);
 		void			printGlobalSettings();
