@@ -10,8 +10,7 @@ int main(void)
 
 
         SetServer set;
-        ConnectClients connect(set.setUpServer());
-        connect.connectClients();
+        set.setServer();
 //    }
 //    else
 //        std::cout << conf.getErrorMsg() << std::endl;

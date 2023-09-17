@@ -1,9 +1,9 @@
 #include "../header/connectClients.hpp"
 
-ConnectClients::ConnectClients(const std::vector<int>& serverSockets):
+ConnectClients::ConnectClients(const fdList& initList):
     _clientAddress(), _clientAddressLen(sizeof(_clientAddress)),
-    _fdList(), _clientData(), _byteVector(),
-    _serverSockets(serverSockets), _clientInfo()
+    _byteVector(),
+    _clientInfo(), _fdPortList(initList)
 {}
 
 
@@ -13,20 +13,26 @@ ConnectClients::~ConnectClients()
 
 void ConnectClients::initFdList()
 {
-    for (int x = 0; x < _serverSockets.size(); x++)
+    std::cout << "[0]: Port: "<<_fdPortList._ports.at(0)<< "     Fd: "<< _fdPortList._sockets.at(0)<<std::endl;
+    std::cout << "[1]: Port: "<<_fdPortList._ports.at(1)<< "     Fd: "<< _fdPortList._sockets.at(1)<<std::endl;
+    std::cout << "[2]: Port: "<<_fdPortList._ports.at(2)<< "     Fd: "<< _fdPortList._sockets.at(2)<<std::endl;
+    std::cout << "[3]: Port: "<<_fdPortList._ports.at(3)<< "     Fd: "<< _fdPortList._sockets.at(3)<<std::endl;
+
+
+    for (int x = 0; x < _fdPortList._sockets.size(); x++)
     {
         for (int i = 0; i < MAX_USERS; i++) {
             pollfd newSocket = {};
             newSocket.fd = -1;
             newSocket.events = 0;
             newSocket.revents = 0;
-            _fdList.push_back(newSocket);
+            _fdPortList._fds.push_back(newSocket);
 
         }
         for (int k = 0 + x; k < MAX_USERS; k++) {
-            if (_fdList[k].fd == -1) {
-                _fdList[k].fd = _serverSockets.at(x);
-                _fdList[k].events = POLLIN;     // Concern about Read-Only Events
+            if (_fdPortList._fds[k].fd == -1) {
+                _fdPortList._fds[k].fd = _fdPortList._sockets.at(x);
+                _fdPortList._fds[k].events = POLLIN;     // Concern about Read-Only Events
                 break;
             }
         }
@@ -43,12 +49,12 @@ void ConnectClients::initNewConnection(int serverSocket)
     {
         // Find an available slot or expand the vector
         bool foundSlot = false;
-        for (int j = 0; j < _fdList.size(); j++)
+        for (int j = 0; j < _fdPortList._fds.size(); j++)
         {
-            if (_fdList[j].fd == -1)
+            if (_fdPortList._fds[j].fd == -1)
             {
-                _fdList[j].fd = newClientSocket;
-                _fdList[j].events = POLLIN;
+                _fdPortList._fds[j].fd = newClientSocket;
+                _fdPortList._fds[j].events = POLLIN;
                 foundSlot = true;
                 break;
             }
@@ -56,7 +62,18 @@ void ConnectClients::initNewConnection(int serverSocket)
         if (!foundSlot)
         {
             pollfd newClient = {newClientSocket, POLLIN, 0};
-            _fdList.push_back(newClient);
+            _fdPortList._fds.push_back(newClient);
+        }
+
+        for (std::vector<int>::size_type i = 0; i < _fdPortList._sockets.size(); ++i)
+        {
+            if (_fdPortList._sockets[i] == serverSocket)
+            {
+                // The target value is found; store the position
+                int pos = static_cast<int>(i);
+                _fdPortList._ports.push_back(_fdPortList._ports.at(pos));
+                break;
+            }
         }
     }
 }
@@ -95,6 +112,7 @@ void ConnectClients::initClientInfo(int _clientSocket)
             initNewInfo._configInfo._postAllowed = config.getPostAllowed(currentPort);
             initNewInfo._postInfo._filename = request.getFileName(initNewInfo._contentType, initNewInfo._postInfo._filename, UPLOAD_FOLDER);
             initNewInfo._postInfo._outfile = new std::ofstream (UPLOAD_FOLDER+initNewInfo._postInfo._filename, std::ofstream::out | std::ofstream::app  | std::ofstream::binary);
+            chmod((UPLOAD_FOLDER+initNewInfo._postInfo._filename).c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH); // no execution permission for user
             if (initNewInfo._contentType == "multipart/form-data")
             {
                 initNewInfo._isMultiPart = true;
@@ -126,12 +144,12 @@ void ConnectClients::initClientInfo(int _clientSocket)
 
 int ConnectClients::receiveData(int i)
 {
-    // TODO implement maxClientBodySize from valentin config parser
-    // problem: we don't know port yet
-    // if maxClientBodySize is not global for all server, we can't know it here
-    // -> dont implement _clientData in class, but here (afterwards we write it to vector so alles toggo)
-    memset(_clientData, 0, sizeof(_clientData));
-    ssize_t bytesRead = recv(_fdList[i].fd, _clientData, sizeof(_clientData), O_NONBLOCK);
+    MarieConfigParser config;
+    int clientBodySize = config.getClientBodysize(_fdPortList._ports.at(i));
+    char clientData[clientBodySize];
+
+    memset(clientData, 0, sizeof(clientData));
+    ssize_t bytesRead = recv(_fdPortList._fds[i].fd, clientData, sizeof(clientData), O_NONBLOCK);
     if (bytesRead < 0)
         return -1;
     if (bytesRead == 0)
@@ -142,11 +160,11 @@ int ConnectClients::receiveData(int i)
     #endif
 
     // converting client data to vector
-    size_t charArraySize = MAX_REQUESTSIZE;
+    size_t charArraySize = clientBodySize;
     _byteVector.clear();
     _byteVector.reserve(charArraySize); // Reserve space to avoid reallocations
     for (size_t k = 0; k < charArraySize; ++k)
-        _byteVector.push_back(static_cast<uint8_t>(_clientData[k]));
+        _byteVector.push_back(static_cast<uint8_t>(clientData[k]));
     return 69;
 }
 
@@ -154,16 +172,16 @@ int ConnectClients::receiveData(int i)
 void ConnectClients::closeConnection(int *i)
 {
     Logging::log("Done receiving Data", 200);
-    close(_fdList[*i].fd);
-    _fdList.erase(_fdList.begin() + *i);
+    close(_fdPortList._fds[*i].fd);
+    _fdPortList._fds.erase(_fdPortList._fds.begin() + *i);
     --*i;
 }
 
 bool ConnectClients::newConnection(int fdListFd)
 {
-    for (int i = 0; i < _serverSockets.size(); i++)
+    for (int i = 0; i < _fdPortList._sockets.size(); i++)
     {
-        if (_serverSockets.at(i) == fdListFd)
+        if (_fdPortList._sockets.at(i) == fdListFd)
             return (true);
     }
     return false;
@@ -198,10 +216,10 @@ void ConnectClients::handleData(int fd)
 
 void ConnectClients::clientConnected()
 {
-    for (int i = 0; i < _fdList.size(); ++i)
+    for (int i = 0; i < _fdPortList._fds.size(); ++i)
     {
-        int fd = _fdList[i].fd;
-        if (DATA_TO_READ)   //_fdList[i].revents & POLLIN
+        int fd = _fdPortList._fds[i].fd;
+        if (DATA_TO_READ)   //_fdPortList._fds[i].revents & POLLIN
         {
             if (newConnection(fd))
                 initNewConnection(fd);
@@ -235,7 +253,7 @@ void ConnectClients::connectClients()
     {
         // poll checks _fdList for read & write events at the same time
         // poll() ≈ select()
-        switch (poll(&_fdList[0], _fdList.size(), -1))
+        switch (poll(&_fdPortList._fds[0], _fdPortList._fds.size(), -1))
         {
             case -1:
                 exitWithError("Poll function returned Error [EXIT]");

@@ -6,14 +6,15 @@
 class SetServer
 {
     private:
-        static int getNewServerSocket(int);
-        void initServerSocket(int);
+        static int getNewSocketFd(int);
+        static void setNewSocketFd(int);
+        fdList _fdList;
 
     public:
         SetServer();
         ~SetServer();
 
-    std::vector<int> setUpServer();
+        void setServer();
 };
 
 #endif

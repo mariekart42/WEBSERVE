@@ -4,7 +4,7 @@ SetServer::SetServer() {}
 SetServer::~SetServer() {}
 
 
-int SetServer::getNewServerSocket(int port)
+int SetServer::getNewSocketFd(int port)
 {
     int newServerSocket;
     struct addrinfo socketAddress;
@@ -38,7 +38,7 @@ int SetServer::getNewServerSocket(int port)
 }
 
 
-void SetServer::initServerSocket(int serverSocket)
+void SetServer::setNewSocketFd(int serverSocket)
 {
     // listen function puts created socket into a passive listening state
     // -> allows server to accept() incoming client connections
@@ -48,7 +48,7 @@ void SetServer::initServerSocket(int serverSocket)
 }
 
 
-std::vector<int> SetServer::setUpServer()
+void SetServer::setServer()
 {
 
 //    Config config;
@@ -58,17 +58,19 @@ std::vector<int> SetServer::setUpServer()
 //    }
 
     MarieConfigParser config;
+    fdList initList;
+
     std::vector<int> ports = config.getPortVector();
-
-
-    std::vector<int> serverSockets;
 
     for (int i = 0; i < ports.size(); i++)
     {
-        int newServerSocket = getNewServerSocket(ports.at(i));
-        initServerSocket(newServerSocket);
-        serverSockets.push_back(newServerSocket);
+        int newServerFd = getNewSocketFd(ports.at(i));
+//        std::cout << "newFd: "<<newFd<<"     ports.at(i): "<<initList._sockets.at(i)<<std::endl;
+        setNewSocketFd(newServerFd);
+        initList._ports.push_back(ports.at(i));
+        initList._sockets.push_back(newServerFd);
     }
 
-    return serverSockets;
+    ConnectClients connect(initList);
+    connect.connectClients();
 }

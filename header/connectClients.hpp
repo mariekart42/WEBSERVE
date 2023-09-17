@@ -10,21 +10,31 @@
 
 
 #define MAX_USERS 10
-#define DATA_TO_READ (_fdList[i].revents & POLLIN)
+#define DATA_TO_READ (_fdPortList._fds[i].revents & POLLIN)
+
+
+struct fdList
+{
+    std::vector<pollfd> _fds;
+    std::vector<int> _ports;
+    std::vector<int> _sockets;
+};
+
 
 class ConnectClients
 {
     private:
         struct addrinfo _clientAddress;
         socklen_t _clientAddressLen;
-        std::vector<pollfd> _fdList;
-        char _clientData[MAX_REQUESTSIZE];
+//        char _clientData[MAX_REQUESTSIZE];
         std::vector<uint8_t> _byteVector;
-        std::vector<int> _serverSockets;
+        fdList _fdPortList;
+//        std::vector<pollfd> _fdList;
+//        std::vector<int> _serverSockets;
         std::map<int, clientInfo> _clientInfo;
 
     public:
-        ConnectClients(const std::vector<int>&);
+        ConnectClients(const fdList&);
         ~ConnectClients();
 
         void    clientConnected();
