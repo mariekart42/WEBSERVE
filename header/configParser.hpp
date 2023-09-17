@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   configParser.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vfuhlenb <vfuhlenb@student.42wolfsburg.    +#+  +:+       +#+        */
+/*   By: vfuhlenb <vfuhlenb@students.42wolfsburg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 23:16:58 by vfuhlenb          #+#    #+#             */
-/*   Updated: 2023/09/17 09:29:03 by vfuhlenb         ###   ########.fr       */
+/*   Updated: 2023/09/17 17:46:24 by vfuhlenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CONFIGPARSER_CLASS_H
 #define CONFIGPARSER_CLASS_H
 
+#include "Response.hpp"
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -30,7 +31,7 @@
 #define BODY_SIZE_MIN	2000
 #define BODY_SIZE_MAX	1000000
 #define MAX_EVENTS		100
-#define BACKLOG			10
+#define BACKLOG			42
 #define DEFAULT_CONF	"../default.conf"
 #define PORT			"port"
 #define HOST			"host"
@@ -43,9 +44,28 @@
 #define CGI				"cgi"
 #define REDIRECT		"redirect"
 
-#define RESET		"\033[0m"
+#define DEFAULTWEBPAGE		2001
+#define DIRECTORY_LIST		2002
+#define FILE_SAVED			201
+#define FILE_DELETED		204
+#define BAD_REQUEST			400
+#define FORBIDDEN			403
+#define NOT_FOUND			404
+#define METHOD_NOT_ALLOWED	405
+#define INTERNAL_ERROR		500
+#define PATH_DEFAULTWEBPAGE		"root/index.html"
+#define PATH_DIRECTORY_LIST		""
+#define PATH_FILE_SAVED			"root/PATH_FILE_SAVED.html"
+#define PATH_FILE_DELETED		"root/PATH_FILE_DELETED.html"
+#define PATH_BAD_REQUEST		"error/400.html"
+#define PATH_FORBIDDEN			"error/403.html"
+#define PATH_404_ERRORWEBSITE	"error/404.html"
+#define PATH_METHOD_NOT_ALLOWED	"error/405.html"
+#define PATH_500_ERRORWEBSITE	"error/500.html"
+
+#define RESET_COLOR	"\033[0m"
 #define BLACK		"\033[30m"
-#define RED			"\033[31m"
+#define RED_COLOR	"\033[31m"
 #define GREEN		"\033[32m"
 #define YELLOW		"\033[33m"
 #define BLUE		"\033[34m"
@@ -95,11 +115,11 @@ typedef struct Server{
 	int					_body_size;
 	std::string			_host;
 	StringVector		_server_name;
-	IntStringMap		_error_page;
-	StringLocationMap	_routes; // path, location_struct
+	IntStringMap		_error_map; // response-code : path
+	StringLocationMap	_routes; // route : location_struct
 
 	// internal
-	StringIntMap		_status; // directive-key and line-value
+	StringIntMap		_status; // directive-key : line-value
 	int					_server_nbr;
 	int					_server_line_nbr;
 	int					_directive_line_nbr;
@@ -146,13 +166,21 @@ class configParser {
 		*/
 		bool				setData(const std::string& url, const std::string& host,const int port);
 		bool				validConfig(int argc, char **argv);
-		std::string			getUrl(); // TODO VF do i expect only an absolute path starting with a forward slash? so without the protocol and possible domain name
-		bool				getAutoIndex();
-		std::string			getIndexFile(); // returns empty string if not set
-		bool				getPostAllowed();
-		bool				getDeleteAllowed();
-		bool				getGetAllowed();
-		IntVector&			getPortVector();
+
+		const std::string	getUrl(); // TODO VF do i expect only an absolute path starting with a forward slash? so without the protocol and possible domain name
+		const bool			getAutoIndex();
+		const std::string	getIndexFile(); // returns empty string if not set
+		const bool			getPostAllowed();
+		const bool			getDeleteAllowed();
+		const bool			getGetAllowed();
+		const IntVector&	getPortVector() const;
+		const IntStringMap&	getErrorMap();
+		const int			get_timeout() const;
+		const int			get_max_clients() const;
+		const int			get_body_size() const;
+		const int			get_max_events() const;
+		const int			get_backlog() const;
+		
 		// std::string			getRootFolder();
 
 
@@ -170,6 +198,7 @@ class configParser {
 		IntSet			_unique_ports_sorted;
 		IntVector		_unique_ports;
 		RequestData		_request_data;
+		IntStringMap	_default_error_map;
 
 		Server&			getServer(const int port);
 		void			parse_request_data();
@@ -198,6 +227,7 @@ class configParser {
 		bool			hasRoute(Server& server, const std::string& route);
 		bool			hasMethod(StringVector& methods, std::string method);
 		void			create_port_vector();
+		void			create_default_error_map();
 		void			printServerDetails();
 		void			printServerDetails(std::ofstream&);
 		void			printGlobalSettings();
@@ -210,32 +240,17 @@ class configParser {
 #endif
 
 /*
+
 TODO`s
 
-- convert uniquePorts set to int vector
-
-validConfig()
+- handle custom error pages
+- getters for global settings? like timeout, BODY_SIZE (POLL_TIMEOUT / MAX_REQUESTSIZE) √
+- convert uniquePorts set to int vector √
 - if configurations with same port is declared -> error √
 - if body-size <2000 || >1000000 give warning, define these as macro √
 
-processRequest()
-- 
 
-
-
-
-
-filename.html		just change filename
-/filename.html		root + filename
-path/filename.html	replace path with current route (location) and append filename
-path				replace path with current route (location) and use 
-
-
-
-
-
-
-
+NOTES
 
 Redirects and Location Headers: When an HTTP server sends a redirect response
 (e.g., HTTP status code 301 or 302), it typically includes an absolute URL in
@@ -243,7 +258,5 @@ the "Location" header to specify the new location to which the client should nav
 
 HTTP/1.1 301 Moved Permanently
 Location: https://www.new-example.com/new-location
-
-
 
 */
