@@ -6,7 +6,7 @@
 /*   By: vfuhlenb <vfuhlenb@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 23:17:00 by vfuhlenb          #+#    #+#             */
-/*   Updated: 2023/09/16 23:22:06 by vfuhlenb         ###   ########.fr       */
+/*   Updated: 2023/09/17 09:33:40 by vfuhlenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ bool	configParser::setData(const std::string& url, const std::string& host, cons
 	_request_data.host = host;
 	_request_data.port = port;
 	parse_request_data();
+	create_port_vector();
 	return true;
 }
 
@@ -92,7 +93,7 @@ bool configParser::validConfig(int argc, char **argv)
 				}
 				_directive_line_nbr++;
 				validate_minimal_server_configuration(server);
-				_unique_ports.insert(server._port);
+				_unique_ports_sorted.insert(server._port);
 				
 				std::pair<ServersMap::iterator,bool> ret;
 				ret = _servers.insert ( std::pair<int,Server>(server._port,server));
@@ -192,6 +193,11 @@ bool configParser::getGetAllowed()
 			return true;
 	}
 	return false;
+}
+
+IntVector&	configParser::getPortVector()
+{
+	return _unique_ports;
 }
 
 Server&	configParser::getServer(const int port)
@@ -623,11 +629,18 @@ bool configParser::hasMethod(StringVector& methods, std::string method)
 	return false;
 }
 
+void	configParser::create_port_vector()
+{
+	IntSet::iterator it;
+	for (it = _unique_ports_sorted.begin(); it != _unique_ports_sorted.end(); ++it)
+		_unique_ports.push_back(*it);
+}
+
 // DEBUG
 
 void configParser::printServerDetails()
 {
-	std::cout << "\n" << BOLDWHITE << _servers_index.size() << " servers with " << _unique_ports.size() << " unique ports:" << RESET << std::endl;
+	std::cout << "\n" << BOLDWHITE << _servers_index.size() << " servers with " << _unique_ports_sorted.size() << " unique ports:" << RESET << std::endl;
 	int size = _servers_index.size();
 	std::cout << std::endl;
 	for (int i = 0; i < size; i++)
@@ -636,7 +649,7 @@ void configParser::printServerDetails()
 
 void configParser::printServerDetails(std::ofstream& file)
 {
-	file << "\n" << _servers_index.size() << " Servers with " << _unique_ports.size() << " unique ports:\n" << std::endl;
+	file << "\n" << _servers_index.size() << " Servers with " << _unique_ports_sorted.size() << " unique ports:\n" << std::endl;
 	
 	int size = _servers_index.size();
 	for (int i = 0; i < size; i++)

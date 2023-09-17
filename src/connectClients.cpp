@@ -63,7 +63,7 @@ void ConnectClients::initNewConnection(int serverSocket)
 
 
 
-void ConnectClients::initClientInfo(int _clientSocket)
+void ConnectClients::initClientInfo(int _clientSocket, MarieConfigParser& config)
 {
     std::vector<uint8_t> input = _byteVector;
 
@@ -76,23 +76,24 @@ void ConnectClients::initClientInfo(int _clientSocket)
     {
         clientInfo initNewInfo;
         Request request(input);
-        MarieConfigParser config;
+
+        config.setData(request.getUrlString(), currentHost, currentPort); // TODO Marie
 
         int currentPort = request.getPort();
         // httpMethod getHTTP(myHHTTP, Port, Url);
         initNewInfo._myHTTPMethod = request.getHTTPMethod();
         initNewInfo._clientSocket = _clientSocket;
-        initNewInfo._url = config.getUrl(currentPort,request.getUrlString());
+        initNewInfo._url = config.getUrl();
         initNewInfo._fileContentType = request.getFileContentType(initNewInfo._url);
         initNewInfo._contentType = request.getContentType();
         initNewInfo._isMultiPart = false;
-        initNewInfo._configInfo._rootFolder = config.getRootFolder(currentPort);
-        initNewInfo._configInfo._autoIndex = config.getAutoIndex(currentPort);
-        initNewInfo._configInfo._indexFile = config.getIndexFile(currentPort);
+        initNewInfo._configInfo._rootFolder = config.getRootFolder();
+        initNewInfo._configInfo._autoIndex = config.getAutoIndex();
+        initNewInfo._configInfo._indexFile = config.getIndexFile();
         if (initNewInfo._myHTTPMethod == M_POST)
         {
             initNewInfo._postInfo._input = input;
-            initNewInfo._configInfo._postAllowed = config.getPostAllowed(currentPort);
+            initNewInfo._configInfo._postAllowed = config.getPostAllowed();
             initNewInfo._postInfo._filename = request.getFileName(initNewInfo._contentType, initNewInfo._postInfo._filename, UPLOAD_FOLDER);
             initNewInfo._postInfo._outfile = new std::ofstream (UPLOAD_FOLDER+initNewInfo._postInfo._filename, std::ofstream::out | std::ofstream::app  | std::ofstream::binary);
             if (initNewInfo._contentType == "multipart/form-data")
@@ -107,10 +108,10 @@ void ConnectClients::initClientInfo(int _clientSocket)
         {
             if (!Request::checkPathInFolder(initNewInfo._url, initNewInfo._configInfo._rootFolder))
                 initNewInfo._url = FAILURE;
-            initNewInfo._configInfo._deleteAllowed = config.getDeleteAllowed(currentPort);
+            initNewInfo._configInfo._deleteAllowed = config.getDeleteAllowed();
         }
         else
-            initNewInfo._configInfo._getAllowed = config.getGetAllowed(currentPort);
+            initNewInfo._configInfo._getAllowed = config.getGetAllowed();
         _clientInfo[_clientSocket] = initNewInfo;
     }
     else if (it->second._isMultiPart)   // only for multipart!!
