@@ -6,7 +6,7 @@
 /*   By: vfuhlenb <vfuhlenb@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 23:16:58 by vfuhlenb          #+#    #+#             */
-/*   Updated: 2023/09/16 23:21:41 by vfuhlenb         ###   ########.fr       */
+/*   Updated: 2023/09/17 09:29:03 by vfuhlenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@
 typedef std::vector<std::string> StringVector;
 typedef std::map<int,std::string> IntStringMap;
 typedef std::map<std::string,int> StringIntMap;
+typedef std::vector<int> IntVector;
 
 typedef std::set<int> IntSet;
 
@@ -151,7 +152,7 @@ class configParser {
 		bool				getPostAllowed();
 		bool				getDeleteAllowed();
 		bool				getGetAllowed();
-		// std::vector<int>&	getPortVector();
+		IntVector&			getPortVector();
 		// std::string			getRootFolder();
 
 
@@ -166,7 +167,8 @@ class configParser {
 		std::string		_line;
 		ServersMap		_servers;
 		ServersIndex	_servers_index;
-		IntSet			_unique_ports;
+		IntSet			_unique_ports_sorted;
+		IntVector		_unique_ports;
 		RequestData		_request_data;
 
 		Server&			getServer(const int port);
@@ -195,6 +197,7 @@ class configParser {
 		RouteIterator	return_route();
 		bool			hasRoute(Server& server, const std::string& route);
 		bool			hasMethod(StringVector& methods, std::string method);
+		void			create_port_vector();
 		void			printServerDetails();
 		void			printServerDetails(std::ofstream&);
 		void			printGlobalSettings();
