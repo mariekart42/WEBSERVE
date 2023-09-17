@@ -5,10 +5,6 @@
 #include "marieConfigParser.hpp"
 
 
-#include <netdb.h>		// addrinfo struct
-#include <poll.h>       // pollfd struct
-
-
 #define MAX_USERS 10
 #define DATA_TO_READ (_fdPortList._fds[i].revents & POLLIN)
 
@@ -24,8 +20,8 @@ struct fdList
 class ConnectClients
 {
     private:
-//        struct addrinfo _clientAddress;
-//        socklen_t _clientAddressLen;
+        struct addrinfo _clientAddress;
+        socklen_t _clientAddressLen;
         std::vector<uint8_t> _byteVector;
         fdList _fdPortList;
         std::map<int, clientInfo> _clientInfo;

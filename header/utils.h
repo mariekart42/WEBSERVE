@@ -16,15 +16,11 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <dirent.h>
-#include <sstream>
 #include <ctime>
 #include <cstring>
 #include <cstdlib>
 #include <cstdio>
 #include <netdb.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-
 
 #include "logging.hpp"
 

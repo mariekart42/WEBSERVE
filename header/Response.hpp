@@ -2,15 +2,10 @@
 #define RESPONSE_HPP
 
 #include "Request.hpp"
-
 #include "Error.hpp"
-#include <dirent.h>
-#include <vector>
 
 
 #define NO_DATA_TO_UPLOAD (convert.find("POST") == 0 && convert.find(startBoundary) == std::string::npos)
-
-
 
 
 

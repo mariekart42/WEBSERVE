@@ -1,6 +1,7 @@
 #include "../header/connectClients.hpp"
 
 ConnectClients::ConnectClients(const fdList& initList):
+    _clientAddress(), _clientAddressLen(sizeof(_clientAddress)),
     _byteVector(),
     _clientInfo(), _fdPortList(initList)
 {}
@@ -43,7 +44,7 @@ void ConnectClients::initNewConnection(int serverSocket)
 {
     // Server socket has activity, accept new connection
 //    int newClientSocket = accept(serverSocket, (struct sockaddr *) &_clientAddress, &_clientAddressLen);
-    int newClientSocket = accept(serverSocket, NULL, NULL);
+    int newClientSocket = accept(serverSocket, (struct sockaddr *) &_clientAddress, &_clientAddressLen);
 
     if (newClientSocket != -1)
     {
