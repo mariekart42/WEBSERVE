@@ -6,7 +6,7 @@
 /*   By: vfuhlenb <vfuhlenb@students.42wolfsburg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 23:17:00 by vfuhlenb          #+#    #+#             */
-/*   Updated: 2023/09/17 17:46:14 by vfuhlenb         ###   ########.fr       */
+/*   Updated: 2023/09/17 18:39:21 by vfuhlenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,7 @@ const std::string	configParser::getUrl()
 	return prepend_forward_slash(_request_data.full_path);
 }
 
-const bool configParser::getAutoIndex()
+bool configParser::getAutoIndex()
 {
 	RouteIterator route;
 	bool result = false;
@@ -158,7 +158,7 @@ const std::string	configParser::getIndexFile()
 	return route->second._index;
 }
 
-const bool configParser::getPostAllowed()
+bool configParser::getPostAllowed()
 {
 	RouteIterator route;
 	route = getServer(_request_data.port)._routes.find(_request_data.route);
@@ -170,7 +170,7 @@ const bool configParser::getPostAllowed()
 	return false;
 }
 
-const bool configParser::getDeleteAllowed()
+bool configParser::getDeleteAllowed()
 {
 	RouteIterator route;
 	route = getServer(_request_data.port)._routes.find(_request_data.route);
@@ -182,7 +182,7 @@ const bool configParser::getDeleteAllowed()
 	return false;
 }
 
-const bool configParser::getGetAllowed()
+bool configParser::getGetAllowed()
 {
 	RouteIterator route;
 	route = getServer(_request_data.port)._routes.find(_request_data.route);
@@ -194,37 +194,42 @@ const bool configParser::getGetAllowed()
 	return false;
 }
 
-const IntVector&	configParser::getPortVector() const
+int configParser::getBodySize(int port)
+{
+	return getServer(port)._body_size;
+}
+
+IntVector	configParser::getPortVector()
 {
 	return _unique_ports;
 }
 
-const IntStringMap&	configParser::getErrorMap()
+IntStringMap	configParser::getErrorMap()
 {
 	return getServer(_request_data.port)._error_map;
 }
 
-const int	configParser::get_timeout() const
+int	configParser::get_timeout() const
 {
 	return _settings.timeout;
 }
 
-const int	configParser::get_max_clients() const
+int	configParser::get_max_clients() const
 {
 	return _settings.max_clients;
 }
 
-const int	configParser::get_body_size() const
+int	configParser::get_body_size() const
 {
 	return _settings.body_size;
 }
 
-const int	configParser::get_max_events() const
+int	configParser::get_max_events() const
 {
 	return _settings.max_events;
 }
 
-const int	configParser::get_backlog() const
+int	configParser::get_backlog() const
 {
 	return _settings.backlog;
 }

@@ -6,7 +6,7 @@
 /*   By: vfuhlenb <vfuhlenb@students.42wolfsburg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 23:16:58 by vfuhlenb          #+#    #+#             */
-/*   Updated: 2023/09/17 17:46:24 by vfuhlenb         ###   ########.fr       */
+/*   Updated: 2023/09/17 18:39:24 by vfuhlenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@ typedef struct RequestData {
 	std::string	host;
 	int			port;
 	std::string	full_path;
-	std::string	filename; // TODO VF needs to be the file+extension -> index.html
+	std::string	filename;
 	std::string	route;
 }RequestData;
 
@@ -142,26 +142,25 @@ class configParser {
 		configParser();
 		~configParser();
 
-		/* setData
-		- discuss with Marie if function should handle error 403
-		- port is always valid and existing right?
-		*/
 		bool				setData(const std::string& url, const std::string& host,const int port);
 		bool				validConfig(int argc, char **argv);
 
+		// server specific
 		const std::string	getUrl(); // TODO VF do i expect only an absolute path starting with a forward slash? so without the protocol and possible domain name
-		const bool			getAutoIndex();
+		bool				getAutoIndex();
 		const std::string	getIndexFile(); // returns empty string if not set
-		const bool			getPostAllowed();
-		const bool			getDeleteAllowed();
-		const bool			getGetAllowed();
-		const IntVector&	getPortVector() const;
-		const IntStringMap&	getErrorMap();
-		const int			get_timeout() const;
-		const int			get_max_clients() const;
-		const int			get_body_size() const;
-		const int			get_max_events() const;
-		const int			get_backlog() const;
+		bool				getPostAllowed();
+		bool				getDeleteAllowed();
+		bool				getGetAllowed();
+		int					getBodySize(int port); // returns body-size from server with port
+		IntVector			getPortVector();
+		IntStringMap		getErrorMap();
+		// global settings
+		int			get_timeout() const;
+		int			get_max_clients() const;
+		int			get_body_size() const; // returns body-size of global settings
+		int			get_max_events() const;
+		int			get_backlog() const;
 		
 		// std::string			getRootFolder();
 
@@ -225,12 +224,11 @@ class configParser {
 
 TODO`s
 
-- handle custom error pages
+- handle custom error pages √
 - getters for global settings? like timeout, BODY_SIZE (POLL_TIMEOUT / MAX_REQUESTSIZE) √
 - convert uniquePorts set to int vector √
 - if configurations with same port is declared -> error √
 - if body-size <2000 || >1000000 give warning, define these as macro √
-
 
 NOTES
 
