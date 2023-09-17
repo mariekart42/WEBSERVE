@@ -30,13 +30,11 @@ configParser::configParser() : _context(GLOBAL), _directive_line_nbr(0)
 
 configParser::~configParser() {}
 
-bool	configParser::setData(const std::string& url, const std::string& host, const int port) 
-{
+bool	configParser::setData(const std::string& url, const std::string& host, const int port) {
 	_request_data.full_path = url;
 	_request_data.host = host; // TODO VF do we process this?
 	_request_data.port = port;
 	parse_request_data();
-	create_port_vector();
 	return true;
 }
 
@@ -125,8 +123,7 @@ bool configParser::validConfig(int argc, char **argv)
 	return true;
 }
 
-const std::string	configParser::getUrl()
-{
+const std::string	configParser::getUrl() {
 	RouteIterator route;
 	route = getServer(_request_data.port)._routes.find(_request_data.route);
 	if (route != getServer(_request_data.port)._routes.end() && !route->second._redirect.empty())
@@ -141,8 +138,7 @@ const std::string	configParser::getUrl()
 	return prepend_forward_slash(_request_data.full_path);
 }
 
-bool configParser::getAutoIndex()
-{
+bool configParser::getAutoIndex() {
 	RouteIterator route;
 	bool result = false;
 	route = getServer(_request_data.port)._routes.find(_request_data.route);
@@ -151,15 +147,13 @@ bool configParser::getAutoIndex()
 	return result;
 }
 
-const std::string	configParser::getIndexFile()
-{
+const std::string	configParser::getIndexFile() {
 	RouteIterator route;
 	route = getServer(_request_data.port)._routes.find(_request_data.route);
 	return route->second._index;
 }
 
-bool configParser::getPostAllowed()
-{
+bool configParser::getPostAllowed() {
 	RouteIterator route;
 	route = getServer(_request_data.port)._routes.find(_request_data.route);
 	if (route != getServer(_request_data.port)._routes.end())
@@ -170,8 +164,7 @@ bool configParser::getPostAllowed()
 	return false;
 }
 
-bool configParser::getDeleteAllowed()
-{
+bool configParser::getDeleteAllowed() {
 	RouteIterator route;
 	route = getServer(_request_data.port)._routes.find(_request_data.route);
 	if (route != getServer(_request_data.port)._routes.end())
@@ -182,8 +175,7 @@ bool configParser::getDeleteAllowed()
 	return false;
 }
 
-bool configParser::getGetAllowed()
-{
+bool configParser::getGetAllowed() {
 	RouteIterator route;
 	route = getServer(_request_data.port)._routes.find(_request_data.route);
 	if (route != getServer(_request_data.port)._routes.end())
@@ -201,6 +193,7 @@ int configParser::getBodySize(int port)
 
 IntVector	configParser::getPortVector()
 {
+    create_port_vector();
 	return _unique_ports;
 }
 
@@ -245,8 +238,7 @@ int	configParser::get_backlog() const
 
 
 
-Server&	configParser::getServer(const int port)
-{
+Server & configParser::getServer(int port) {
 	ServersMap::iterator it = _servers.find(port);
 	return it->second;
 }
@@ -653,8 +645,7 @@ void configParser::setRedirect(Server& server, const std::string& str, const std
 }
 
 // prepends '/' if not present
-std::string configParser::prepend_forward_slash(const std::string str)
-{
+std::string configParser::prepend_forward_slash(const std::string str) const {
 	std::string temp = str;
 	if (!temp.empty() && temp.at(0) != '/')
 		temp.insert(temp.begin(), '/');
@@ -691,8 +682,7 @@ bool configParser::hasRoute(Server& server, const std::string& route)
 	return true;
 }
 
-bool configParser::hasMethod(StringVector& methods, std::string method)
-{
+bool configParser::hasMethod(StringVector& methods, std::string method) const {
 
 	for (size_t i = 0; i < methods.size(); ++i)
 	{

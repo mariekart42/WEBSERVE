@@ -47,5 +47,5 @@ void SetServer::setServer(int ac, char **av)
         initList._sockets.push_back(newSocketFd);
     }
     ConnectClients connect(initList);
-    connect.connectClients(config.get_timeout());
+    connect.connectClients(config);
 }

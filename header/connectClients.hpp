@@ -29,15 +29,15 @@ class ConnectClients
         ConnectClients(const fdList&);
         ~ConnectClients();
 
-        void    clientConnected();
+        void    clientConnected(configParser&);
         void    initFdList();
-        void    connectClients(int);
+        void    connectClients(configParser&);
         void    initNewConnection(int);
-        void    initClientInfo(int, const configParser&);
+        void    initClientInfo(int, configParser&);
         int     receiveData(int);
         void    closeConnection(int*);
         bool    newConnection(int);
-        void    handleData(int);
+        void    handleData(int, configParser&);
 };
 
 #endif

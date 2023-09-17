@@ -32,7 +32,7 @@
 #define BODY_SIZE_MAX	1000000
 #define MAX_EVENTS		100
 #define BACKLOG			42
-#define DEFAULT_CONF	"../default.conf"
+#define DEFAULT_CONF	"default.conf"
 #define PORT			"port"
 #define HOST			"host"
 #define SERVER_NAME		"server_name"
@@ -142,7 +142,7 @@ class configParser {
 		configParser();
 		~configParser();
 
-		bool				setData(const std::string& url, const std::string& host,const int port);
+		bool				setData(const std::string& url, const std::string& host, int port);
 		bool				validConfig(int argc, char **argv);
 
 		// server specific
@@ -181,7 +181,7 @@ class configParser {
 		RequestData		_request_data;
 		IntStringMap	_default_error_map;
 
-		Server&			getServer(const int port);
+		Server & getServer(int port);
 		void			parse_request_data();
 		int				string_to_int(const std::string&);
 		std::string		getToken(const std::string& str, int n);
@@ -201,12 +201,12 @@ class configParser {
 		void			setIndex(Server& server, const std::string &str, const std::string &route);
 		void			setCGI(Server& server, const std::string &str, const std::string &route);
 		void			setRedirect(Server& server, const std::string &str, const std::string &route);
-		std::string		prepend_forward_slash(const std::string str);
+		std::string		prepend_forward_slash(const std::string str) const;
 		bool			check_route_exist(Server& server, const std::string& route);
 		RouteIterator	return_route(Server& server, const std::string& route);
 		RouteIterator	return_route();
 		bool			hasRoute(Server& server, const std::string& route);
-		bool			hasMethod(StringVector& methods, std::string method);
+		bool			hasMethod(StringVector& methods, std::string method) const;
 		void			create_port_vector();
 		void			create_default_error_map();
 		void			printServerDetails();
