@@ -6,7 +6,7 @@
 class SetServer
 {
     private:
-        int setNewSocketFd(int);
+        int setNewSocketFd(int) const;
         fdList _fdList;
         int _backlog;
 

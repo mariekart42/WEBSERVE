@@ -11,19 +11,18 @@
 
 struct fdList
 {
-    std::vector<pollfd> _fds;
     std::vector<int> _ports;
+    std::vector<pollfd> _fds;
     std::vector<int> _sockets;
 };
-
 
 class ConnectClients
 {
     private:
-        struct addrinfo _clientAddress;
-        socklen_t _clientAddressLen;
-        std::vector<uint8_t> _byteVector;
         fdList _fdPortList;
+        socklen_t _clientAddressLen;
+        struct addrinfo _clientAddress;
+        std::vector<uint8_t> _byteVector;
         std::map<int, clientInfo> _clientInfo;
 
     public:

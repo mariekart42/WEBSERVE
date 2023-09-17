@@ -3,10 +3,10 @@
 SetServer::SetServer(){}
 SetServer::~SetServer() {}
 
-int SetServer::setNewSocketFd(int port)
+int SetServer::setNewSocketFd(int port) const
 {
     int newSocketFd;
-    struct addrinfo socketAddress;
+    struct addrinfo socketAddress = {};
     struct addrinfo *bindAddress;
 
     memset(&socketAddress, 0, sizeof(socketAddress));
@@ -14,7 +14,6 @@ int SetServer::setNewSocketFd(int port)
     socketAddress.ai_socktype = SOCK_STREAM;  // TCP socket
     socketAddress.ai_flags = AI_PASSIVE;      // any available network interface
 
-//    getaddrinfo(0, std::to_string(port).c_str(), &socketAddress, &bindAddress);
     getaddrinfo(0, myItoS(port).c_str(), &socketAddress, &bindAddress);
 
     newSocketFd = socket(bindAddress->ai_family, bindAddress->ai_socktype, bindAddress->ai_protocol);	 // domain, type, protocol

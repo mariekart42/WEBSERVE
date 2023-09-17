@@ -13,12 +13,6 @@ ConnectClients::~ConnectClients()
 
 void ConnectClients::initFdList()
 {
-    std::cout << "[0]: Port: "<<_fdPortList._ports.at(0)<< "     Fd: "<< _fdPortList._sockets.at(0)<<std::endl;
-    std::cout << "[1]: Port: "<<_fdPortList._ports.at(1)<< "     Fd: "<< _fdPortList._sockets.at(1)<<std::endl;
-    std::cout << "[2]: Port: "<<_fdPortList._ports.at(2)<< "     Fd: "<< _fdPortList._sockets.at(2)<<std::endl;
-    std::cout << "[3]: Port: "<<_fdPortList._ports.at(3)<< "     Fd: "<< _fdPortList._sockets.at(3)<<std::endl;
-
-
     for (int x = 0; x < _fdPortList._sockets.size(); x++)
     {
         for (int i = 0; i < MAX_USERS; i++) {
@@ -42,8 +36,6 @@ void ConnectClients::initFdList()
 
 void ConnectClients::initNewConnection(int serverSocket)
 {
-    // Server socket has activity, accept new connection
-//    int newClientSocket = accept(serverSocket, (struct sockaddr *) &_clientAddress, &_clientAddressLen);
     int newClientSocket = accept(serverSocket, (struct sockaddr *) &_clientAddress, &_clientAddressLen);
 
     if (newClientSocket != -1)
@@ -253,7 +245,6 @@ void ConnectClients::connectClients(int timeout)
     while (69)
     {
         // poll checks _fdList for read & write events at the same time
-        // poll() ≈ select()
         switch (poll(&_fdPortList._fds[0], _fdPortList._fds.size(), timeout))
         {
             case -1:
