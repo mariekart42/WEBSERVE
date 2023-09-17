@@ -18,9 +18,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="05726d74-3e7a-4bfb-b43b-4df32fa81e24" name="Changes" comment="same but clean 2">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/header/configParser.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/header/configParser.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/header/connectClients.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/header/connectClients.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/header/marieConfigParser.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/header/marieConfigParser.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/header/setServer.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/header/setServer.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/header/utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/header/utils.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config/Config.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config/Config.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config/default.conf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/configParser.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/configParser.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/connectClients.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/connectClients.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/setServer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/setServer.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -108,7 +118,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
+    "settings.editor.selected.configurable": "preferences.keymap",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -189,7 +199,7 @@
       <workItem from="1694630518845" duration="2654000" />
       <workItem from="1694634433559" duration="4649000" />
       <workItem from="1694697759115" duration="11889000" />
-      <workItem from="1694948827231" duration="11806000" />
+      <workItem from="1694948827231" duration="13790000" />
     </task>
     <task id="LOCAL-00001" summary="check application, audio and font, everything else works :))">
       <created>1692823969394</created>
@@ -345,7 +355,14 @@
       <option name="project" value="LOCAL" />
       <updated>1694965628371</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="same but clean 2">
+      <created>1694966023810</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1694966023810</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -423,17 +440,17 @@
       <breakpoints>
         <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/connectClients.cpp</url>
-          <line>97</line>
+          <line>98</line>
           <option name="timeStamp" value="34" />
         </line-breakpoint>
         <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/connectClients.cpp</url>
-          <line>117</line>
+          <line>118</line>
           <option name="timeStamp" value="35" />
         </line-breakpoint>
         <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/connectClients.cpp</url>
-          <line>93</line>
+          <line>94</line>
           <option name="timeStamp" value="36" />
         </line-breakpoint>
         <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">

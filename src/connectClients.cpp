@@ -73,7 +73,7 @@ void ConnectClients::initNewConnection(int serverSocket)
 
 
 
-void ConnectClients::initClientInfo(int _clientSocket, MarieConfigParser& config)
+void ConnectClients::initClientInfo(int _clientSocket, const configParser& config)
 {
     std::vector<uint8_t> input = _byteVector;
 
@@ -138,8 +138,9 @@ void ConnectClients::initClientInfo(int _clientSocket, MarieConfigParser& config
 
 int ConnectClients::receiveData(int i)
 {
-    MarieConfigParser config;
-    int clientBodySize = config.getClientBodysize(_fdPortList._ports.at(i));
+    configParser config;
+    int clientBodySize = config.get_body_size();
+//    int clientBodySize = config.getClientBodysize(_fdPortList._ports.at(i));
     char clientData[clientBodySize];
 
     memset(clientData, 0, sizeof(clientData));

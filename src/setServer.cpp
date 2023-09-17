@@ -30,23 +30,14 @@ int SetServer::setNewSocketFd(int port) const
     return (newSocketFd);
 }
 
-void SetServer::setServer()
+void SetServer::setServer(int ac, char **av)
 {
+    configParser config;
+    if (!config.validConfig(ac, av))
+        exitWithError("Invalid Config File [EXIT]");
 
-//    Config config;
-//    if (!config.validConfig(ac, av))
-//    {
-//        // error, dont start Server
-//    }
-
-    MarieConfigParser config;
     fdList initList;
-
-//    _backlog = config.getBacklog();
-    _backlog = 10;
-
-
-
+    _backlog = config.get_backlog();
     std::vector<int> ports = config.getPortVector();
 
     for (int i = 0; i < ports.size(); i++)
@@ -55,10 +46,6 @@ void SetServer::setServer()
         initList._ports.push_back(ports.at(i));
         initList._sockets.push_back(newSocketFd);
     }
-
-//    int timeout = config.getTimeout();
-    int timeout = -1;
-
     ConnectClients connect(initList);
-    connect.connectClients(timeout);
+    connect.connectClients(config.get_timeout());
 }

@@ -3,6 +3,8 @@
 
 #include "connectClients.hpp"
 
+class configParser;
+
 class SetServer
 {
     private:
@@ -14,7 +16,7 @@ class SetServer
         SetServer();
         ~SetServer();
 
-        void setServer();
+        void setServer(int, char**);
 };
 
 #endif

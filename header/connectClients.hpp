@@ -2,7 +2,7 @@
 #define CONNECTCLIENTS_HPP
 
 #include "Response.hpp"
-#include "marieConfigParser.hpp"
+#include "configParser.hpp"
 
 
 #define MAX_USERS 10
@@ -33,7 +33,7 @@ class ConnectClients
         void    initFdList();
         void    connectClients(int);
         void    initNewConnection(int);
-        void    initClientInfo(int);
+        void    initClientInfo(int, const configParser&);
         int     receiveData(int);
         void    closeConnection(int*);
         bool    newConnection(int);

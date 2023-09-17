@@ -840,7 +840,7 @@ void configParser::printLog()
 {
 	std::ofstream file;
 
-	file.open("servers.log");
+	file.open("log/servers.log");
 	if (!file)
 	{
 		std::cerr << YELLOW << "Could not create servers.log" << RESET_COLOR << std::endl;

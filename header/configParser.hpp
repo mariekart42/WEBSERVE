@@ -13,7 +13,6 @@
 #ifndef CONFIGPARSER_CLASS_H
 #define CONFIGPARSER_CLASS_H
 
-#include "Response.hpp"
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -23,6 +22,7 @@
 #include <set>
 #include <map>
 #include <vector>
+#include "utils.h"
 
 // GLOBAL SETTINGS
 #define TIMEOUT			60
@@ -62,24 +62,6 @@
 #define PATH_404_ERRORWEBSITE	"error/404.html"
 #define PATH_METHOD_NOT_ALLOWED	"error/405.html"
 #define PATH_500_ERRORWEBSITE	"error/500.html"
-
-#define RESET_COLOR	"\033[0m"
-#define BLACK		"\033[30m"
-#define RED_COLOR	"\033[31m"
-#define GREEN		"\033[32m"
-#define YELLOW		"\033[33m"
-#define BLUE		"\033[34m"
-#define MAGENTA		"\033[35m"
-#define CYAN		"\033[36m"
-#define WHITE		"\033[37m"
-#define BOLDBLACK	"\033[1m\033[30m"
-#define BOLDRED		"\033[1m\033[31m"
-#define BOLDGREEN	"\033[1m\033[32m"
-#define BOLDYELLOW	"\033[1m\033[33m"
-#define BOLDBLUE	"\033[1m\033[34m"
-#define BOLDMAGENTA	"\033[1m\033[35m"
-#define BOLDCYAN	"\033[1m\033[36m"
-#define BOLDWHITE	"\033[1m\033[37m"
 
 typedef std::vector<std::string> StringVector;
 typedef std::map<int,std::string> IntStringMap;
