@@ -1,7 +1,6 @@
 #include "../header/connectClients.hpp"
 
 ConnectClients::ConnectClients(const fdList& initList):
-    _clientAddress(), _clientAddressLen(sizeof(_clientAddress)),
     _byteVector(),
     _clientInfo(), _fdPortList(initList)
 {}
@@ -43,7 +42,8 @@ void ConnectClients::initFdList()
 void ConnectClients::initNewConnection(int serverSocket)
 {
     // Server socket has activity, accept new connection
-    int newClientSocket = accept(serverSocket, (struct sockaddr *) &_clientAddress, &_clientAddressLen);
+//    int newClientSocket = accept(serverSocket, (struct sockaddr *) &_clientAddress, &_clientAddressLen);
+    int newClientSocket = accept(serverSocket, NULL, NULL);
 
     if (newClientSocket != -1)
     {
@@ -219,7 +219,7 @@ void ConnectClients::clientConnected()
     for (int i = 0; i < _fdPortList._fds.size(); ++i)
     {
         int fd = _fdPortList._fds[i].fd;
-        if (DATA_TO_READ)   //_fdPortList._fds[i].revents & POLLIN
+        if (DATA_TO_READ)
         {
             if (newConnection(fd))
                 initNewConnection(fd);
@@ -244,7 +244,7 @@ void ConnectClients::clientConnected()
 
 
 
-void ConnectClients::connectClients()
+void ConnectClients::connectClients(int timeout)
 {
     initFdList();
 
@@ -253,7 +253,7 @@ void ConnectClients::connectClients()
     {
         // poll checks _fdList for read & write events at the same time
         // poll() ≈ select()
-        switch (poll(&_fdPortList._fds[0], _fdPortList._fds.size(), -1))
+        switch (poll(&_fdPortList._fds[0], _fdPortList._fds.size(), timeout))
         {
             case -1:
                 exitWithError("Poll function returned Error [EXIT]");

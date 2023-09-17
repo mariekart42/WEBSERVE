@@ -24,13 +24,10 @@ struct fdList
 class ConnectClients
 {
     private:
-        struct addrinfo _clientAddress;
-        socklen_t _clientAddressLen;
-//        char _clientData[MAX_REQUESTSIZE];
+//        struct addrinfo _clientAddress;
+//        socklen_t _clientAddressLen;
         std::vector<uint8_t> _byteVector;
         fdList _fdPortList;
-//        std::vector<pollfd> _fdList;
-//        std::vector<int> _serverSockets;
         std::map<int, clientInfo> _clientInfo;
 
     public:
@@ -39,7 +36,7 @@ class ConnectClients
 
         void    clientConnected();
         void    initFdList();
-        void    connectClients();
+        void    connectClients(int);
         void    initNewConnection(int);
         void    initClientInfo(int);
         int     receiveData(int);

@@ -6,9 +6,9 @@
 class SetServer
 {
     private:
-        static int getNewSocketFd(int);
-        static void setNewSocketFd(int);
+        int setNewSocketFd(int);
         fdList _fdList;
+        int _backlog;
 
     public:
         SetServer();

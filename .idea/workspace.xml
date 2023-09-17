@@ -17,17 +17,15 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="05726d74-3e7a-4bfb-b43b-4df32fa81e24" name="Changes" comment="fixed case where bodySize%maxRequestSize is 0 [last boundary was part of prev request AND current request]">
+    <list default="true" id="05726d74-3e7a-4bfb-b43b-4df32fa81e24" name="Changes" comment="implemented clientBodySize(created struct with pollfdvector&amp;sockets&amp;ports) &amp;&amp; changed file permissions to non executable">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/header/Response.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/header/Response.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/header/connectClients.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/header/connectClients.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/header/marieConfigParser.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/header/marieConfigParser.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/header/setServer.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/header/setServer.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/header/utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/header/utils.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/log/log.log" beforeDir="false" afterPath="$PROJECT_DIR$/log/log.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/connectClients.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/connectClients.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/marieConfigParser.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/marieConfigParser.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/setServer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/setServer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -195,7 +193,7 @@
       <workItem from="1694630518845" duration="2654000" />
       <workItem from="1694634433559" duration="4649000" />
       <workItem from="1694697759115" duration="11889000" />
-      <workItem from="1694948827231" duration="9043000" />
+      <workItem from="1694948827231" duration="11272000" />
     </task>
     <task id="LOCAL-00001" summary="check application, audio and font, everything else works :))">
       <created>1692823969394</created>
@@ -330,7 +328,14 @@
       <option name="project" value="LOCAL" />
       <updated>1694711599093</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="implemented clientBodySize(created struct with pollfdvector&amp;sockets&amp;ports) &amp;&amp; changed file permissions to non executable">
+      <created>1694961022279</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1694961022279</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -399,7 +404,8 @@
     <MESSAGE value="deleting files works, siege is at 99%, maybe change socket settings &amp;&amp; dynamically client connections otherwise SHEEEEESH" />
     <MESSAGE value="POST response code cleaned up, check for all recv()&amp;&amp;send() done,  next:implement CGI + get Parser data" />
     <MESSAGE value="fixed case where bodySize%maxRequestSize is 0 [last boundary was part of prev request AND current request]" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed case where bodySize%maxRequestSize is 0 [last boundary was part of prev request AND current request]" />
+    <MESSAGE value="implemented clientBodySize(created struct with pollfdvector&amp;sockets&amp;ports) &amp;&amp; changed file permissions to non executable" />
+    <option name="LAST_COMMIT_MESSAGE" value="implemented clientBodySize(created struct with pollfdvector&amp;sockets&amp;ports) &amp;&amp; changed file permissions to non executable" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -438,31 +444,6 @@
           <url>file://$PROJECT_DIR$/src/Response.cpp</url>
           <line>363</line>
           <option name="timeStamp" value="47" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/connectClients.cpp</url>
-          <line>220</line>
-          <option name="timeStamp" value="48" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/connectClients.cpp</url>
-          <line>223</line>
-          <option name="timeStamp" value="49" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/connectClients.cpp</url>
-          <line>227</line>
-          <option name="timeStamp" value="50" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/connectClients.cpp</url>
-          <line>224</line>
-          <option name="timeStamp" value="51" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/connectClients.cpp</url>
-          <line>229</line>
-          <option name="timeStamp" value="52" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
