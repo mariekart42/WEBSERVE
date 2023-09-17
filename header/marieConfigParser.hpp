@@ -10,7 +10,7 @@
 #define PORT3 3030
 #define PORT4 4040
 
-//#define CLIENT_BODY 10000
+#define CLIENT_BODY 10000
 #define ROOT_FOLDER "root"
 #define AUTO_INDEX true
 #define INDEX_FILE "index.html"

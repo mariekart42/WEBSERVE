@@ -12,6 +12,13 @@ void exitWithError(const std::string &msg)
 }
 
 
+std::string myItoS(int val)
+{
+    std::stringstream ss;
+    ss << val;
+    return ss.str();
+}
+
 std::string comparerContentType(const std::string& fileExtension)
 {
     static std::map<std::string, std::string> extensionToType;

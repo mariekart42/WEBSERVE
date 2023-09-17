@@ -16,9 +16,11 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <dirent.h>
-#include <sstream>
 #include <ctime>
-
+#include <cstring>
+#include <cstdlib>
+#include <cstdio>
+#include <netdb.h>
 
 #include "logging.hpp"
 
@@ -39,5 +41,6 @@
 
 void exitWithError(const std::string &);
 std::string comparerContentType(const std::string& fileExtension);
+std::string myItoS(int);
 
 #endif
