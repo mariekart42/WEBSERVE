@@ -6,7 +6,7 @@
 /*   By: vfuhlenb <vfuhlenb@students.42wolfsburg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 23:16:58 by vfuhlenb          #+#    #+#             */
-/*   Updated: 2023/09/18 16:53:12 by vfuhlenb         ###   ########.fr       */
+/*   Updated: 2023/09/18 19:48:42 by vfuhlenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 #include <vector>
 #include "utils.h"
 
-// GLOBAL SETTINGS
+// Global settings
 #define TIMEOUT			60
 #define MAX_CLIENTS		100
 #define BODY_SIZE		9000
@@ -32,18 +32,11 @@
 #define BODY_SIZE_MAX	1000000
 #define MAX_EVENTS		100
 #define BACKLOG			42
+#define ROOT			"root/"
+#define INDEX			"index.html"
 #define DEFAULT_CONF	"default.conf"
-#define PORT			"port"
-#define HOST			"host"
-#define SERVER_NAME		"server_name"
-#define ERROR_PAGE		"error_page"
-#define ROOT			"root"
-#define METHODS			"methods"
-#define AUTOINDEX		"autoindex"
-#define INDEX			"index"
-#define CGI				"cgi"
-#define REDIRECT		"redirect"
 
+// Response codes
 #define DEFAULTWEBPAGE		2001
 #define DIRECTORY_LIST		2002
 #define FILE_SAVED			201
