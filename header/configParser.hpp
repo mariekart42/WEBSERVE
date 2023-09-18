@@ -228,6 +228,7 @@ class configParser {
 
 TODO`s
 
+ r
 if config contains error directives with invalid path, then segmentation fault
 
 - handle custom error pages √
