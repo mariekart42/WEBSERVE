@@ -6,7 +6,7 @@
 /*   By: vfuhlenb <vfuhlenb@students.42wolfsburg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 23:17:00 by vfuhlenb          #+#    #+#             */
-/*   Updated: 2023/09/18 14:21:30 by vfuhlenb         ###   ########.fr       */
+/*   Updated: 2023/09/18 15:59:59 by vfuhlenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,16 +134,13 @@ const std::string	configParser::getUrl() {
 	route = getServer(_request_data.port)._routes.find(_request_data.route);
 	if (route != getServer(_request_data.port)._routes.end() && !route->second._redirect.empty())
 	{
-        std::cout << "REDIRECT: "<<route->second._redirect<< std::endl;
 		std::string route_temp = route->second._redirect;
-		if (route_temp.size() > 2 && route_temp.at(route_temp.size() - 1) == '/')
-			route_temp.erase(route_temp.size() - 1, 1);
+		if (route_temp.size() > 2)
+			remove_trailing_character(route_temp, '/');
 		std::string redirected_url = prepend_forward_slash(route_temp);
 		redirected_url.append(prepend_forward_slash(_request_data.filename));
-        std::cout << "redirect URL: "<<redirected_url<< std::endl;
 		return redirected_url;
 	}
-        std::cout << "URL: "<<_request_data.full_path<< std::endl;
 	return prepend_forward_slash(_request_data.full_path);
 }
 
@@ -159,9 +156,9 @@ bool configParser::getAutoIndex() {
 const std::string	configParser::getIndexFile() {
 	RouteIterator route;
 	route = getServer(_request_data.port)._routes.find(_request_data.route);
-//    std::cout <<"HEEERE: " << route->second._index << std::endl;
-//    return route->second._index; // TODO VF
-return "index.html";
+	if (route != getServer(_request_data.port)._routes.end())
+    	return route->second._index;
+	return "index.html";
 }
 
 bool configParser::getPostAllowed() {
@@ -171,8 +168,7 @@ bool configParser::getPostAllowed() {
 	{
 		if (hasMethod(route->second._methods, "POST"))
 			return true;
-        else
-            return false;
+        return false;
 	}
 	return true;
 }
@@ -184,8 +180,7 @@ bool configParser::getDeleteAllowed() {
 	{
 		if (hasMethod(route->second._methods, "DELETE"))
 			return true;
-        else
-            return false;
+        return false;
 	}
 	return true;
 }
@@ -197,16 +192,14 @@ bool configParser::getGetAllowed() {
 	{
 		if (hasMethod(route->second._methods, "GET"))
 			return true;
-        else
-            return false;
+        return false;
 	}
 	return true;
 }
 
-int configParser::getBodySize(int port)
+int configParser::getBodySize(int incoming_port)
 {
-    std::cout << "BODY: "<< getServer(port)._body_size<< std::endl;
-	return getServer(port)._body_size; // TODO VF
+	return getServer(incoming_port)._body_size;
 }
 
 IntVector&	configParser::getPortVector()
@@ -288,7 +281,7 @@ int	configParser::string_to_int(const std::string& str)
 	if (stream >> number)
 		return number;
 	else
-		throw std::invalid_argument("not a valid integer"); // TODO VF more precise handling
+		throw std::invalid_argument("not a valid integer");
 }
 
 std::string configParser::getToken(const std::string& str, int n)
@@ -739,7 +732,7 @@ bool configParser::check_file(const std::string path)
 		return false;
 	}
 	return true;
-	// file.close(); // TODO necessary?
+	file.close();
 }
 
 std::string configParser::remove_leading_character(const std::string str, char c)
@@ -747,6 +740,14 @@ std::string configParser::remove_leading_character(const std::string str, char c
 	std::string new_str = str;
 	if (!new_str.empty() && new_str.c_str()[0] == c)
 		new_str.erase(0,1);
+	return new_str;
+}
+
+std::string configParser::remove_trailing_character(const std::string str, char c)
+{
+	std::string new_str = str;
+	if (!new_str.empty() && new_str.at(new_str.size() - 1) == c)
+		new_str.erase(new_str.at(new_str.size() - 1),1);
 	return new_str;
 }
 

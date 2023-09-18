@@ -6,7 +6,7 @@
 /*   By: vfuhlenb <vfuhlenb@students.42wolfsburg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 23:16:58 by vfuhlenb          #+#    #+#             */
-/*   Updated: 2023/09/18 14:18:40 by vfuhlenb         ###   ########.fr       */
+/*   Updated: 2023/09/18 15:53:25 by vfuhlenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,7 @@ class configParser {
 		bool				getPostAllowed();
 		bool				getDeleteAllowed();
 		bool				getGetAllowed();
-		int					getBodySize(int port); // returns body-size from server with port
+		int					getBodySize(int incoming_port); // returns body-size from server with port
 		IntVector&			getPortVector();
 		IntStringMap&		getErrorMap();
 		// global settings
@@ -212,6 +212,7 @@ class configParser {
 		void			check_path_traversal(const std::string path);
 		bool			check_file(const std::string path);
 		std::string		remove_leading_character(const std::string str, char c);
+		std::string		remove_trailing_character(const std::string str, char c);
 		void			printServerDetails();
 		void			printServerDetails(std::ofstream&);
 		void			printGlobalSettings();
