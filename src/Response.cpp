@@ -66,7 +66,7 @@ void Response::deleteFile()
     }
 
     if (_info._url == FAILURE)
-        return mySend(FILE_DELETED_FAIL);
+        return mySend(404);
 
     return mySend(FORBIDDEN);
 }
@@ -132,7 +132,7 @@ void Response::sendIndexPage()
         if (Request::fileExists(_info._configInfo._indexFile, _info._configInfo._rootFolder))
             mySend(DEFAULTWEBPAGE);
         else
-            mySend(ERROR_INDEXFILE);
+            mySend(FORBIDDEN);
     }
     else if (_info._configInfo._autoIndex)
         mySend(getDirectoryIndexPage(""));// changed
@@ -150,7 +150,7 @@ void Response::sendRequestedFile()
 
     if (!_info._configInfo._getAllowed)
         return (mySend(METHOD_NOT_ALLOWED));
-    if (_info._url.empty())
+    if (_info._url == "/")
         return (sendIndexPage());
 
     // TODO: try CGI
@@ -238,12 +238,12 @@ int Response::initFile(int statusCode)
         case FORBIDDEN:
             _file = readFile(PATH_FORBIDDEN);
             return 403;
-        case FILE_DELETED_FAIL:
-            _file = readFile(PATH_FILE_DELETED_FAIL);
-            return 404;
-        case ERROR_INDEXFILE:
-            _file = readFile(PATH_ERROR_INDEXFILE);
-            return 404;
+//        case FILE_DELETED_FAIL:
+//            _file = readFile(PATH_FILE_DELETED_FAIL);
+//            return 404;
+//        case ERROR_INDEXFILE:
+//            _file = readFile(PATH_ERROR_INDEXFILE);
+//            return 404;
         case 404:
             _file = readFile(PATH_404_ERRORWEBSITE);
             return 404;

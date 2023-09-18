@@ -6,14 +6,13 @@
 /*   By: vfuhlenb <vfuhlenb@students.42wolfsburg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 23:16:58 by vfuhlenb          #+#    #+#             */
-/*   Updated: 2023/09/17 17:46:24 by vfuhlenb         ###   ########.fr       */
+/*   Updated: 2023/09/18 14:18:40 by vfuhlenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CONFIGPARSER_CLASS_H
 #define CONFIGPARSER_CLASS_H
 
-#include "Response.hpp"
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -23,6 +22,7 @@
 #include <set>
 #include <map>
 #include <vector>
+#include "utils.h"
 
 // GLOBAL SETTINGS
 #define TIMEOUT			60
@@ -32,7 +32,7 @@
 #define BODY_SIZE_MAX	1000000
 #define MAX_EVENTS		100
 #define BACKLOG			42
-#define DEFAULT_CONF	"../default.conf"
+#define DEFAULT_CONF	"default.conf"
 #define PORT			"port"
 #define HOST			"host"
 #define SERVER_NAME		"server_name"
@@ -62,24 +62,6 @@
 #define PATH_404_ERRORWEBSITE	"error/404.html"
 #define PATH_METHOD_NOT_ALLOWED	"error/405.html"
 #define PATH_500_ERRORWEBSITE	"error/500.html"
-
-#define RESET_COLOR	"\033[0m"
-#define BLACK		"\033[30m"
-#define RED_COLOR	"\033[31m"
-#define GREEN		"\033[32m"
-#define YELLOW		"\033[33m"
-#define BLUE		"\033[34m"
-#define MAGENTA		"\033[35m"
-#define CYAN		"\033[36m"
-#define WHITE		"\033[37m"
-#define BOLDBLACK	"\033[1m\033[30m"
-#define BOLDRED		"\033[1m\033[31m"
-#define BOLDGREEN	"\033[1m\033[32m"
-#define BOLDYELLOW	"\033[1m\033[33m"
-#define BOLDBLUE	"\033[1m\033[34m"
-#define BOLDMAGENTA	"\033[1m\033[35m"
-#define BOLDCYAN	"\033[1m\033[36m"
-#define BOLDWHITE	"\033[1m\033[37m"
 
 typedef std::vector<std::string> StringVector;
 typedef std::map<int,std::string> IntStringMap;
@@ -149,7 +131,7 @@ typedef struct RequestData {
 	std::string	host;
 	int			port;
 	std::string	full_path;
-	std::string	filename; // TODO VF needs to be the file+extension -> index.html
+	std::string	filename;
 	std::string	route;
 }RequestData;
 
@@ -160,26 +142,25 @@ class configParser {
 		configParser();
 		~configParser();
 
-		/* setData
-		- discuss with Marie if function should handle error 403
-		- port is always valid and existing right?
-		*/
-		bool				setData(const std::string& url, const std::string& host,const int port);
+		bool				setData(const std::string& url, const std::string& host, int port);
 		bool				validConfig(int argc, char **argv);
 
+		// server specific
 		const std::string	getUrl(); // TODO VF do i expect only an absolute path starting with a forward slash? so without the protocol and possible domain name
-		const bool			getAutoIndex();
+		bool				getAutoIndex();
 		const std::string	getIndexFile(); // returns empty string if not set
-		const bool			getPostAllowed();
-		const bool			getDeleteAllowed();
-		const bool			getGetAllowed();
-		const IntVector&	getPortVector() const;
-		const IntStringMap&	getErrorMap();
-		const int			get_timeout() const;
-		const int			get_max_clients() const;
-		const int			get_body_size() const;
-		const int			get_max_events() const;
-		const int			get_backlog() const;
+		bool				getPostAllowed();
+		bool				getDeleteAllowed();
+		bool				getGetAllowed();
+		int					getBodySize(int port); // returns body-size from server with port
+		IntVector&			getPortVector();
+		IntStringMap&		getErrorMap();
+		// global settings
+		int			get_timeout() const;
+		int			get_max_clients() const;
+		int			get_body_size() const; // returns body-size of global settings
+		int			get_max_events() const;
+		int			get_backlog() const;
 		
 		// std::string			getRootFolder();
 
@@ -200,7 +181,7 @@ class configParser {
 		RequestData		_request_data;
 		IntStringMap	_default_error_map;
 
-		Server&			getServer(const int port);
+		Server & getServer(int port);
 		void			parse_request_data();
 		int				string_to_int(const std::string&);
 		std::string		getToken(const std::string& str, int n);
@@ -220,14 +201,17 @@ class configParser {
 		void			setIndex(Server& server, const std::string &str, const std::string &route);
 		void			setCGI(Server& server, const std::string &str, const std::string &route);
 		void			setRedirect(Server& server, const std::string &str, const std::string &route);
-		std::string		prepend_forward_slash(const std::string str);
+		std::string		prepend_forward_slash(const std::string str) const;
 		bool			check_route_exist(Server& server, const std::string& route);
 		RouteIterator	return_route(Server& server, const std::string& route);
 		RouteIterator	return_route();
 		bool			hasRoute(Server& server, const std::string& route);
-		bool			hasMethod(StringVector& methods, std::string method);
+		bool			hasMethod(StringVector& methods, std::string method) const;
 		void			create_port_vector();
 		void			create_default_error_map();
+		void			check_path_traversal(const std::string path);
+		bool			check_file(const std::string path);
+		std::string		remove_leading_character(const std::string str, char c);
 		void			printServerDetails();
 		void			printServerDetails(std::ofstream&);
 		void			printGlobalSettings();
@@ -243,12 +227,15 @@ class configParser {
 
 TODO`s
 
-- handle custom error pages
+if config contains error directives with invalid path, then segmentation fault
+
+- handle custom error pages √
 - getters for global settings? like timeout, BODY_SIZE (POLL_TIMEOUT / MAX_REQUESTSIZE) √
 - convert uniquePorts set to int vector √
 - if configurations with same port is declared -> error √
 - if body-size <2000 || >1000000 give warning, define these as macro √
 
+write a function that checks if port is part of a server, if not throw error and exit -> for getters
 
 NOTES
 

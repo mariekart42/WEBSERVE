@@ -2,7 +2,7 @@
 #define CONNECTCLIENTS_HPP
 
 #include "Response.hpp"
-#include "marieConfigParser.hpp"
+#include "configParser.hpp"
 
 
 #define MAX_USERS 10
@@ -11,34 +11,33 @@
 
 struct fdList
 {
-    std::vector<pollfd> _fds;
     std::vector<int> _ports;
+    std::vector<pollfd> _fds;
     std::vector<int> _sockets;
 };
-
 
 class ConnectClients
 {
     private:
-        struct addrinfo _clientAddress;
-        socklen_t _clientAddressLen;
-        std::vector<uint8_t> _byteVector;
         fdList _fdPortList;
+        socklen_t _clientAddressLen;
+        struct addrinfo _clientAddress;
+        std::vector<uint8_t> _byteVector;
         std::map<int, clientInfo> _clientInfo;
 
     public:
         ConnectClients(const fdList&);
         ~ConnectClients();
 
-        void    clientConnected();
+        void    clientConnected(configParser&);
         void    initFdList();
-        void    connectClients(int);
+        void    connectClients(configParser&);
         void    initNewConnection(int);
-        void    initClientInfo(int);
+        void    initClientInfo(int, configParser&);
         int     receiveData(int);
         void    closeConnection(int*);
         bool    newConnection(int);
-        void    handleData(int);
+        void    handleData(int, configParser&);
 };
 
 #endif

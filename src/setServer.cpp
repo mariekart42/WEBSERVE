@@ -3,10 +3,10 @@
 SetServer::SetServer(){}
 SetServer::~SetServer() {}
 
-int SetServer::setNewSocketFd(int port)
+int SetServer::setNewSocketFd(int port) const
 {
     int newSocketFd;
-    struct addrinfo socketAddress;
+    struct addrinfo socketAddress = {};
     struct addrinfo *bindAddress;
 
     memset(&socketAddress, 0, sizeof(socketAddress));
@@ -14,7 +14,6 @@ int SetServer::setNewSocketFd(int port)
     socketAddress.ai_socktype = SOCK_STREAM;  // TCP socket
     socketAddress.ai_flags = AI_PASSIVE;      // any available network interface
 
-//    getaddrinfo(0, std::to_string(port).c_str(), &socketAddress, &bindAddress);
     getaddrinfo(0, myItoS(port).c_str(), &socketAddress, &bindAddress);
 
     newSocketFd = socket(bindAddress->ai_family, bindAddress->ai_socktype, bindAddress->ai_protocol);	 // domain, type, protocol
@@ -31,23 +30,14 @@ int SetServer::setNewSocketFd(int port)
     return (newSocketFd);
 }
 
-void SetServer::setServer()
+void SetServer::setServer(int ac, char **av)
 {
+    configParser config;
+    if (!config.validConfig(ac, av))
+        exitWithError("Invalid Config File [EXIT]");
 
-//    Config config;
-//    if (!config.validConfig(ac, av))
-//    {
-//        // error, dont start Server
-//    }
-
-    MarieConfigParser config;
     fdList initList;
-
-//    _backlog = config.getBacklog();
-    _backlog = 10;
-
-
-
+    _backlog = config.get_backlog();
     std::vector<int> ports = config.getPortVector();
 
     for (int i = 0; i < ports.size(); i++)
@@ -56,10 +46,6 @@ void SetServer::setServer()
         initList._ports.push_back(ports.at(i));
         initList._sockets.push_back(newSocketFd);
     }
-
-//    int timeout = config.getTimeout();
-    int timeout = -1;
-
     ConnectClients connect(initList);
-    connect.connectClients(timeout);
+    connect.connectClients(config);
 }

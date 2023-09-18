@@ -13,12 +13,6 @@ ConnectClients::~ConnectClients()
 
 void ConnectClients::initFdList()
 {
-    std::cout << "[0]: Port: "<<_fdPortList._ports.at(0)<< "     Fd: "<< _fdPortList._sockets.at(0)<<std::endl;
-    std::cout << "[1]: Port: "<<_fdPortList._ports.at(1)<< "     Fd: "<< _fdPortList._sockets.at(1)<<std::endl;
-    std::cout << "[2]: Port: "<<_fdPortList._ports.at(2)<< "     Fd: "<< _fdPortList._sockets.at(2)<<std::endl;
-    std::cout << "[3]: Port: "<<_fdPortList._ports.at(3)<< "     Fd: "<< _fdPortList._sockets.at(3)<<std::endl;
-
-
     for (int x = 0; x < _fdPortList._sockets.size(); x++)
     {
         for (int i = 0; i < MAX_USERS; i++) {
@@ -42,8 +36,6 @@ void ConnectClients::initFdList()
 
 void ConnectClients::initNewConnection(int serverSocket)
 {
-    // Server socket has activity, accept new connection
-//    int newClientSocket = accept(serverSocket, (struct sockaddr *) &_clientAddress, &_clientAddressLen);
     int newClientSocket = accept(serverSocket, (struct sockaddr *) &_clientAddress, &_clientAddressLen);
 
     if (newClientSocket != -1)
@@ -81,7 +73,7 @@ void ConnectClients::initNewConnection(int serverSocket)
 
 
 
-void ConnectClients::initClientInfo(int _clientSocket, MarieConfigParser& config)
+void ConnectClients::initClientInfo(int _clientSocket, configParser& config)
 {
     std::vector<uint8_t> input = _byteVector;
 
@@ -95,9 +87,9 @@ void ConnectClients::initClientInfo(int _clientSocket, MarieConfigParser& config
         clientInfo initNewInfo;
         Request request(input);
 
-        config.setData(request.getUrlString(), currentHost, currentPort); // TODO Marie
+        config.setData(request.getUrlString(), "127.0.0.1", request.getPort()); // TODO Marie
 
-        int currentPort = request.getPort();
+//        int currentPort = request.getPort();
         // httpMethod getHTTP(myHHTTP, Port, Url);
         initNewInfo._myHTTPMethod = request.getHTTPMethod();
         initNewInfo._clientSocket = _clientSocket;
@@ -105,7 +97,7 @@ void ConnectClients::initClientInfo(int _clientSocket, MarieConfigParser& config
         initNewInfo._fileContentType = request.getFileContentType(initNewInfo._url);
         initNewInfo._contentType = request.getContentType();
         initNewInfo._isMultiPart = false;
-        initNewInfo._configInfo._rootFolder = config.getRootFolder();
+        initNewInfo._configInfo._rootFolder = ROOT; // TODO : als macro lassen oder getter?
         initNewInfo._configInfo._autoIndex = config.getAutoIndex();
         initNewInfo._configInfo._indexFile = config.getIndexFile();
         if (initNewInfo._myHTTPMethod == M_POST)
@@ -146,8 +138,9 @@ void ConnectClients::initClientInfo(int _clientSocket, MarieConfigParser& config
 
 int ConnectClients::receiveData(int i)
 {
-    MarieConfigParser config;
-    int clientBodySize = config.getClientBodysize(_fdPortList._ports.at(i));
+    configParser config;
+    int clientBodySize = config.getBodySize(_fdPortList._ports.at(i));
+//    int clientBodySize = config.getClientBodysize(_fdPortList._ports.at(i));
     char clientData[clientBodySize];
 
     memset(clientData, 0, sizeof(clientData));
@@ -189,9 +182,9 @@ bool ConnectClients::newConnection(int fdListFd)
     return false;
 }
 
-void ConnectClients::handleData(int fd)
+void ConnectClients::handleData(int fd, configParser& config)
 {
-    initClientInfo(fd);
+    initClientInfo(fd, config);
 
     std::map<int, clientInfo>::iterator it;
     it = _clientInfo.find(fd);
@@ -216,7 +209,7 @@ void ConnectClients::handleData(int fd)
     }
 }
 
-void ConnectClients::clientConnected()
+void ConnectClients::clientConnected(configParser& config)
 {
     for (int i = 0; i < _fdPortList._fds.size(); ++i)
     {
@@ -230,7 +223,7 @@ void ConnectClients::clientConnected()
                 switch (receiveData(i))
                 {
                     case 69:
-                        handleData(fd);
+                        handleData(fd, config);
                         break;
                     case 0:
                         closeConnection(&i);
@@ -246,7 +239,7 @@ void ConnectClients::clientConnected()
 
 
 
-void ConnectClients::connectClients(int timeout)
+void ConnectClients::connectClients(configParser& config)
 {
     initFdList();
 
@@ -254,8 +247,7 @@ void ConnectClients::connectClients(int timeout)
     while (69)
     {
         // poll checks _fdList for read & write events at the same time
-        // poll() ≈ select()
-        switch (poll(&_fdPortList._fds[0], _fdPortList._fds.size(), timeout))
+        switch (poll(&_fdPortList._fds[0], _fdPortList._fds.size(), config.get_timeout()))
         {
             case -1:
                 exitWithError("Poll function returned Error [EXIT]");
@@ -264,7 +256,7 @@ void ConnectClients::connectClients(int timeout)
                 Logging::log("waiting for client to connect", 200);
                 break;
             default:
-                clientConnected();
+                clientConnected(config);
                 break;
         }
     }

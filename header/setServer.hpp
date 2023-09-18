@@ -3,10 +3,12 @@
 
 #include "connectClients.hpp"
 
+class configParser;
+
 class SetServer
 {
     private:
-        int setNewSocketFd(int);
+        int setNewSocketFd(int) const;
         fdList _fdList;
         int _backlog;
 
@@ -14,7 +16,7 @@ class SetServer
         SetServer();
         ~SetServer();
 
-        void setServer();
+        void setServer(int, char**);
 };
 
 #endif
