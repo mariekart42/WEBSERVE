@@ -134,19 +134,22 @@ const std::string	configParser::getUrl() {
 	route = getServer(_request_data.port)._routes.find(_request_data.route);
 	if (route != getServer(_request_data.port)._routes.end() && !route->second._redirect.empty())
 	{
+        std::cout << "REDIRECT: "<<route->second._redirect<< std::endl;
 		std::string route_temp = route->second._redirect;
 		if (route_temp.size() > 2 && route_temp.at(route_temp.size() - 1) == '/')
 			route_temp.erase(route_temp.size() - 1, 1);
 		std::string redirected_url = prepend_forward_slash(route_temp);
 		redirected_url.append(prepend_forward_slash(_request_data.filename));
+        std::cout << "redirect URL: "<<redirected_url<< std::endl;
 		return redirected_url;
 	}
+        std::cout << "URL: "<<_request_data.full_path<< std::endl;
 	return prepend_forward_slash(_request_data.full_path);
 }
 
 bool configParser::getAutoIndex() {
 	RouteIterator route;
-	bool result = false;
+	bool result = true;
 	route = getServer(_request_data.port)._routes.find(_request_data.route);
 	if (route != getServer(_request_data.port)._routes.end() && !route->second._autoindex.empty())
 		route->second._autoindex == "true" ? result = true : result = false;
@@ -156,7 +159,9 @@ bool configParser::getAutoIndex() {
 const std::string	configParser::getIndexFile() {
 	RouteIterator route;
 	route = getServer(_request_data.port)._routes.find(_request_data.route);
-	return route->second._index;
+//    std::cout <<"HEEERE: " << route->second._index << std::endl;
+//    return route->second._index; // TODO VF
+return "index.html";
 }
 
 bool configParser::getPostAllowed() {
@@ -166,8 +171,10 @@ bool configParser::getPostAllowed() {
 	{
 		if (hasMethod(route->second._methods, "POST"))
 			return true;
+        else
+            return false;
 	}
-	return false;
+	return true;
 }
 
 bool configParser::getDeleteAllowed() {
@@ -177,8 +184,10 @@ bool configParser::getDeleteAllowed() {
 	{
 		if (hasMethod(route->second._methods, "DELETE"))
 			return true;
+        else
+            return false;
 	}
-	return false;
+	return true;
 }
 
 bool configParser::getGetAllowed() {
@@ -188,13 +197,16 @@ bool configParser::getGetAllowed() {
 	{
 		if (hasMethod(route->second._methods, "GET"))
 			return true;
+        else
+            return false;
 	}
-	return false;
+	return true;
 }
 
 int configParser::getBodySize(int port)
 {
-	return getServer(port)._body_size;
+    std::cout << "BODY: "<< getServer(port)._body_size<< std::endl;
+	return getServer(port)._body_size; // TODO VF
 }
 
 IntVector&	configParser::getPortVector()

@@ -150,7 +150,7 @@ void Response::sendRequestedFile()
 
     if (!_info._configInfo._getAllowed)
         return (mySend(METHOD_NOT_ALLOWED));
-    if (_info._url.empty())
+    if (_info._url == "/")
         return (sendIndexPage());
 
     // TODO: try CGI

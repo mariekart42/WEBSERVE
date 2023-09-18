@@ -212,6 +212,8 @@ std::string Request::getUrlString()
     size_t found;
     while ((found = url.find("%20")) != std::string::npos)
         url.replace(found, 3, " ");
+    if (url.empty())
+        return "/";
     return url;
 }
 
