@@ -6,7 +6,7 @@
 /*   By: vfuhlenb <vfuhlenb@students.42wolfsburg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 23:17:00 by vfuhlenb          #+#    #+#             */
-/*   Updated: 2023/09/18 16:52:54 by vfuhlenb         ###   ########.fr       */
+/*   Updated: 2023/09/18 19:40:17 by vfuhlenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -724,15 +724,16 @@ void configParser::check_path_traversal(const std::string path)
 
 bool configParser::check_file(const std::string path)
 {
-	std::ofstream file;
+	std::ifstream file;
 	file.open(path);
 	if (!file)
 	{
+		file.close();
 		throw std::invalid_argument("invalid file");
 		return false;
 	}
-	return true;
 	file.close();
+	return true;
 }
 
 std::string configParser::remove_leading_character(const std::string str, char c)
