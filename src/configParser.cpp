@@ -6,7 +6,7 @@
 /*   By: vfuhlenb <vfuhlenb@students.42wolfsburg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 23:17:00 by vfuhlenb          #+#    #+#             */
-/*   Updated: 2023/09/17 18:39:21 by vfuhlenb         ###   ########.fr       */
+/*   Updated: 2023/09/18 14:21:30 by vfuhlenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ configParser::configParser() : _context(GLOBAL), _directive_line_nbr(0)
 	_settings.backlog = BACKLOG;
 	_request_data.port = 0;
 
+	create_default_error_map();
 	// setting settings_check struct members to false
 	for (bool* p = &_settings_check.timeout; p <= &_settings_check.backlog; p++)
 		*p = false;
@@ -63,6 +64,8 @@ bool configParser::validConfig(int argc, char **argv)
 				server._directive_line_nbr = _directive_line_nbr;
 				server._server_line_nbr = _directive_line_nbr;
 				server._error_map = _default_error_map;
+	
+				server._body_size = _settings.body_size;
 				std::string route;
 				std::string route_end;
 				while (getline(_file, _line) && getToken(_line, 1) != "[\\server]") // DONE VF handle open Server Block
@@ -85,7 +88,9 @@ bool configParser::validConfig(int argc, char **argv)
 					else if (getToken(_line, 1) == route_end)
 						_context = SERVER;
 					else if (!_line.empty())
+					{
 						setDirective(server, route);
+					}
 				}
 				_directive_line_nbr++;
 				validate_minimal_server_configuration(server);
@@ -113,9 +118,10 @@ bool configParser::validConfig(int argc, char **argv)
 	}
 	catch (std::exception &e)
 	{
-		std::cerr << BOLDRED << "Error: in \"" << _file_path << "\" on line " << _directive_line_nbr << " : " << e.what() << RESET_COLOR << std::endl;
+		std::cerr << BOLDRED << "Error: in \"" << _file_path << "\" on line " << _directive_line_nbr << " : " << e.what() << " [EXIT]" << RESET_COLOR << std::endl;
 		return false;
 	}
+	create_port_vector();
 	std::cout << BOLDGREEN << "\nInfo: webserv running using configuration \"" << _file_path << "\"" << RESET_COLOR << std::endl;
 	printGlobalSettings();
 	printServerDetails();
@@ -191,13 +197,12 @@ int configParser::getBodySize(int port)
 	return getServer(port)._body_size;
 }
 
-IntVector	configParser::getPortVector()
+IntVector&	configParser::getPortVector()
 {
-    create_port_vector();
 	return _unique_ports;
 }
 
-IntStringMap	configParser::getErrorMap()
+IntStringMap&	configParser::getErrorMap()
 {
 	return getServer(_request_data.port)._error_map;
 }
@@ -515,31 +520,20 @@ void configParser::setServerName(Server& server, const std::string& str)
 
 void configParser::setErrorPage(Server& server, const std::string& str)
 {
-	/*
-	- prepend "root/"
-	- map error code to maries code-syntax if she has an "alias" for a regular code
-	- key is error-code value is path, overwrite path with custom one
-	- check file, if not existing then trow error
-	- filter input >400
-	*/
-	std::pair<IntStringMap::iterator,bool> ret;
+	check_path_traversal(str);
 	int response_code = string_to_int(getToken(str, 2));
-	std::string temp_path = getToken(str, 4);
 	if (response_code < 400)
 		throw std::invalid_argument("invalid error code");
-	ret = server._error_map.insert ( std::pair<int,std::string>(response_code,temp_path));
+	std::string path = getToken(str, 4);
+	std::pair<IntStringMap::iterator,bool> ret;
+	ret = server._error_map.insert ( std::pair<int,std::string>(response_code,path));
 	if ( ret.second == false)
 	{
-		std::string path = "root/";
-		if (!temp_path.empty() && temp_path.c_str()[0] == '/')
-			temp_path.erase(0,1);
-		path.append(temp_path);
-		std::ofstream file;
-		file.open(path);
-		if (!file)
-			throw std::invalid_argument("invalid file");
-		file.close();
-		ret.first->second = path;
+		std::string new_path = "root/";
+		path = remove_leading_character(path, '/');
+		new_path.append(path);
+		check_file(new_path);
+		ret.first->second = new_path;
 	}
 	else
 	{
@@ -549,6 +543,7 @@ void configParser::setErrorPage(Server& server, const std::string& str)
 
 void configParser::setRoot(Server& server, const std::string& str, const std::string& route)
 {
+	check_path_traversal(str);
 	StringLocationMap::iterator it;
 	it = server._routes.find(route);
 	if (it != server._routes.end())
@@ -598,6 +593,7 @@ void configParser::setAutoindex(Server& server, const std::string& str, const st
 
 void configParser::setIndex(Server& server, const std::string& str, const std::string& route)
 {
+	check_path_traversal(str);
 	StringLocationMap::iterator it;
 	it = server._routes.find(route);
 	if (it != server._routes.end())
@@ -632,6 +628,7 @@ void configParser::setCGI(Server& server, const std::string& str, const std::str
 
 void configParser::setRedirect(Server& server, const std::string& str, const std::string& route)
 {
+	check_path_traversal(str);
 	if (check_route_exist(server, route))
 	{
 		RouteIterator it = return_route(server, route);
@@ -712,10 +709,34 @@ void	configParser::create_default_error_map()
 	_default_error_map.insert ( std::pair<int,std::string>(INTERNAL_ERROR, PATH_500_ERRORWEBSITE) );
 }
 
+void configParser::check_path_traversal(const std::string path)
+{
+	std::size_t f1 = path.find("../");
+	std::size_t f2 = path.find("/../");
+	if (f1 != std::string::npos || f2 != std::string::npos)
+    	throw std::invalid_argument("path traversal not allowed.");
+}
 
+bool configParser::check_file(const std::string path)
+{
+	std::ofstream file;
+	file.open(path);
+	if (!file)
+	{
+		throw std::invalid_argument("invalid file");
+		return false;
+	}
+	return true;
+	// file.close(); // TODO necessary?
+}
 
-
-
+std::string configParser::remove_leading_character(const std::string str, char c)
+{
+	std::string new_str = str;
+	if (!new_str.empty() && new_str.c_str()[0] == c)
+		new_str.erase(0,1);
+	return new_str;
+}
 
 /**************************************************************************************************************/
 // PRINT & LOG
@@ -750,7 +771,7 @@ void configParser::printGlobalSettings()
 
 void configParser::printGlobalSettings(std::ofstream& file)
 {
-	file << "\nGLOBAL SETTINGS" << "\n\ttimeout = " << _settings.timeout << "\n\tmax_clients =" << _settings.max_clients;
+	file << "\nGLOBAL SETTINGS" << "\n\ttimeout = " << _settings.timeout << "\n\tmax_clients = " << _settings.max_clients;
 	file << "\n\tbody_size = " << _settings.body_size << "\n\tmax_events = " << _settings.max_events;
 	file << "\n\tbacklog = " << _settings.backlog << std::endl;
 }
@@ -777,7 +798,7 @@ void configParser::printServer(Server& server)
 void configParser::printServer(Server& server, std::ofstream& file)
 {
 	file
-		<< "SERVER " << server._server_nbr << " [" << server._server_line_nbr << "]"
+		<< "\nSERVER " << server._server_nbr << " [" << server._server_line_nbr << "]"
 		<< "\n\tlisten = " << server._port
 		<< "\n\thost = " << server._host
 		<< "\n\tbody_size = " << server._body_size;
@@ -825,10 +846,10 @@ void configParser::printServer(Server& server, std::ofstream& file)
 				file << "\n\t\tredirect = " << it->second._redirect;
 			if (!it->second._autoindex.empty())
 				file << "\n\t\tautoindex = " << it->second._autoindex;
+			file << "\n\t<\\" << it->second._path << ">";
 		}
 		file << std::endl;
 	}
-	file << std::endl;
 }
 
 void configParser::printLog()

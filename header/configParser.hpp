@@ -6,7 +6,7 @@
 /*   By: vfuhlenb <vfuhlenb@students.42wolfsburg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 23:16:58 by vfuhlenb          #+#    #+#             */
-/*   Updated: 2023/09/17 18:39:24 by vfuhlenb         ###   ########.fr       */
+/*   Updated: 2023/09/18 14:18:40 by vfuhlenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,8 +153,8 @@ class configParser {
 		bool				getDeleteAllowed();
 		bool				getGetAllowed();
 		int					getBodySize(int port); // returns body-size from server with port
-		IntVector			getPortVector();
-		IntStringMap		getErrorMap();
+		IntVector&			getPortVector();
+		IntStringMap&		getErrorMap();
 		// global settings
 		int			get_timeout() const;
 		int			get_max_clients() const;
@@ -209,6 +209,9 @@ class configParser {
 		bool			hasMethod(StringVector& methods, std::string method) const;
 		void			create_port_vector();
 		void			create_default_error_map();
+		void			check_path_traversal(const std::string path);
+		bool			check_file(const std::string path);
+		std::string		remove_leading_character(const std::string str, char c);
 		void			printServerDetails();
 		void			printServerDetails(std::ofstream&);
 		void			printGlobalSettings();
@@ -224,11 +227,15 @@ class configParser {
 
 TODO`s
 
+if config contains error directives with invalid path, then segmentation fault
+
 - handle custom error pages √
 - getters for global settings? like timeout, BODY_SIZE (POLL_TIMEOUT / MAX_REQUESTSIZE) √
 - convert uniquePorts set to int vector √
 - if configurations with same port is declared -> error √
 - if body-size <2000 || >1000000 give warning, define these as macro √
+
+write a function that checks if port is part of a server, if not throw error and exit -> for getters
 
 NOTES
 
