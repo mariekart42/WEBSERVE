@@ -156,6 +156,7 @@ void Response::sendRequestedFile()
     if(validCGIfile() == true)
 	{
 		int check = CGIpy();
+		std::cout << "Return of CGI is " << check << std::endl;
 		switch (check)
 		{
 		case -1:
@@ -166,8 +167,6 @@ void Response::sendRequestedFile()
 			return (mySend(408));
 		default:
 			std::cout << "Default case has been called" << std::endl;
-			if (_file.empty())   // if file doesn't exist
-				return (mySend(404));
 			std::cout << "Here" << std::endl;
 			return (CGIoutput());
 		}

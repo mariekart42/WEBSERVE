@@ -63,15 +63,16 @@ int Response::CGIpy() {
 	char *python = (char*)pythonexec;
 	char* cmd = (char*)_cgiPath.c_str();
 	char* argv[] = {python, cmd, NULL};
-	int file = open("temp", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR); //TODO hardcoded. Do whatever for naming or keep it
-
+	int file = open("root/temp", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR); //TODO hardcoded. Do whatever for naming or keep it
 	gettimeofday(&start, NULL);
 
-	int pid = fork();
-	if (pid == -1) {
-		std::cerr << "Something went wrong with fork" << std::endl;
+
+	if (pipe(pipefd) == -1) {
+		std::cerr << "Something went wrong creating the pipe!" << std::endl;
+		exit(1);
 	}
 
+	int pid = fork();
 	if (pid == -1) {
 		std::cerr << "Something went wrong with fork" << std::endl;
 	}
@@ -79,23 +80,23 @@ int Response::CGIpy() {
 	if (pid == 0) {
 		close(pipefd[0]);
 		dup2(file, STDOUT_FILENO);
-		close(file);
-	
 		if (execve("/usr/bin/python3", argv, env) == -1) {
 			std::cerr << "what is wrong" << std::endl;
+			close(file);
 			exit(1);
 		}
+		close(file);
 	}
 	else {
 		close(pipefd[1]);
 		waitpid(pid, &status, 0);
 	}
 	gettimeofday(&end, NULL);
-	close(file);
+
 	int diff = (end.tv_sec - start.tv_sec) * 1000.0 + (end.tv_usec - start.tv_usec) / 1000.0;
 	std::cout << "Time out: " << diff  << "ms compared with " << TIMEOUT << "ms" << std::endl;
 	if (diff >= TIMEOUT ) {
-		remove("temp");//TODO here as well
+		remove("root/temp");//TODO here as well
 		return -3;
 	}
 	return 0;
@@ -103,16 +104,24 @@ int Response::CGIpy() {
 
 
 void Response::CGIoutput(){
-    _file = readFile("temp"); //todo change it or nah
-
+	std::cout << "CGI OUTPUT"<< std::endl;
+	std::ifstream inputFile("root/temp");
+	//error check if file is open
+	if (!inputFile.is_open())
+		return (mySend(500));
+	std::string header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: "; // little clean up here needed
+	std::stringstream ss;
+	std::string line;
+	std::string respooonse;
+	while (std::getline(inputFile, line))
+		respooonse += line + "\n";
+	ss << respooonse.size();
+	respooonse = header + ss.str() + "\r\n\r\n" + respooonse;
     Logging::log("send Data:\n" + _cgiPath, 200);
 
-    std::string respooonse = std::string(_file.begin(), _file.end());
-	std::cout << respooonse<<std::endl;
-    int respooonseLen = respooonse.size();
 
-    ssize_t check = send(_info._clientSocket, (respooonse).c_str(), respooonseLen, 0);
-
+    ssize_t check = send(_info._clientSocket, (respooonse).c_str(), respooonse.size(), 0);
+	std::cout << respooonse << std::endl;
     if (check <=0)
     {
         Logging::log("Failed to send Data to Client", 500);
