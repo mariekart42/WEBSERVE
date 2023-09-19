@@ -163,27 +163,25 @@ void Response::mySend(int statusCode)
     initHeader();
     Logging::log("send Data:\n" + _header, 200);
 
-
-//    std::string header = _header;
-//    std::string response = header + std::string(_file.begin(), _file.end());
-//    const char* response_data = response.data();
-//int len = response.size();
-//int check = send(_info._clientSocket, response_data, len, 0);
-//
-//    if (check <=0)
-//    {
-//        Logging::log("Failed to send Data to Client", 500);
-//        exit(69);
-//    }
-//    std::cout << GRN"ALIVE [after single sends]"RESET<<std::endl;
+    std::string header = _header;
+    std::string response = header + std::string(_file.begin(), _file.end());
+    const char* response_data = response.data();
+    int len = response.size();
+    int check = send(_info._clientSocket, response_data, len, 0);
+    if (check <=0)
+    {
+        Logging::log("Failed to send Data to Client", 500);
+        exit(69);
+    }
+    std::cout << GRN"ALIVE [after single sends]"RESET<<std::endl;
 
 
 
 
 
-    send(_info._clientSocket, _header.c_str(), _header.size(), 0);
-    send(_info._clientSocket, (std::string(_file.begin(), _file.end())).c_str(), _file.size(), 0);
-    std::cout << GRN"ALIVE 1 [after 2 sends]"RESET<<std::endl;
+//    send(_info._clientSocket, _header.c_str(), _header.size(), 0);
+//    send(_info._clientSocket, (std::string(_file.begin(), _file.end())).c_str(), _file.size(), 0);
+//    std::cout << GRN"ALIVE 1 [after 2 sends]"RESET<<std::endl;
 }
 
 
