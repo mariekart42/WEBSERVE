@@ -87,23 +87,24 @@ class Response
 {
     private:
         std::vector<uint8_t> _file;
-        clientInfo _info;
         int _statusCode;
+        clientInfo _info;
+        std::string _header;
         std::map<int, std::ofstream> _fileStreams;
 
     public:
         Response(int, const clientInfo&);
         ~Response();
 
-
+        static bool endsWith(const std::string&, const std::string&);
         std::string getContentType();
 
         static std::vector<uint8_t> readFile(const std::string&);
-        std::string getHeader();
+        void initHeader();
         void mySend(int);
         int initFile(int);
 
-        std::string decodeURL(const std::string&);
+//        std::string decodeURL(const std::string&);
         std::string generateList(const std::string&, const std::string&);
         int getDirectoryIndexPage(const std::string&);
         void sendIndexPage();
