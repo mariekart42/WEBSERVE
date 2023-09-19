@@ -6,7 +6,7 @@
 /*   By: vfuhlenb <vfuhlenb@students.42wolfsburg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 23:17:00 by vfuhlenb          #+#    #+#             */
-/*   Updated: 2023/09/18 20:08:33 by vfuhlenb         ###   ########.fr       */
+/*   Updated: 2023/09/19 13:57:00 by vfuhlenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -883,4 +883,4 @@ void configParser::printLog()
 	file.close();
 }
 
-// new push
+// new push2

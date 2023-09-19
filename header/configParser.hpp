@@ -6,7 +6,7 @@
 /*   By: vfuhlenb <vfuhlenb@students.42wolfsburg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 23:16:58 by vfuhlenb          #+#    #+#             */
-/*   Updated: 2023/09/18 19:48:42 by vfuhlenb         ###   ########.fr       */
+/*   Updated: 2023/09/19 13:56:55 by vfuhlenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,7 +221,7 @@ class configParser {
 
 TODO`s
 
-new push
+new push2
 if config contains error directives with invalid path, then segmentation fault
 
 - handle custom error pages √
