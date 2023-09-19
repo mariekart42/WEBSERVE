@@ -145,14 +145,14 @@ int ConnectClients::receiveData(int i)
 
     memset(clientData, 0, sizeof(clientData));
     ssize_t bytesRead = recv(_fdPortList._fds[i].fd, clientData, sizeof(clientData), O_NONBLOCK);
+    #ifdef DEBUG
+        std::cout << "Client Data["<<bytesRead<<"]:\n"<<clientData<<std::endl;
+    #endif
     if (bytesRead < 0)
         return -1;
     if (bytesRead == 0)
         return 0;
 
-    #ifdef DEBUG
-        std::cout << "Client Data:\n"<<_clientData<<std::endl;
-    #endif
 
     // converting client data to vector
     size_t charArraySize = clientBodySize;
