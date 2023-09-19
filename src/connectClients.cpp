@@ -141,6 +141,12 @@ void ConnectClients::initClientInfo(int _clientSocket, configParser& config)
 int ConnectClients::receiveData(int i, configParser& config)
 {
 //    configParser config;
+int len = _fdPortList._ports.size();
+    if (i >= len)
+    {
+        std::cout << "INVALID PORT ACCESS"<<std::endl;
+        return 0;
+    }
     int clientBodySize = config.getBodySize(_fdPortList._ports.at(i));
 //    int clientBodySize = 9500;
 //    int clientBodySize = config.getClientBodysize(_fdPortList._ports.at(i));
@@ -175,6 +181,17 @@ int ConnectClients::receiveData(int i, configParser& config)
 
 void ConnectClients::closeConnection(int *i)
 {
+    int len = _fdPortList._ports.size();
+    if (*i >= len)
+    {
+        len = _fdPortList._fds.size();
+        if (*i >= len)
+            return;
+        close(_fdPortList._fds[*i].fd);
+        _fdPortList._fds.erase(_fdPortList._fds.begin() + *i);
+        return ;
+    }
+
     Logging::log("Done receiving Data", 200);
     close(_fdPortList._fds[*i].fd);
     _fdPortList._fds.erase(_fdPortList._fds.begin() + *i);
@@ -242,8 +259,8 @@ void ConnectClients::clientConnected(configParser& config)
                         break;
                     default:
                         Logging::log("Unable to read Data from connected Client", 500);
-                        closeConnection(&i);
-//                        exit(69);
+//                        closeConnection(&i);
+                        exit(69);
                         break;
                 }
             }
