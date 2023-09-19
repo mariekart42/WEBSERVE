@@ -107,7 +107,7 @@ void ConnectClients::initClientInfo(int _clientSocket, configParser& config)
             initNewInfo._postInfo._input = input;
             initNewInfo._configInfo._postAllowed = config.getPostAllowed();
             initNewInfo._postInfo._filename = request.getFileName(initNewInfo._contentType, initNewInfo._postInfo._filename, UPLOAD_FOLDER);
-            initNewInfo._postInfo._outfile = new std::ofstream (UPLOAD_FOLDER+initNewInfo._postInfo._filename, std::ofstream::out | std::ofstream::app  | std::ofstream::binary);
+            initNewInfo._postInfo._outfile = new std::ofstream (UPLOAD_FOLDER+initNewInfo._postInfo._filename, std::ofstream::out | std::ofstream::app | std::ofstream::binary);
             chmod((UPLOAD_FOLDER+initNewInfo._postInfo._filename).c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH); // no execution permission for user
             if (initNewInfo._contentType == "multipart/form-data")
             {
@@ -138,18 +138,22 @@ void ConnectClients::initClientInfo(int _clientSocket, configParser& config)
     }
 }
 
-int ConnectClients::receiveData(int i)
+int ConnectClients::receiveData(int i, configParser& config)
 {
-    configParser config;
-//    int clientBodySize = config.getBodySize(_fdPortList._ports.at(i));
-    int clientBodySize = 9500;
+//    configParser config;
+    int clientBodySize = config.getBodySize(_fdPortList._ports.at(i));
+//    int clientBodySize = 9500;
 //    int clientBodySize = config.getClientBodysize(_fdPortList._ports.at(i));
     char clientData[clientBodySize];
 
     memset(clientData, 0, sizeof(clientData));
     std::cout << "before receving"<<std::endl;
     ssize_t bytesRead = recv(_fdPortList._fds[i].fd, clientData, sizeof(clientData), O_NONBLOCK);
-    std::cout << "bytes Read: "<<bytesRead<< "\nclientBodySize: "<<clientBodySize<<std::endl;
+
+    if (bytesRead < clientBodySize)
+        std::cout << "breakpoint"<<std::endl;
+
+    std::cout << "bytes Read: "<<bytesRead<< "\nclientBodySize: "<<clientBodySize<<"  at port: "<< _fdPortList._ports.at(i)<<std::endl;
     #ifdef DEBUG
         std::cout << "Client Data["<<bytesRead<<"]:\n"<<clientData<<std::endl;
     #endif
@@ -160,7 +164,7 @@ int ConnectClients::receiveData(int i)
 
 
     // converting client data to vector
-    size_t charArraySize = clientBodySize;
+    size_t charArraySize = bytesRead;
     _byteVector.clear();
     _byteVector.reserve(charArraySize); // Reserve space to avoid reallocations
     for (size_t k = 0; k < charArraySize; ++k)
@@ -174,6 +178,7 @@ void ConnectClients::closeConnection(int *i)
     Logging::log("Done receiving Data", 200);
     close(_fdPortList._fds[*i].fd);
     _fdPortList._fds.erase(_fdPortList._fds.begin() + *i);
+    _fdPortList._ports.erase(_fdPortList._ports.begin() + *i);
     --*i;
 }
 
@@ -227,7 +232,7 @@ void ConnectClients::clientConnected(configParser& config)
                 initNewConnection(fd);
             else
             {
-                switch (receiveData(i))
+                switch (receiveData(i, config))
                 {
                     case 69:
                         handleData(fd, config);
@@ -237,7 +242,9 @@ void ConnectClients::clientConnected(configParser& config)
                         break;
                     default:
                         Logging::log("Unable to read Data from connected Client", 500);
-                        exit(69);
+                        closeConnection(&i);
+//                        exit(69);
+                        break;
                 }
             }
         }

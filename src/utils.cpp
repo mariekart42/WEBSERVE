@@ -29,7 +29,8 @@ bool endsWith(const std::string& str, const std::string& end)
 
 std::vector<uint8_t> readFile(const std::string &fileName)
 {
-    std::ifstream file(fileName, std::ios::binary);
+    std::ifstream file;
+    file.open(fileName, std::ios::binary);
 
     if (!file)
     {

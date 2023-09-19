@@ -74,6 +74,7 @@ void Response::sendRequestedFile()
         return sendIndexPage();
 
     // TODO: try CGI
+    std::cout <<"ALIVE 1"<<std::endl;
 
     struct stat s = {};
     if IS_FOLDER_OR_FILE
@@ -160,19 +161,27 @@ void Response::mySend(int statusCode)
 {
     initFile(statusCode);
     initHeader();
-
     Logging::log("send Data:\n" + _header, 200);
+    std::string header = _header;
 
-    std::string response = _header + std::string(_file.begin(), _file.end());
+    std::string response = header + std::string(_file.begin(), _file.end());
+    const char* response_data = response.data();
 
-//    std::cout << "\nstd::string len: "<< response.size()<<"\nbytes send: ";
-    ssize_t check = send(_info._clientSocket, (response).c_str(), response.size(), 0);
-//    std::cout << check<<std::endl;
+int len = response.size();
+int check = send(_info._clientSocket, response_data, len, 0);
+
     if (check <=0)
     {
         Logging::log("Failed to send Data to Client", 500);
         exit(69);
     }
+
+
+
+
+
+//    send(_info._clientSocket, _header.c_str(), _header.size(), 0);
+//    send(_info._clientSocket, (std::string(_file.begin(), _file.end())).c_str(), _file.size(), 0);
 }
 
 
