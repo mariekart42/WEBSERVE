@@ -19,6 +19,68 @@ std::string myItoS(int val)
     return ss.str();
 }
 
+bool endsWith(const std::string& str, const std::string& end)
+{
+    if (str.length() >= end.length())
+        return (str.compare(str.length() - end.length(), end.length(), end) == 0);
+    else
+        return false;
+}
+
+std::vector<uint8_t> readFile(const std::string &fileName)
+{
+    std::ifstream file(fileName, std::ios::binary);
+
+    if (!file)
+    {
+        Logging::log("Failed to open file: " + fileName, 500);
+        return static_cast<std::vector<uint8_t> >(0);
+    }
+
+    // Read the file content into a vector
+    std::vector<uint8_t> content(
+            (std::istreambuf_iterator<char>(file)),
+            std::istreambuf_iterator<char>()
+    );
+    return content;
+}
+
+std::string generateList(const std::string& rootFolder, const std::string& currentFolder)
+{
+    std::string filePaths;
+
+    std::string folderPath = rootFolder + "/" + currentFolder;
+    DIR* dir = opendir(folderPath.c_str());
+
+    if (dir)
+    {
+        struct dirent* entry;
+        while ((entry = readdir(dir)) != NULL) {
+            std::string itemName = entry->d_name;
+
+            if (itemName != "." && itemName != "..") {
+                std::string itemPath = folderPath + "/" + itemName;
+                struct stat itemStat;
+
+                if (stat(itemPath.c_str(), &itemStat) == 0)
+                {
+                    if (S_ISDIR(itemStat.st_mode))
+                    {
+                        // Recurse into subfolder, passing the current folder
+                        std::string subfolderPaths = generateList(rootFolder, currentFolder + "/" + itemName);
+                        filePaths += subfolderPaths;
+                    } else if (S_ISREG(itemStat.st_mode)) {
+                        std::string linkPath = currentFolder + "/" + itemName;
+                        filePaths += "\"" + linkPath + "\",";
+                    }
+                }
+            }
+        }
+        closedir(dir);
+    }
+    return filePaths;
+}
+
 std::string comparerContentType(const std::string& fileExtension)
 {
     static std::map<std::string, std::string> extensionToType;

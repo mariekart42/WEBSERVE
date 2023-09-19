@@ -39,8 +39,8 @@ void SetServer::setServer(int ac, char **av)
     fdList initList;
     _backlog = config.get_backlog();
     std::vector<int> ports = config.getPortVector();
-
-    for (int i = 0; i < ports.size(); i++)
+    int portSize = ports.size();
+    for (int i = 0; i < portSize; i++)
     {
         int newSocketFd = setNewSocketFd(ports.at(i));
         initList._ports.push_back(ports.at(i));

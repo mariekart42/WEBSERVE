@@ -1,9 +1,9 @@
 #include "../header/connectClients.hpp"
 
 ConnectClients::ConnectClients(const fdList& initList):
-    _clientAddress(), _clientAddressLen(sizeof(_clientAddress)),
+_fdPortList(initList), _clientAddressLen(sizeof(_clientAddress)),_clientAddress(),
     _byteVector(),
-    _clientInfo(), _fdPortList(initList)
+    _clientInfo()
 {}
 
 
@@ -13,7 +13,8 @@ ConnectClients::~ConnectClients()
 
 void ConnectClients::initFdList()
 {
-    for (int x = 0; x < _fdPortList._sockets.size(); x++)
+    int portSize = _fdPortList._sockets.size();
+    for (int x = 0; x < portSize; x++)
     {
         for (int i = 0; i < MAX_USERS; i++) {
             pollfd newSocket = {};
@@ -42,7 +43,8 @@ void ConnectClients::initNewConnection(int serverSocket)
     {
         // Find an available slot or expand the vector
         bool foundSlot = false;
-        for (int j = 0; j < _fdPortList._fds.size(); j++)
+        int portSize = _fdPortList._fds.size();
+        for (int j = 0; j < portSize; j++)
         {
             if (_fdPortList._fds[j].fd == -1)
             {
@@ -139,12 +141,15 @@ void ConnectClients::initClientInfo(int _clientSocket, configParser& config)
 int ConnectClients::receiveData(int i)
 {
     configParser config;
-    int clientBodySize = config.getBodySize(_fdPortList._ports.at(i));
+//    int clientBodySize = config.getBodySize(_fdPortList._ports.at(i));
+    int clientBodySize = 9500;
 //    int clientBodySize = config.getClientBodysize(_fdPortList._ports.at(i));
     char clientData[clientBodySize];
 
     memset(clientData, 0, sizeof(clientData));
+    std::cout << "before receving"<<std::endl;
     ssize_t bytesRead = recv(_fdPortList._fds[i].fd, clientData, sizeof(clientData), O_NONBLOCK);
+    std::cout << "bytes Read: "<<bytesRead<< "\nclientBodySize: "<<clientBodySize<<std::endl;
     #ifdef DEBUG
         std::cout << "Client Data["<<bytesRead<<"]:\n"<<clientData<<std::endl;
     #endif
@@ -174,7 +179,8 @@ void ConnectClients::closeConnection(int *i)
 
 bool ConnectClients::newConnection(int fdListFd)
 {
-    for (int i = 0; i < _fdPortList._sockets.size(); i++)
+    int portSize = _fdPortList._sockets.size();
+    for (int i = 0; i < portSize; i++)
     {
         if (_fdPortList._sockets.at(i) == fdListFd)
             return (true);
@@ -211,7 +217,8 @@ void ConnectClients::handleData(int fd, configParser& config)
 
 void ConnectClients::clientConnected(configParser& config)
 {
-    for (int i = 0; i < _fdPortList._fds.size(); ++i)
+    int portSize = _fdPortList._fds.size();
+    for (int i = 0; i < portSize; ++i)
     {
         int fd = _fdPortList._fds[i].fd;
         if (DATA_TO_READ)

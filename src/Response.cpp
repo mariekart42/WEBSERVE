@@ -1,21 +1,12 @@
 #include "../header/Response.hpp"
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <fstream>
-#include <string>
-#include <dirent.h>
-#include <sys/stat.h>
 
 Response::Response(int clientSocket, const clientInfo& cInfo):
-        _info(cInfo), _statusCode(-1), _header()
+        _statusCode(-1),  _info(cInfo),  _header()
 {
     _info._clientSocket = clientSocket;
 }
 
 Response::~Response() {}
-
-
 
 void Response::deleteFile()
 {
@@ -39,45 +30,6 @@ void Response::deleteFile()
         return mySend(404);
     return mySend(FORBIDDEN);
 }
-
-
-
-std::string Response::generateList(const std::string& rootFolder, const std::string& currentFolder)
-{
-    std::string filePaths;
-
-    std::string folderPath = rootFolder + "/" + currentFolder;
-    DIR* dir = opendir(folderPath.c_str());
-
-    if (dir)
-    {
-        struct dirent* entry;
-        while ((entry = readdir(dir)) != NULL) {
-            std::string itemName = entry->d_name;
-
-            if (itemName != "." && itemName != "..") {
-                std::string itemPath = folderPath + "/" + itemName;
-                struct stat itemStat;
-
-                if (stat(itemPath.c_str(), &itemStat) == 0)
-                {
-                    if (S_ISDIR(itemStat.st_mode))
-                    {
-                        // Recurse into subfolder, passing the current folder
-                        std::string subfolderPaths = generateList(rootFolder, currentFolder + "/" + itemName);
-                        filePaths += subfolderPaths;
-                    } else if (S_ISREG(itemStat.st_mode)) {
-                        std::string linkPath = currentFolder + "/" + itemName;
-                        filePaths += "\"" + linkPath + "\",";
-                    }
-                }
-            }
-        }
-        closedir(dir);
-    }
-    return filePaths;
-}
-
 
 int Response::getDirectoryIndexPage(const std::string& directory)
 {
@@ -109,14 +61,6 @@ void Response::sendIndexPage()
         mySend(FORBIDDEN);
 }
 
-bool Response::endsWith(const std::string& str, const std::string& end)
-{
-    if (str.length() >= end.length())
-        return (str.compare(str.length() - end.length(), end.length(), end) == 0);
-    else
-        return false;
-}
-
 void Response::sendRequestedFile()
 {
 #ifdef INFO
@@ -132,7 +76,7 @@ void Response::sendRequestedFile()
     // TODO: try CGI
 
     struct stat s = {};
-    if (stat((_info._configInfo._rootFolder +"/"+ _info._url).c_str(), &s) == 0)
+    if IS_FOLDER_OR_FILE
     {
         if IS_FOLDER
             return mySend(getDirectoryIndexPage(_info._url));
@@ -215,13 +159,15 @@ int Response::initFile(int statusCode)
 void Response::mySend(int statusCode)
 {
     initFile(statusCode);
-
     initHeader();
+
     Logging::log("send Data:\n" + _header, 200);
 
     std::string response = _header + std::string(_file.begin(), _file.end());
 
+//    std::cout << "\nstd::string len: "<< response.size()<<"\nbytes send: ";
     ssize_t check = send(_info._clientSocket, (response).c_str(), response.size(), 0);
+//    std::cout << check<<std::endl;
     if (check <=0)
     {
         Logging::log("Failed to send Data to Client", 500);
@@ -237,27 +183,6 @@ void Response::initHeader()
                                                          "Content-Type: "+_info._fileContentType+"\r\n"
                                                                                            "Content-Length: " + std::to_string(_file.size()) + "\r\n\r\n";
 }
-
-
-std::vector<uint8_t> Response::readFile(const std::string &fileName)
-{
-    std::ifstream file(fileName, std::ios::binary);
-
-    if (!file)
-    {
-        Logging::log("Failed to open file: " + fileName, 500);
-        return static_cast<std::vector<uint8_t> >(0);
-    }
-
-    // Read the file content into a vector
-    std::vector<uint8_t> content(
-            (std::istreambuf_iterator<char>(file)),
-            std::istreambuf_iterator<char>()
-    );
-    return content;
-}
-
-
 
 
 // ^ ^ ^  GET   ^ ^ ^
