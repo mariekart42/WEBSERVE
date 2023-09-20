@@ -16,19 +16,19 @@ void Response::deleteFile()
     Logging::log("Received Data  --  DELETE  " + _info._url, 200);
 
     if (!_info._configInfo._deleteAllowed)
-        return mySend(METHOD_NOT_ALLOWED);
+        return mySend(METHOD_NOT_ALLOWED), (void)0;
 
     if (_info._configInfo._indexFile.empty() && _info._configInfo._autoIndex && _info._url.compare(0, 7, "/upload") == 0)
     {
         std::string path = _info._configInfo._rootFolder + _info._url;
         if (std::remove(path.c_str()) != 0)
-            return mySend(FORBIDDEN);
-        return mySend(FILE_DELETED);
+            return mySend(FORBIDDEN), (void)0;
+        return mySend(FILE_DELETED), (void)0;
     }
 
     if (_info._url == FAILURE)
-        return mySend(404);
-    return mySend(FORBIDDEN);
+        return mySend(404), (void)0;
+    return mySend(FORBIDDEN), (void)0;
 }
 
 int Response::getDirectoryIndexPage(const std::string& directory)
@@ -61,7 +61,7 @@ void Response::sendIndexPage()
         mySend(FORBIDDEN);
 }
 
-void Response::sendRequestedFile()
+bool Response::sendRequestedFile()
 {
 #ifdef INFO
     std::cout << YEL " . . . Received Data  --  GET  " <<_info._url<<""RESET<< std::endl;
@@ -71,10 +71,10 @@ void Response::sendRequestedFile()
     if (!_info._configInfo._getAllowed)
         return mySend(METHOD_NOT_ALLOWED);
     if (_info._url == "/")
-        return sendIndexPage();
+        return sendIndexPage(), false;
 
     // TODO: try CGI
-    std::cout <<"ALIVE 1"<<std::endl;
+//    std::cout <<"ALIVE 1"<<std::endl;
 
     struct stat s = {};
     if IS_FOLDER_OR_FILE
@@ -88,6 +88,8 @@ void Response::sendRequestedFile()
             else
             {
                 _file = readFile(_info._configInfo._rootFolder + _info._url);// REMOVED SLASH!
+                if (_info._isChunkedFile)
+                    return true;
                 if (_file.empty())   // if file doesn't exist
                     return mySend(NOT_FOUND);
                 return mySend(OK);
@@ -122,6 +124,50 @@ std::string Response::getContentType()
    return FAILURE;
 }
 
+std::vector<uint8_t> Response::readFile(const std::string &fileName)
+{
+    if (_info._isChunkedFile)
+    {
+        std::cout << "SEND SHITTY FILE"<<std::endl;
+        sendShittyChunk(fileName);
+        return static_cast<std::vector<uint8_t> >(0);
+    }
+    std::ifstream file;
+    file.open(fileName, std::ios::binary);
+
+    if (!file)
+    {
+        Logging::log("Failed to open file: " + fileName, 500);
+        return static_cast<std::vector<uint8_t> >(0);
+    }
+    // Read the file content into a vector
+    std::vector<uint8_t> content(
+            (std::istreambuf_iterator<char>(file)),
+            std::istreambuf_iterator<char>()
+    );
+
+    if (_info._myHTTPMethod == M_GET && content.size() > SEND_CHUNK_SIZE)
+    {
+        _info._isChunkedFile = true;
+        std::cout << "YEEEEEE 1 detected that it is chunked file"<<std::endl;
+        char buffer[SEND_CHUNK_SIZE];
+        file.seekg(0);
+        file.read(buffer, SEND_CHUNK_SIZE);
+
+        int check = send(_info._clientSocket, buffer, SEND_CHUNK_SIZE, 0);
+        if (check < 1)
+        {
+            exitWithError("send failed [SPECIAL SEND-->> debug]");
+
+        }
+        _info._filePos = file.tellg();
+        file.close();
+        return static_cast<std::vector<uint8_t> >(0);
+    }
+
+
+    return content;
+}
 
 int Response::initFile(int statusCode)
 {
@@ -157,9 +203,12 @@ int Response::initFile(int statusCode)
 }
 
 
-void Response::mySend(int statusCode)
+bool Response::mySend(int statusCode)
 {
     initFile(statusCode);
+    if (_info._isChunkedFile)
+        return true;
+
     initHeader();
     Logging::log("send Data:\n" + _header, 200);
 
@@ -183,7 +232,52 @@ void Response::mySend(int statusCode)
 //    send(_info._clientSocket, _header.c_str(), _header.size(), 0);
 //    send(_info._clientSocket, (std::string(_file.begin(), _file.end())).c_str(), _file.size(), 0);
 //    std::cout << GRN"ALIVE 1 [after 2 sends]"RESET<<std::endl;
+return false;
 }
+
+
+
+bool Response::sendShittyChunk(const std::string& fileName)
+{
+    std::ifstream file;
+    file.open(fileName, std::ios::binary);
+
+    if (!file)
+    {
+        Logging::log("Failed to open file: " + fileName, 500);
+        return false;
+    }
+
+    char	buffer[SEND_CHUNK_SIZE];
+
+    file.seekg(_info._filePos);
+    file.read(buffer, SEND_CHUNK_SIZE);
+
+    if (send(_info._clientSocket, buffer, file.gcount(), 0) == -1)
+    {
+        Logging::log("Failed to send Data to Client", 500);
+        exit(69);
+    }
+
+    if (file.eof())
+    {
+        file.close();
+
+        // try GCI
+
+    _info._isChunkedFile = false;
+        return false;
+    }
+    _info._isChunkedFile = true;
+
+    std::cout << "before tellg FILEPOS: "<<_info._filePos<<std::endl;
+
+    _info._filePos = file.tellg();
+    std::cout << "after tellg FILEPOS: "<<_info._filePos<<std::endl;
+    file.close();
+    return true;
+}
+
 
 
 void Response::initHeader()

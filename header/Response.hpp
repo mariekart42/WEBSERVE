@@ -5,7 +5,7 @@
 #include "Error.hpp"
 #include "configParser.hpp"
 
-
+#define SEND_CHUNK_SIZE 20000
 
 #define NO_DATA_TO_UPLOAD (convert.find("POST") == 0 && convert.find(startBoundary) == std::string::npos)
 #define IS_FOLDER_OR_FILE (stat((_info._configInfo._rootFolder +"/"+ _info._url).c_str(), &s) == 0)
@@ -43,7 +43,10 @@ struct clientInfo
     bool        _isMultiPart;
     postInfo    _postInfo;
     configInfo  _configInfo;
+    std::streampos _filePos;
+    int _intFilePos;
     std::map<int,std::string> _errorMap;
+    bool _isChunkedFile;
 };
 
 class Response
@@ -62,13 +65,17 @@ class Response
         std::string getContentType();
         void        initHeader();
         int         initFile(int);
-        void        mySend(int);
+        bool        mySend(int);
         int         getDirectoryIndexPage(const std::string&);
         void        sendIndexPage();
-        void        sendRequestedFile();
+        bool        sendRequestedFile();
         bool        uploadFile(const std::string&, const std::string&, std::ofstream*);
         bool        saveRequestToFile(std::ofstream&, const std::string&);
         void        deleteFile();
+
+        std::vector<uint8_t> readFile(const std::string &fileName);
+
+        bool sendShittyChunk(const std::string&);
 };
 
 #endif

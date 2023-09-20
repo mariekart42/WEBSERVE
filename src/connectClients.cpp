@@ -27,7 +27,7 @@ void ConnectClients::initFdList()
         for (int k = 0 + x; k < MAX_USERS; k++) {
             if (_fdPortList._fds[k].fd == -1) {
                 _fdPortList._fds[k].fd = _fdPortList._sockets.at(x);
-                _fdPortList._fds[k].events = POLLIN;     // Concern about Read-Only Events
+                _fdPortList._fds[k].events = POLLIN;
                 break;
             }
         }
@@ -35,9 +35,9 @@ void ConnectClients::initFdList()
 }
 
 
-void ConnectClients::initNewConnection(int serverSocket)
+void ConnectClients::initNewConnection(int socketFd)
 {
-    int newClientSocket = accept(serverSocket, (struct sockaddr *) &_clientAddress, &_clientAddressLen);
+    int newClientSocket = accept(socketFd, (struct sockaddr *) &_clientAddress, &_clientAddressLen);
 
     if (newClientSocket != -1)
     {
@@ -62,7 +62,7 @@ void ConnectClients::initNewConnection(int serverSocket)
 
         for (std::vector<int>::size_type i = 0; i < _fdPortList._sockets.size(); ++i)
         {
-            if (_fdPortList._sockets[i] == serverSocket)
+            if (_fdPortList._sockets[i] == socketFd)
             {
                 // The target value is found; store the position
                 int pos = static_cast<int>(i);
@@ -80,6 +80,8 @@ void ConnectClients::initClientInfo(int _clientSocket, configParser& config)
     std::vector<uint8_t> input = _byteVector;
 
     std::map<int, clientInfo>::iterator rm = _clientInfo.find(_clientSocket);
+    if (rm->second._isChunkedFile)
+        return;
     if (rm != _clientInfo.end() && !rm->second._isMultiPart)
         _clientInfo.erase(rm);
 
@@ -103,6 +105,8 @@ void ConnectClients::initClientInfo(int _clientSocket, configParser& config)
         initNewInfo._configInfo._autoIndex = config.getAutoIndex();
         initNewInfo._configInfo._indexFile = config.getIndexFile();
         initNewInfo._errorMap = config.getErrorMap();
+        initNewInfo._isChunkedFile = false;
+//        initNewInfo._filePos = 0;
         if (initNewInfo._myHTTPMethod == M_POST)
         {
             initNewInfo._postInfo._input = input;
@@ -142,23 +146,20 @@ void ConnectClients::initClientInfo(int _clientSocket, configParser& config)
 int ConnectClients::receiveData(int i, configParser& config)
 {
 //    configParser config;
-int len = _fdPortList._ports.size();
+    if (_fdPortList._fds[i].revents & POLLOUT)
+        return 69;
+    int len = _fdPortList._ports.size();
     if (i >= len)
     {
         std::cout << "INVALID PORT ACCESS"<<std::endl;
         return 0;
     }
+
     int clientBodySize = config.getBodySize(_fdPortList._ports.at(i));
-//    int clientBodySize = 9500;
-//    int clientBodySize = config.getClientBodysize(_fdPortList._ports.at(i));
     char clientData[clientBodySize];
 
     memset(clientData, 0, sizeof(clientData));
-    std::cout << "before receving"<<std::endl;
     ssize_t bytesRead = recv(_fdPortList._fds[i].fd, clientData, sizeof(clientData), O_NONBLOCK);
-
-    if (bytesRead < clientBodySize)
-        std::cout << "breakpoint"<<std::endl;
 
     std::cout << "bytes Read: "<<bytesRead<< "\nclientBodySize: "<<clientBodySize<<"  at port: "<< _fdPortList._ports.at(i)<<std::endl;
     #ifdef DEBUG
@@ -200,29 +201,33 @@ void ConnectClients::closeConnection(int *i)
     --*i;
 }
 
-bool ConnectClients::newConnection(int fdListFd)
+bool ConnectClients::newConnection(pollfd poll)
 {
     int portSize = _fdPortList._sockets.size();
     for (int i = 0; i < portSize; i++)
     {
-        if (_fdPortList._sockets.at(i) == fdListFd)
+        if (_fdPortList._sockets.at(i) == poll.fd)
             return (true);
     }
     return false;
 }
 
-void ConnectClients::handleData(int fd, configParser& config)
+void ConnectClients::handleData(pollfd poll, configParser& config, int i)
 {
-    initClientInfo(fd, config);
+    initClientInfo(poll.fd, config);
 
     std::map<int, clientInfo>::iterator it;
-    it = _clientInfo.find(fd);
-    Response response(fd, it->second);
+    it = _clientInfo.find(poll.fd);
+    Response response(poll.fd, it->second);
 
     switch (it->second._myHTTPMethod)
     {
         case M_GET:
-            response.sendRequestedFile();
+            it->second._isChunkedFile = response.sendRequestedFile();
+            if (it->second._isChunkedFile)
+                _fdPortList._fds[i].events = POLLOUT;
+            else
+                _fdPortList._fds[i].events = 0;
             break;
         case M_POST:
             it->second._isMultiPart = response.uploadFile(it->second._contentType,
@@ -243,17 +248,17 @@ void ConnectClients::clientConnected(configParser& config)
     int portSize = _fdPortList._fds.size();
     for (int i = 0; i < portSize; ++i)
     {
-        int fd = _fdPortList._fds[i].fd;
-        if (DATA_TO_READ)
+        pollfd poll = _fdPortList._fds[i];
+        if (_fdPortList._fds[i].revents & (POLLIN | POLLOUT))
         {
-            if (newConnection(fd))
-                initNewConnection(fd);
+            if (newConnection(poll))
+                initNewConnection(poll.fd);
             else
             {
                 switch (receiveData(i, config))
                 {
                     case 69:
-                        handleData(fd, config);
+                        handleData(poll, config, i);
                         break;
                     case 0:
                         closeConnection(&i);
@@ -266,6 +271,15 @@ void ConnectClients::clientConnected(configParser& config)
                 }
             }
         }
+//        else if (_fdPortList._fds[i].revents & POLLOUT)
+//        {
+//            std::cout <<GRN"------ -- --- -- - POLLOUT - - ------ -- --- -"RESET<<std::endl;
+//            std::map<int, clientInfo>::iterator it;
+//            it = _clientInfo.find(poll.fd);
+//            Response response(poll.fd, it->second);
+//            it->second._isChunkedFile = response.sendShittyChunk();
+//
+//        }
     }
 }
 
@@ -278,6 +292,7 @@ void ConnectClients::connectClients(configParser& config)
     std::cout << GRN " . . Server ready to connect Clients" RESET << std::endl;
     while (69)
     {
+            std::cout << YEL"while loop"RESET<<std::endl;
         // poll checks _fdList for read & write events at the same time
         switch (poll(&_fdPortList._fds[0], _fdPortList._fds.size(), config.get_timeout()))
         {
@@ -290,6 +305,7 @@ void ConnectClients::connectClients(configParser& config)
             default:
                 clientConnected(config);
                 break;
+            std::cout << GRN"poll loop"RESET<<std::endl;
         }
     }
 }

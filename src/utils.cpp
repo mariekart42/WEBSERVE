@@ -27,23 +27,27 @@ bool endsWith(const std::string& str, const std::string& end)
         return false;
 }
 
-std::vector<uint8_t> readFile(const std::string &fileName)
-{
-    std::ifstream file;
-    file.open(fileName, std::ios::binary);
-
-    if (!file)
-    {
-        Logging::log("Failed to open file: " + fileName, 500);
-        return static_cast<std::vector<uint8_t> >(0);
-    }
-    // Read the file content into a vector
-    std::vector<uint8_t> content(
-            (std::istreambuf_iterator<char>(file)),
-            std::istreambuf_iterator<char>()
-    );
-    return content;
-}
+//std::vector<uint8_t> readFile(const std::string &fileName)
+//{
+//    std::ifstream file;
+//    file.open(fileName, std::ios::binary);
+//
+//    if (!file)
+//    {
+//        Logging::log("Failed to open file: " + fileName, 500);
+//        return static_cast<std::vector<uint8_t> >(0);
+//    }
+//    // Read the file content into a vector
+//    std::vector<uint8_t> content(
+//            (std::istreambuf_iterator<char>(file)),
+//            std::istreambuf_iterator<char>()
+//    );
+//
+//
+//
+//
+//    return content;
+//}
 
 std::string generateList(const std::string& rootFolder, const std::string& currentFolder)
 {
