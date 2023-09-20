@@ -1,13 +1,13 @@
 NAME = webshit
 CXX = c++
-CXXFLAGS = -g -std=c++98# -Wall -Werror -Wextra
+CXXFLAGS = -g -std=c++98 -Wall -Werror -Wextra
 HEADER_DIR = ./header
 SRC_DIR = ./src/
 OBJ_DIR = ./.build/
 LIBS = -lm
 RM = rm -rf
 
-SRC = main.cpp utils.cpp setServer.cpp connectClients.cpp Request.cpp Response.cpp Error.cpp urlDecoded.cpp marieConfigParser.cpp logging.cpp CGI.cpp
+SRC = main.cpp utils.cpp setServer.cpp connectClients.cpp Request.cpp Response.cpp Error.cpp urlDecoded.cpp configParser.cpp logging.cpp
 
 OBJ = $(SRC:.cpp=.o)
 OBJ_PREF := $(addprefix $(OBJ_DIR), $(OBJ))

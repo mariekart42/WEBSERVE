@@ -1,6 +1,6 @@
 #include "../header/main.hpp"
 
-int main(void)
+int main(int ac, char **av)
 {
     std::cout << "Putin is gay" << std::endl;
 
@@ -10,8 +10,7 @@ int main(void)
 
 
         SetServer set;
-        ConnectClients connect(set.setUpServer());
-        connect.connectClients();
+        set.setServer(ac, av);
 //    }
 //    else
 //        std::cout << conf.getErrorMsg() << std::endl;

@@ -3,17 +3,20 @@
 
 #include "connectClients.hpp"
 
+class configParser;
+
 class SetServer
 {
     private:
-        static int getNewServerSocket(int);
-        void initServerSocket(int);
+        int setNewSocketFd(int) const;
+        fdList _fdList;
+        int _backlog;
 
     public:
         SetServer();
         ~SetServer();
 
-    std::vector<int> setUpServer();
+        void setServer(int, char**);
 };
 
 #endif
