@@ -87,17 +87,17 @@ void Response::sendRequestedFile()
                 return mySend(FORBIDDEN);
             else
             {
-                _file = readFile(_info._configInfo._rootFolder +"/"+ _info._url);
+                _file = readFile(_info._configInfo._rootFolder + _info._url);// REMOVED SLASH!
                 if (_file.empty())   // if file doesn't exist
-                    return mySend(404);
-                return mySend(200);
+                    return mySend(NOT_FOUND);
+                return mySend(OK);
             }
         }
         else
             return Logging::log("ERROR: unexpected Error in sendRequestedFile()", 500), mySend(500);
     }
     else
-        return mySend(404);
+        return mySend(NOT_FOUND);
 }
 
 
@@ -110,9 +110,9 @@ std::string Response::getContentType()
        size_t endPos = _info._url.size();
 
        if (endPos != std::string::npos)
-           fileExtension = (_info._url.substr(startPos + 1, endPos - (startPos)));
+           fileExtension = _info._url.substr(startPos + 1, endPos - (startPos));
        else
-           fileExtension = (_info._url.substr(startPos));
+           fileExtension = _info._url.substr(startPos);
        std::string contentType = comparerContentType(fileExtension);
        if (contentType == FAILURE)
            mySend(404);
@@ -128,7 +128,7 @@ int Response::initFile(int statusCode)
     if (statusCode == 200)
     {
         if ((_info._fileContentType = getContentType()) == FAILURE)
-            return _info._fileContentType = "text/html", _file = readFile(PATH_404_ERRORWEBSITE), _statusCode = 404;
+            return _info._fileContentType = "text/html", _file = readFile(_info._errorMap.at(NOT_FOUND)), _statusCode = 404;
         return _statusCode = 200;
     }
 
@@ -136,23 +136,23 @@ int Response::initFile(int statusCode)
     switch (statusCode)
     {
         case DEFAULTWEBPAGE:
-            return _file = readFile(_info._configInfo._rootFolder +"/"+ _info._configInfo._indexFile), _statusCode = 200;
+            return _file = readFile(_info._errorMap.at(DEFAULTWEBPAGE)), _statusCode = 200;
         case DIRECTORY_LIST:
             return _statusCode = 200;
         case FILE_SAVED:
-            return _file = readFile(PATH_FILE_SAVED), _statusCode = 201;
+            return _file = readFile(_info._errorMap.at(FILE_SAVED)), _statusCode = 201;
         case FILE_DELETED:
-            return _file = readFile(PATH_FILE_DELETED), _statusCode = 204;
+            return _file = readFile(_info._errorMap.at(FILE_DELETED)), _statusCode = 204;
         case BAD_REQUEST:
-            return _file = readFile(PATH_BAD_REQUEST), _statusCode = 400;
+            return _file = readFile(_info._errorMap.at(BAD_REQUEST)), _statusCode = 400;
         case FORBIDDEN:
-            return _file = readFile(PATH_FORBIDDEN), _statusCode = 403;
-        case 404:
-            return _file = readFile(PATH_404_ERRORWEBSITE), _statusCode = 404;
+            return _file = readFile(_info._errorMap.at(FORBIDDEN)), _statusCode = 403;
+        case NOT_FOUND:
+            return _file = readFile(_info._errorMap.at(NOT_FOUND)), _statusCode = 404;
         case METHOD_NOT_ALLOWED:
-            return _file = readFile(PATH_METHOD_NOT_ALLOWED), _statusCode = 405;
+            return _file = readFile(_info._errorMap.at(METHOD_NOT_ALLOWED)), _statusCode = 405;
         default:
-            return _file = readFile(PATH_500_ERRORWEBSITE), _statusCode = 500;
+            return _file = readFile(_info._errorMap.at(INTERNAL_ERROR)), _statusCode = 500;
     }
 }
 
@@ -167,6 +167,7 @@ void Response::mySend(int statusCode)
     std::string response = header + std::string(_file.begin(), _file.end());
     const char* response_data = response.data();
     int len = response.size();
+    std::cout << GRN"BEFORE SEND"RESET<<std::endl;
     int check = send(_info._clientSocket, response_data, len, 0);
     if (check <=0)
     {

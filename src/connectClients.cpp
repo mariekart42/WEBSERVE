@@ -102,6 +102,7 @@ void ConnectClients::initClientInfo(int _clientSocket, configParser& config)
         initNewInfo._configInfo._rootFolder = ROOT; // TODO : als macro lassen oder getter?
         initNewInfo._configInfo._autoIndex = config.getAutoIndex();
         initNewInfo._configInfo._indexFile = config.getIndexFile();
+        initNewInfo._errorMap = config.getErrorMap();
         if (initNewInfo._myHTTPMethod == M_POST)
         {
             initNewInfo._postInfo._input = input;
@@ -259,8 +260,8 @@ void ConnectClients::clientConnected(configParser& config)
                         break;
                     default:
                         Logging::log("Unable to read Data from connected Client", 500);
-//                        closeConnection(&i);
-                        exit(69);
+                        closeConnection(&i);
+//                        exit(69);
                         break;
                 }
             }

@@ -43,6 +43,7 @@ struct clientInfo
     bool        _isMultiPart;
     postInfo    _postInfo;
     configInfo  _configInfo;
+    std::map<int,std::string> _errorMap;
 };
 
 class Response
