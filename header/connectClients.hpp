@@ -36,8 +36,8 @@ class ConnectClients
         void    initClientInfo(int, configParser&);
         int     receiveData(int, configParser&);
         void    closeConnection(int*);
-        bool    newConnection(int);
-        void    handleData(int, configParser&);
+        bool    newConnection(pollfd);
+        void    handleData(pollfd, configParser&, int);
 };
 
 #endif

@@ -62,7 +62,7 @@ void exitWithError(const std::string &);
 std::string comparerContentType(const std::string& fileExtension);
 std::string myItoS(int);
 bool endsWith(const std::string&, const std::string&);
-std::vector<uint8_t> readFile(const std::string&);
+//std::vector<uint8_t> readFile(const std::string&);
 std::string generateList(const std::string& rootFolder, const std::string& currentFolder);
 
 #endif
