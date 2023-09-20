@@ -222,7 +222,8 @@ void Response::initHeader()
 
 bool Response::uploadFile(const std::string& contentType, const std::string& boundary, std::ofstream *outfile)
 {
-    if (contentType == "multipart/form-data")
+	size_t pos = contentType.find("application/x-www-form-urlencoded");
+    if (contentType == "multipart/form-data" || pos != std::string::npos)
         return saveRequestToFile(*outfile, boundary);
     return false;
 }
@@ -271,8 +272,7 @@ bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boun
     {
         outfile.close();
 
-        if (validCGIfile()== true)
-			std::cout << "This correct" << std::endl;
+		std::cout << "WTF WTF" << std::endl;
 
         if (_info._postInfo._filename == BAD_CONTENT_TYPE || !_info._configInfo._postAllowed)
         {

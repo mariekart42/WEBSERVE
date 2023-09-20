@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   configParser.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vfuhlenb <vfuhlenb@students.42wolfsburg    +#+  +:+       +#+        */
+/*   By: dnguyen <dnguyen@student.42wolfsburg.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 23:16:58 by vfuhlenb          #+#    #+#             */
-/*   Updated: 2023/09/19 13:56:55 by vfuhlenb         ###   ########.fr       */
+/*   Updated: 2023/09/20 22:51:07 by dnguyen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 #include "utils.h"
 
 // Global settings
-#define TIMEOUT			60
+#define TIMEOUT			300
 #define MAX_CLIENTS		100
 #define BODY_SIZE		9000
 #define BODY_SIZE_MIN	2000
