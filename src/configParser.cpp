@@ -148,19 +148,20 @@ const std::string	configParser::getUrl() {
 	for (route = server._routes_vector.begin(); route != server._routes_vector.end(); ++route)
 	{
 		std::string current_route = *route;
-		// find current_route in url, if not found -> continue to next route
-		if (_request_data._url.find(current_route.c_str(), 0, current_route.size()) == std::string::npos)
-			continue ;
+
 		// special case </> -> return true
-		if (current_route == "/")
+		if (_request_data._url == "/" && current_route == "/")
 		{
 			IsRedirect = true;
 			break ;
 		}
+		// find current_route in url, if not found -> continue to next route
+		if (current_route.size() > 1 && _request_data._url.find(current_route.c_str(), 0, current_route.size()) == std::string::npos)
+			continue ;
 		// check for exact match without trailing characters in found url-block
-		if (_request_data._url.size() == current_route.size() \
+		if (current_route.size() > 1 && (_request_data._url.size() == current_route.size() \
 			|| (current_route.at(current_route.size() - 1) != '/' && _request_data._url.at(current_route.size()) == '/') \
-			|| current_route.at(current_route.size() - 1) == '/' )
+			|| current_route.at(current_route.size() - 1) == '/' ))
 		{
 			IsRedirect = true;
 			break ;
@@ -168,8 +169,8 @@ const std::string	configParser::getUrl() {
 
 	}
 
-	// if (IsRedirect)
-	// 	std::cout << BLUE << "ROUTE PATH MATCHED " << *route << "  with URL " << _request_data._url << RESET <<  std::endl; // DEBUG
+	if (IsRedirect)
+		std::cout << BLUE << "ROUTE PATH MATCHED " << *route << "  with URL " << _request_data._url << RESET <<  std::endl; // DEBUG
 
 	// return Url and make sure it starts with an "/"
 	if (IsRedirect)
