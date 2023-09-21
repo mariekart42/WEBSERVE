@@ -450,7 +450,7 @@ void configParser::setGlobal()
 		else
 		{
 			_settings.timeout = string_to_int(getToken(_line, 3));
-			if (_settings.timeout < 60)
+			if (_settings.timeout >= 0 && _settings.timeout < 60)
 				std::cerr << BLUE << "Warning: timeout set to \"" << _settings.timeout << "\" in line: " << _directive_line_nbr << " -> Values under 60 might lead to unstable up and download" << RESET_COLOR << std::endl;
 			_settings_check.timeout = true;
 		}
@@ -471,9 +471,9 @@ void configParser::setGlobal()
 			std::cerr << BLUE << "Warning: directive \"" << getToken(_line, 1) << "\" already set, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 		else
 		{
-			int size = string_to_int(getToken(_line, 3));
-			if (size < BODY_SIZE_MIN || size > BODY_SIZE_MAX)
-				std::cerr << BLUE << "Warning: body_size on line: " << _directive_line_nbr << " is set to " << size << " -> recommended range is between 2000-1000000" << RESET_COLOR << std::endl;
+			// int size = string_to_int(getToken(_line, 3));
+			// if (size < BODY_SIZE_MIN || size > BODY_SIZE_MAX)
+			// 	std::cerr << BLUE << "Warning: body_size on line: " << _directive_line_nbr << " is set to " << size << " -> recommended range is between 2000-1000000" << RESET_COLOR << std::endl;
 			_settings.body_size = string_to_int(getToken(_line, 3));
 			_settings_check.body_size = true;
 		}
