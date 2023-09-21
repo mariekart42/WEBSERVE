@@ -80,7 +80,7 @@ void ConnectClients::initClientInfo(int _clientSocket, configParser& config)
     std::vector<uint8_t> input = _byteVector;
 
     std::map<int, clientInfo>::iterator rm = _clientInfo.find(_clientSocket);
-    if (rm->second._isChunkedFile)
+    if (rm->second._filePos > 0)
         return;
     if (rm != _clientInfo.end() && !rm->second._isMultiPart)
         _clientInfo.erase(rm);
@@ -106,7 +106,7 @@ void ConnectClients::initClientInfo(int _clientSocket, configParser& config)
         initNewInfo._configInfo._indexFile = config.getIndexFile();
         initNewInfo._errorMap = config.getErrorMap();
         initNewInfo._isChunkedFile = false;
-//        initNewInfo._filePos = 0;
+        initNewInfo._filePos = 0;
         if (initNewInfo._myHTTPMethod == M_POST)
         {
             initNewInfo._postInfo._input = input;
@@ -223,8 +223,9 @@ void ConnectClients::handleData(pollfd poll, configParser& config, int i)
     switch (it->second._myHTTPMethod)
     {
         case M_GET:
-            it->second._isChunkedFile = response.sendRequestedFile();
-            if (it->second._isChunkedFile)
+            it->second._filePos = response.sendRequestedFile();
+            std::cout << GRN"filePos: "RESET<<it->second._filePos<<std::endl;
+            if (it->second._filePos > 0)
                 _fdPortList._fds[i].events = POLLOUT;
             else
                 _fdPortList._fds[i].events = 0;

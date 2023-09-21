@@ -44,7 +44,7 @@ struct clientInfo
     postInfo    _postInfo;
     configInfo  _configInfo;
     std::streampos _filePos;
-    int _intFilePos;
+//    int _intFilePos;
     std::map<int,std::string> _errorMap;
     bool _isChunkedFile;
 };
@@ -65,17 +65,17 @@ class Response
         std::string getContentType();
         void        initHeader();
         int         initFile(int);
-        bool        mySend(int);
+    std::streampos        mySend(int);
         int         getDirectoryIndexPage(const std::string&);
         void        sendIndexPage();
-        bool        sendRequestedFile();
+    std::streampos        sendRequestedFile();
         bool        uploadFile(const std::string&, const std::string&, std::ofstream*);
         bool        saveRequestToFile(std::ofstream&, const std::string&);
         void        deleteFile();
 
         std::vector<uint8_t> readFile(const std::string &fileName);
 
-        bool sendShittyChunk(const std::string&);
+    void sendShittyChunk(const std::string&);
 };
 
 #endif
