@@ -128,7 +128,6 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
 {
     if (_info._filePos > 0)
     {
-        std::cout << "SEND SHITTY FILE"<<std::endl;
         sendShittyChunk(fileName);
         return static_cast<std::vector<uint8_t> >(0);
     }
@@ -140,6 +139,7 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
         Logging::log("Failed to open file: " + fileName, 500);
         return static_cast<std::vector<uint8_t> >(0);
     }
+
     // Read the file content into a vector
     std::vector<uint8_t> content(
             (std::istreambuf_iterator<char>(file)),
@@ -235,7 +235,6 @@ std::streampos Response::mySend(int statusCode)
         Logging::log("Failed to send Data to Client", 500);
         exit(69);
     }
-    std::cout << GRN"BEFORE SEND"RESET<<std::endl;
 
     return 0;
 }
