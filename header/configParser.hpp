@@ -32,7 +32,7 @@
 #define BODY_SIZE_MAX	1000000
 #define MAX_EVENTS		100
 #define BACKLOG			42
-#define ROOT			"root/"
+#define ROOT			"root"
 #define INDEX			"index.html"
 #define DEFAULT_CONF	"default.conf"
 
@@ -93,6 +93,7 @@ typedef struct Server{
 	StringVector		_server_name;
 	IntStringMap		_error_map; // response-code : path
 	StringLocationMap	_routes; // route : location_struct
+	StringVector		_routes_vector; // unsorted
 
 	// internal
 	StringIntMap		_status; // directive-key : line-value
@@ -122,11 +123,10 @@ typedef struct settings_check {
 }settings_check;
 
 typedef struct RequestData {
-	std::string	host;
-	int			port;
-	std::string	full_path;
-	std::string	filename;
-	std::string	route;
+	std::string	_host;
+	int			_port;
+	std::string	_url;
+	std::string	_filename;
 }RequestData;
 
 class configParser {
@@ -196,9 +196,9 @@ class configParser {
 		void			setCGI(Server& server, const std::string &str, const std::string &route);
 		void			setRedirect(Server& server, const std::string &str, const std::string &route);
 		std::string		prepend_forward_slash(const std::string str) const;
+		std::string		append_forward_slash(const std::string str) const;
 		bool			check_route_exist(Server& server, const std::string& route);
 		RouteIterator	return_route(Server& server, const std::string& route);
-		RouteIterator	return_route();
 		bool			hasRoute(Server& server, const std::string& route);
 		bool			hasMethod(StringVector& methods, std::string method) const;
 		void			create_port_vector();
@@ -207,6 +207,7 @@ class configParser {
 		bool			check_file(const std::string path);
 		std::string		remove_leading_character(const std::string str, char c);
 		std::string		remove_trailing_character(const std::string str, char c);
+		std::string		handle_redirection(const std::string route, Server& server);
 		void			printServerDetails();
 		void			printServerDetails(std::ofstream&);
 		void			printGlobalSettings();
@@ -222,14 +223,7 @@ class configParser {
 
 TODO`s
 
-new push2
-if config contains error directives with invalid path, then segmentation fault
-
-- handle custom error pages √
-- getters for global settings? like timeout, BODY_SIZE (POLL_TIMEOUT / MAX_REQUESTSIZE) √
-- convert uniquePorts set to int vector √
-- if configurations with same port is declared -> error √
-- if body-size <2000 || >1000000 give warning, define these as macro √
+location check.
 
 write a function that checks if port is part of a server, if not throw error and exit -> for getters
 
