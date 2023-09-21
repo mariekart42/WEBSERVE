@@ -35,8 +35,15 @@ bool	Response::validCGIfile()
 	else
 		this->_cgiPath = this->_info._url;
 	pos = this->_cgiPath.find(_cgi_allowed_file_ending);
+	if (_cgiPath.size() < _cgi_allowed_file_ending.size())
+		return false;
+	std::string temp = this->_cgiPath.substr(_cgiPath.size()- (_cgi_allowed_file_ending.size()));
+	std::cout << "comparing " << temp << " with " << _cgi_allowed_file_ending << std::endl;
+	if (temp != _cgi_allowed_file_ending)
+		return false;
 	if (pos == std::string::npos)
 		return false;
+	_x_ok = true;
 	return true;
 }
 
@@ -55,6 +62,10 @@ int Response::CGIpy() {
 	if(access(this->_cgiPath.c_str(), F_OK ) != 0){
 		std::cout << "no cgi file" << std::endl;
 		return -2;
+	}
+	if(access(this->_cgiPath.c_str(), X_OK ) != 0){
+		std::cout << "No permission" << std::endl;
+		return -4;
 	}
 	_query = "QUERY_STRING=" + _query;
 	char *query = (char*)_query.c_str();
@@ -103,7 +114,7 @@ int Response::CGIpy() {
 }
 
 
-void Response::CGIoutput(){
+bool Response::CGIoutput(){
 	std::cout << "CGI OUTPUT"<< std::endl;
 	std::ifstream inputFile("root/temp");
 	//error check if file is open
@@ -127,4 +138,5 @@ void Response::CGIoutput(){
         Logging::log("Failed to send Data to Client", 500);
         exit(69);
     }
+	return false;
 }

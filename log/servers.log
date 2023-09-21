@@ -1,0 +1,149 @@
+Configuration file: "default.conf"
+
+GLOBAL SETTINGS
+	timeout = -1
+	max_clients = 100
+	body_size = 9000
+	max_events = 100
+	backlog = 10
+
+6 Servers with 6 unique ports:
+
+
+SERVER 1 [28]
+	listen = 8050
+	host = 0.0.0.0
+	body_size = 7777
+	error_page 201 = root/PATH_FILE_SAVED.html
+	error_page 204 = root/PATH_FILE_DELETED.html
+	error_page 400 = error/400.html
+	error_page 403 = error/403.html
+	error_page 404 = error/404.html
+	error_page 405 = error/405.html
+	error_page 500 = error/500.html
+	error_page 2001 = root/index.html
+	error_page 2002 = 
+	</>
+		methods = GET 
+	<\/>
+	<scripts>
+		methods = GET POST 
+	<\scripts>
+	<upload>
+		methods = GET POST DELETE 
+	<\upload>
+
+SERVER 2 [43]
+	listen = 8051
+	host = 0.0.0.0
+	body_size = 6666
+	error_page 201 = root/PATH_FILE_SAVED.html
+	error_page 204 = root/PATH_FILE_DELETED.html
+	error_page 400 = error/400.html
+	error_page 403 = error/403.html
+	error_page 404 = error/404.html
+	error_page 405 = error/405.html
+	error_page 500 = error/500.html
+	error_page 2001 = root/index.html
+	error_page 2002 = 
+	</>
+		methods = GET 
+	<\/>
+	<scripts>
+		methods = GET POST 
+	<\scripts>
+	<upload>
+		methods = GET POST DELETE 
+	<\upload>
+
+SERVER 3 [56]
+	listen = 8052
+	host = 0.0.0.0
+	body_size = 6666
+	error_page 201 = root/PATH_FILE_SAVED.html
+	error_page 204 = root/PATH_FILE_DELETED.html
+	error_page 400 = error/400.html
+	error_page 403 = error/403.html
+	error_page 404 = error/404.html
+	error_page 405 = error/405.html
+	error_page 500 = error/500.html
+	error_page 2001 = root/index.html
+	error_page 2002 = 
+	</>
+		methods = GET 
+	<\/>
+	<scripts>
+		methods = GET POST 
+	<\scripts>
+	<upload>
+		methods = GET POST DELETE 
+	<\upload>
+
+SERVER 4 [69]
+	listen = 8053
+	host = 0.0.0.0
+	body_size = 6666
+	error_page 201 = root/PATH_FILE_SAVED.html
+	error_page 204 = root/PATH_FILE_DELETED.html
+	error_page 400 = error/400.html
+	error_page 403 = error/403.html
+	error_page 404 = error/404.html
+	error_page 405 = error/405.html
+	error_page 500 = error/500.html
+	error_page 2001 = root/index.html
+	error_page 2002 = 
+	</>
+		methods = GET 
+	<\/>
+	<scripts>
+		methods = GET POST 
+	<\scripts>
+	<upload>
+		methods = GET POST DELETE 
+	<\upload>
+
+SERVER 5 [82]
+	listen = 8054
+	host = 0.0.0.0
+	body_size = 6666
+	error_page 201 = root/PATH_FILE_SAVED.html
+	error_page 204 = root/PATH_FILE_DELETED.html
+	error_page 400 = error/400.html
+	error_page 403 = error/403.html
+	error_page 404 = error/404.html
+	error_page 405 = error/405.html
+	error_page 500 = error/500.html
+	error_page 2001 = root/index.html
+	error_page 2002 = 
+	</>
+		methods = GET 
+	<\/>
+	<scripts>
+		methods = GET POST 
+	<\scripts>
+	<upload>
+		methods = GET POST DELETE 
+	<\upload>
+
+SERVER 6 [95]
+	listen = 8055
+	host = 0.0.0.0
+	body_size = 6666
+	error_page 201 = root/PATH_FILE_SAVED.html
+	error_page 204 = root/PATH_FILE_DELETED.html
+	error_page 400 = error/400.html
+	error_page 403 = error/403.html
+	error_page 404 = error/404.html
+	error_page 405 = error/405.html
+	error_page 500 = error/500.html
+	error_page 2001 = root/index.html
+	error_page 2002 = 
+	</>
+		methods = GET 
+	<\/>
+	<scripts>
+		methods = GET POST 
+	<\scripts>
+	<upload>
+		methods = GET POST DELETE 
+	<\upload>

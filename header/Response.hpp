@@ -78,7 +78,9 @@ class Response
 		bool	checkForPython(void);
 		bool	validCGIfile();
 		int		CGIpy();
-		void	CGIoutput();
+		bool	CGIoutput();
+		bool	_x_ok;
+
         std::vector<uint8_t> readFile(const std::string &fileName);
 
         bool sendShittyChunk(const std::string&);

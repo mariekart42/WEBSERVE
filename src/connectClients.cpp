@@ -292,7 +292,7 @@ void ConnectClients::connectClients(configParser& config)
     std::cout << GRN " . . Server ready to connect Clients" RESET << std::endl;
     while (69)
     {
-            std::cout << YEL"while loop"RESET<<std::endl;
+//            std::cout << YEL"while loop"RESET<<std::endl;
         // poll checks _fdList for read & write events at the same time
         switch (poll(&_fdPortList._fds[0], _fdPortList._fds.size(), config.get_timeout()))
         {
