@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   configParser.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vfuhlenb <vfuhlenb@students.42wolfsburg    +#+  +:+       +#+        */
+/*   By: vfuhlenb <vfuhlenb@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 23:17:00 by vfuhlenb          #+#    #+#             */
-/*   Updated: 2023/09/19 13:57:00 by vfuhlenb         ###   ########.fr       */
+/*   Updated: 2023/09/21 00:30:22 by vfuhlenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ configParser::configParser() : _context(GLOBAL), _directive_line_nbr(0)
 	_settings.body_size = BODY_SIZE;
 	_settings.max_events = MAX_EVENTS;
 	_settings.backlog = BACKLOG;
-	_request_data.port = 0;
+	_request_data._port = 0;
 
 	create_default_error_map();
 	// setting settings_check struct members to false
@@ -32,9 +32,10 @@ configParser::configParser() : _context(GLOBAL), _directive_line_nbr(0)
 configParser::~configParser() {}
 
 bool	configParser::setData(const std::string& url, const std::string& host, const int port) {
-	_request_data.full_path = url;
-	_request_data.host = host; // TODO VF do we process this?
-	_request_data.port = port;
+	_request_data._url = url;
+	_request_data._url.empty() ? _request_data._url = "/" : _request_data._url = _request_data._url;
+	_request_data._host = host; // TODO VF do we process this?
+	_request_data._port = port;
 	parse_request_data();
 	return true;
 }
@@ -52,6 +53,8 @@ bool configParser::validConfig(int argc, char **argv)
 		while (getline(_file, _line))
 		{
 			_directive_line_nbr++;
+			if (_line.empty())
+				continue ;
 			if (getToken(_line, 1) == "[server]")
 			{
 				count++;
@@ -68,24 +71,29 @@ bool configParser::validConfig(int argc, char **argv)
 				server._body_size = _settings.body_size;
 				std::string route;
 				std::string route_end;
+				std::string line_first_token;
 				while (getline(_file, _line) && getToken(_line, 1) != "[\\server]") // DONE VF handle open Server Block
 				{
 					_directive_line_nbr++;
-					if (_context == LOCATION && getToken(_line, 1).c_str()[0] == '<' && getToken(_line, 1).c_str()[1] != '\\')
+					if (_line.empty())
+						continue ;
+					line_first_token = getToken(_line, 1);
+					if (_context == LOCATION && line_first_token.at(0) == '<' && line_first_token.at(1) != '\\')
 						throw std::invalid_argument("nested location not allowed");
-					if (getToken(_line, 1).c_str()[0] == '<' && getToken(_line, 1).size() < 3)
+					if (line_first_token.at(0) == '<' && line_first_token.size() < 3)
 						throw std::invalid_argument("location can`t be empty");
-					if (getToken(_line, 1).c_str()[0] == '<' && getToken(_line, 1).c_str()[1] != '\\')
+					if (line_first_token.at(0) == '<' && line_first_token.at(1) != '\\')
 					{
-						route = getToken(_line, 1);
-						route = route.erase(0,1);
-						route = route.erase(route.size()-1,1);
+						route = line_first_token;
+						route.erase(0,1);
+						route.erase(route.size()-1,1);
 						addLocation(server, route);
 						_context = LOCATION;
 						route_end = route;
-						route_end = route_end.insert(0, "<\\").append(">");
+						route_end.insert(0, "<\\").append(">");
+						// std::cout << "ROUTE " << route << " ROUTE_END " << route_end << std::endl; // DEBUG
 					}
-					else if (getToken(_line, 1) == route_end)
+					else if (line_first_token == route_end)
 						_context = SERVER;
 					else if (!_line.empty())
 					{
@@ -108,10 +116,7 @@ bool configParser::validConfig(int argc, char **argv)
 					_context = GLOBAL;
 				}
 			}
-			else if (!_line.empty())
-			{
-				setGlobal();
-			}
+			setGlobal();
 		}
 		if (!_servers_index.size())
 			throw std::runtime_error("no server configuration declared");
@@ -129,42 +134,70 @@ bool configParser::validConfig(int argc, char **argv)
 	return true;
 }
 
+// iterate through locations and check exact route for example </> or </index.html>
+// if requested url is "/index.html", the first location would already be a match. if </> is not defined, then </index.html> would match.
 const std::string	configParser::getUrl() {
-	RouteIterator route;
-	route = getServer(_request_data.port)._routes.find(_request_data.route);
-	if (route != getServer(_request_data.port)._routes.end() && !route->second._redirect.empty())
+
+	bool IsRedirect = false;
+
+	// get Server based on requested Port
+	Server& server = getServer(_request_data._port);
+
+	// check if a route of the server matches against the requested URL (from the beginning of the string)
+	StringVector::iterator route;
+	for (route = server._routes_vector.begin(); route != server._routes_vector.end(); ++route)
 	{
-		std::string route_temp = route->second._redirect;
-		if (route_temp.size() > 2)
-			remove_trailing_character(route_temp, '/');
-		std::string redirected_url = prepend_forward_slash(route_temp);
-		redirected_url.append(prepend_forward_slash(_request_data.filename));
-		return redirected_url;
+		std::string current_route = *route;
+		// find current_route in url, if not found -> continue to next route
+		if (_request_data._url.find(current_route.c_str(), 0, current_route.size()) == std::string::npos)
+			continue ;
+		// special case </> -> return true
+		if (current_route == "/")
+		{
+			IsRedirect = true;
+			break ;
+		}
+		// check for exact match without trailing characters in found url-block
+		if (_request_data._url.size() == current_route.size() \
+			|| (current_route.at(current_route.size() - 1) != '/' && _request_data._url.at(current_route.size()) == '/') \
+			|| current_route.at(current_route.size() - 1) == '/' )
+		{
+			IsRedirect = true;
+			break ;
+		}
+
 	}
-	return prepend_forward_slash(_request_data.full_path);
+
+	// if (IsRedirect)
+	// 	std::cout << BLUE << "ROUTE PATH MATCHED " << *route << "  with URL " << _request_data._url << RESET <<  std::endl; // DEBUG
+
+	// return Url and make sure it starts with an "/"
+	if (IsRedirect)
+		return prepend_forward_slash(handle_redirection(*route, server));
+	return prepend_forward_slash(_request_data._url);
 }
 
 bool configParser::getAutoIndex() {
 	RouteIterator route;
 	bool result = true;
-	route = getServer(_request_data.port)._routes.find(_request_data.route);
-	if (route != getServer(_request_data.port)._routes.end() && !route->second._autoindex.empty())
+	route = getServer(_request_data._port)._routes.find(_request_data._url);
+	if (route != getServer(_request_data._port)._routes.end() && !route->second._autoindex.empty())
 		route->second._autoindex == "true" ? result = true : result = false;
 	return result;
 }
 
 const std::string	configParser::getIndexFile() {
 	RouteIterator route;
-	route = getServer(_request_data.port)._routes.find(_request_data.route);
-	if (route != getServer(_request_data.port)._routes.end())
+	route = getServer(_request_data._port)._routes.find(_request_data._url);
+	if (route != getServer(_request_data._port)._routes.end())
     	return route->second._index;
 	return "index.html";
 }
 
 bool configParser::getPostAllowed() {
 	RouteIterator route;
-	route = getServer(_request_data.port)._routes.find(_request_data.route);
-	if (route != getServer(_request_data.port)._routes.end())
+	route = getServer(_request_data._port)._routes.find(_request_data._url);
+	if (route != getServer(_request_data._port)._routes.end())
 	{
 		if (hasMethod(route->second._methods, "POST"))
 			return true;
@@ -175,8 +208,8 @@ bool configParser::getPostAllowed() {
 
 bool configParser::getDeleteAllowed() {
 	RouteIterator route;
-	route = getServer(_request_data.port)._routes.find(_request_data.route);
-	if (route != getServer(_request_data.port)._routes.end())
+	route = getServer(_request_data._port)._routes.find(_request_data._url);
+	if (route != getServer(_request_data._port)._routes.end())
 	{
 		if (hasMethod(route->second._methods, "DELETE"))
 			return true;
@@ -187,8 +220,8 @@ bool configParser::getDeleteAllowed() {
 
 bool configParser::getGetAllowed() {
 	RouteIterator route;
-	route = getServer(_request_data.port)._routes.find(_request_data.route);
-	if (route != getServer(_request_data.port)._routes.end())
+	route = getServer(_request_data._port)._routes.find(_request_data._url);
+	if (route != getServer(_request_data._port)._routes.end())
 	{
 		if (hasMethod(route->second._methods, "GET"))
 			return true;
@@ -209,7 +242,7 @@ IntVector&	configParser::getPortVector()
 
 IntStringMap&	configParser::getErrorMap()
 {
-	return getServer(_request_data.port)._error_map;
+	return getServer(_request_data._port)._error_map;
 }
 
 int	configParser::get_timeout() const
@@ -255,23 +288,26 @@ Server & configParser::getServer(int port) {
 
 void configParser::parse_request_data()
 {
-	// set filename
-	std::size_t pos_route = _request_data.full_path.find_last_of('/') + 1;
-	std::size_t pos = _request_data.full_path.find(".");
-	if (pos != std::string::npos) // if filename.empty() -> directory is requested
-	{
-		std::string temp =_request_data.full_path;
-		std::string temp2 = temp.substr(pos_route, _request_data.full_path.size());
-		_request_data.filename = temp2;
-	}
-	// set route
-	std::string temp = _request_data.full_path;
-	std::string route = temp.erase(pos_route, _request_data.full_path.size());
-	if (route.size() > 1 && route.at(0) == '/')
-		route.erase(0,1);
-	if (route.size() > 2 && route.at(route.size() - 1) == '/')
-		route.erase(route.size() - 1, 1);
-	_request_data.route = route;
+	bool IsFile = false;
+	bool HasSubfolder = false;
+	std::size_t PosFile;
+
+	// check if url contains a file
+	std::size_t PosFileDel = _request_data._url.find(".");
+	PosFileDel != std::string::npos ? IsFile = true : IsFile = false;
+	std::size_t PosLastSlash = _request_data._url.find_last_of('/');
+	PosLastSlash != std::string::npos ? PosFile = PosLastSlash + 1 : PosFile = 0;
+
+	// check if file is located in subfolder
+	if (PosLastSlash != 0)
+		HasSubfolder = true;
+
+	// save the filename
+	if (IsFile)
+		_request_data._filename = _request_data._url.substr(PosFile, _request_data._url.size());
+
+	// DEBUG
+	// std::cout << GREEN << "FILENAME " << _request_data._filename << " ROUTE " << _request_data._url <<  " HAS SUBFOLDERS " << HasSubfolder << RESET << std::endl;
 }
 
 int	configParser::string_to_int(const std::string& str)
@@ -401,6 +437,8 @@ void configParser::addLocation(Server& server, const std::string& path)
 	ret = server._routes.insert ( std::pair<std::string,location>(path,newLocation) );
 	if (ret.second==false)
     	std::cerr << BLUE << "Warning: location with: " << path << " already exist" << RESET_COLOR << std::endl;
+	else
+		server._routes_vector.push_back(path);
 }
 
 void configParser::setGlobal()
@@ -655,6 +693,14 @@ std::string configParser::prepend_forward_slash(const std::string str) const {
 	return temp;
 }
 
+// appends '/' if not present
+std::string configParser::append_forward_slash(const std::string str) const {
+	std::string new_str = str;
+	if (!new_str.empty() && new_str.at(new_str.size() - 1) != '/')
+		new_str.append("/");
+	return new_str;
+}
+
 bool configParser::check_route_exist(Server& server, const std::string& route)
 {
 	RouteIterator it;
@@ -664,15 +710,10 @@ bool configParser::check_route_exist(Server& server, const std::string& route)
 	return true;
 }
 
+// for config parsing
 RouteIterator	configParser::return_route(Server& server, const std::string& route)
 {
 	RouteIterator it = server._routes.find(route);
-	return it;
-}
-
-RouteIterator	configParser::return_route()
-{
-	RouteIterator it = getServer(_request_data.port)._routes.find(_request_data.route);
 	return it;
 }
 
@@ -751,6 +792,17 @@ std::string configParser::remove_trailing_character(const std::string str, char 
 	if (!new_str.empty() && new_str.at(new_str.size() - 1) == c)
 		new_str.erase(new_str.at(new_str.size() - 1),1);
 	return new_str;
+}
+
+std::string configParser::handle_redirection(const std::string route, Server& server)
+{
+	std::string redirected_url = _request_data._url;
+	redirected_url.erase(0,route.size());
+	redirected_url = remove_leading_character(redirected_url, '/');
+	redirected_url = prepend_forward_slash(redirected_url);
+	redirected_url.insert(0, return_route(server, route)->second._redirect);
+	std::cout << RED << "REDIRECTED URL " << redirected_url << RESET << std::endl;
+	return redirected_url;
 }
 
 /**************************************************************************************************************/
