@@ -84,6 +84,7 @@ bool configParser::validConfig(int argc, char **argv)
 						throw std::invalid_argument("location can`t be empty");
 					if (line_first_token.at(0) == '<' && line_first_token.at(1) != '\\')
 					{
+						check_path_traversal(line_first_token);
 						route = line_first_token;
 						route.erase(0,1);
 						route.erase(route.size()-1,1);
