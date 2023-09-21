@@ -348,19 +348,20 @@ int configParser::countToken(const std::string& str)
 
 int configParser::validate_directive_single(const std::string& str)
 {
+	std::string line_first_token = getToken(str, 1);
 	if (countToken(str) < 3)
 		throw std::invalid_argument("invalid directive syntax");
-	else if (getToken(str, 1) == "error_page" && getToken(str, 3) != "=")
+	else if (line_first_token == "error_page" && getToken(str, 3) != "=")
 		throw std::invalid_argument("invalid directive-delimiter");
-	else if (getToken(str, 1) == "error_page" && getToken(str, 4).c_str()[0] == '#')
+	else if (line_first_token == "error_page" && getToken(str, 4).c_str()[0] == '#')
 		throw std::invalid_argument("invalid directive-value");
-	else if (getToken(str, 1) != "error_page" && getToken(str, 2) != "=")
+	else if (line_first_token != "error_page" && getToken(str, 2) != "=")
 		throw std::invalid_argument("invalid directive-delimiter");
-	else if (getToken(str, 1) != "error_page" && getToken(str, 3).c_str()[0] == '#')
+	else if (line_first_token != "error_page" && getToken(str, 3).c_str()[0] == '#')
 		throw std::invalid_argument("invalid directive-value");
-	else if (getToken(str, 1) != "error_page" && countToken(str) > 3 && getToken(str, 4).c_str()[0] != '#')
+	else if (line_first_token != "error_page" && countToken(str) > 3 && getToken(str, 4).c_str()[0] != '#')
 		throw std::invalid_argument("invalid directive syntax");
-	else if (countToken(str) > 4 && getToken(str, 1) == "error_page" && countToken(str) > 3 && getToken(str, 5).c_str()[0] != '#')
+	else if (countToken(str) > 4 && line_first_token == "error_page" && countToken(str) > 3 && getToken(str, 5).c_str()[0] != '#')
 		throw std::invalid_argument("invalid directive syntax");
 	return 1;
 }
@@ -443,10 +444,11 @@ void configParser::addLocation(Server& server, const std::string& path)
 
 void configParser::setGlobal()
 {
-	if ((getToken(_line, 1) == "timeout") && validate_directive_single(_line))
+	std::string line_first_token = getToken(_line, 1);
+	if ((line_first_token == "timeout") && validate_directive_single(_line))
 	{
 		if (_settings_check.timeout)
-			std::cerr << BLUE << "Warning: directive \"" << getToken(_line, 1) << "\" already set. skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
+			std::cerr << BLUE << "Warning: directive \"" << line_first_token << "\" already set. skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 		else
 		{
 			_settings.timeout = string_to_int(getToken(_line, 3));
@@ -455,20 +457,20 @@ void configParser::setGlobal()
 			_settings_check.timeout = true;
 		}
 	}
-	else if ((getToken(_line, 1) == "max_clients") && validate_directive_single(_line))
+	else if ((line_first_token == "max_clients") && validate_directive_single(_line))
 	{
 		if (_settings_check.max_clients)
-			std::cerr << BLUE << "Warning: directive \"" << getToken(_line, 1) << "\" already set, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
+			std::cerr << BLUE << "Warning: directive \"" << line_first_token << "\" already set, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 		else
 		{
 			_settings.max_clients = string_to_int(getToken(_line, 3));
 			_settings_check.max_clients = true;
 		}
 	}
-	else if ((getToken(_line, 1) == "body_size") && validate_directive_single(_line))
+	else if ((line_first_token == "body_size") && validate_directive_single(_line))
 	{
 		if (_settings_check.body_size)
-			std::cerr << BLUE << "Warning: directive \"" << getToken(_line, 1) << "\" already set, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
+			std::cerr << BLUE << "Warning: directive \"" << line_first_token << "\" already set, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 		else
 		{
 			// int size = string_to_int(getToken(_line, 3));
@@ -478,20 +480,20 @@ void configParser::setGlobal()
 			_settings_check.body_size = true;
 		}
 	}
-	else if ((getToken(_line, 1) == "max_events") && validate_directive_single(_line))
+	else if ((line_first_token == "max_events") && validate_directive_single(_line))
 	{
 		if (_settings_check.max_events)
-			std::cerr << BLUE << "Warning: directive \"" << getToken(_line, 1) << "\" already set, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
+			std::cerr << BLUE << "Warning: directive \"" << line_first_token << "\" already set, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 		else
 		{
 			_settings.max_events = string_to_int(getToken(_line, 3));
 			_settings_check.max_events = true;
 		}
 	}
-	else if ((getToken(_line, 1) == "backlog") && validate_directive_single(_line))
+	else if ((line_first_token == "backlog") && validate_directive_single(_line))
 	{
 		if (_settings_check.backlog)
-			std::cerr << BLUE << "Warning: directive \"" << getToken(_line, 1) << "\" already set, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
+			std::cerr << BLUE << "Warning: directive \"" << line_first_token << "\" already set, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 		else
 		{
 			_settings.backlog = string_to_int(getToken(_line, 3));
@@ -503,24 +505,28 @@ void configParser::setGlobal()
 void configParser::setDirective(Server& server, const std::string& _route)
 {
 	server._directive_line_nbr = _directive_line_nbr;
+	std::string line_first_token = getToken(_line, 1);
 	// server
-	if (getToken(_line, 1) == "[server]")
+	if (line_first_token == "[server]")
 		throw std::invalid_argument("open serverblock");
-	else if (getToken(_line, 1) == "port" && validate_directive_single(_line))
+	else if (line_first_token == "port" && validate_directive_single(_line))
 	{
-		if (string_to_int(getToken(_line, 3)) < 1024)
+		int port = string_to_int(getToken(_line, 3));
+		if (port < 0 || port > 65535)
+			throw std::invalid_argument("port outside of valid range");
+		if (port < 1024)
 			std::cerr << BLUE << "Warning: port \"" << getToken(_line, 3) << "\" in line: " << _directive_line_nbr << " -> Ports under 1024 need extended permissions, binding might fail" << RESET_COLOR << std::endl;
 		if (addStatus(server, "port"))
-			server._port = string_to_int(getToken(_line, 3));
+			server._port = port;
 	}
-	else if (getToken(_line, 1) == "host" && validate_directive_single(_line))
+	else if (line_first_token == "host" && validate_directive_single(_line))
 	{
 		if (addStatus(server, "host"))
 			server._host = getToken(_line, 3);
 	}
-	else if (getToken(_line, 1) == "server_name" && validate_directive_multi(_line))
+	else if (line_first_token == "server_name" && validate_directive_multi(_line))
 		setServerName(server, _line);
-	else if (getToken(_line, 1) == "body_size" && validate_directive_single(_line))
+	else if (line_first_token == "body_size" && validate_directive_single(_line))
 	{
 		if (addStatus(server, "body_size"))
 		{
@@ -530,23 +536,23 @@ void configParser::setDirective(Server& server, const std::string& _route)
 			server._body_size = string_to_int(getToken(_line, 3));
 		}
 	}
-	else if (getToken(_line, 1) == "error_page" && validate_directive_single(_line))
+	else if (line_first_token == "error_page" && validate_directive_single(_line))
 		setErrorPage(server, _line);
 	// server.location
-	else if (getToken(_line, 1) == "root" && validate_directive_single(_line))
+	else if (line_first_token == "root" && validate_directive_single(_line))
 		setRoot(server, _line, _route);
-	else if (getToken(_line, 1) == "methods" && validate_directive_multi(_line))
+	else if (line_first_token == "methods" && validate_directive_multi(_line))
 		setMethods(server, _line, _route);
-	else if (getToken(_line, 1) == "autoindex" && validate_directive_single(_line))
+	else if (line_first_token == "autoindex" && validate_directive_single(_line))
 		setAutoindex(server, _line, _route);
-	else if (getToken(_line, 1) == "index" && validate_directive_single(_line))
+	else if (line_first_token == "index" && validate_directive_single(_line))
 		setIndex(server, _line, _route);
-	else if (getToken(_line, 1) == "cgi" && validate_directive_multi(_line))
+	else if (line_first_token == "cgi" && validate_directive_multi(_line))
 		setCGI(server, _line, _route);
-	else if (getToken(_line, 1) == "redirect" && validate_directive_single(_line))
+	else if (line_first_token == "redirect" && validate_directive_single(_line))
 		setRedirect(server, _line, _route);
-	else if (getToken(_line, 1) != "[\\server]" && getToken(_line, 1) != "#")
-		std::cerr << BLUE << "Warning: invalid key \"" << getToken(_line, 1) << "\" skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
+	else if (line_first_token != "[\\server]" && line_first_token != "#")
+		std::cerr << BLUE << "Warning: invalid key \"" << line_first_token << "\" skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 }
 
 void configParser::setServerName(Server& server, const std::string& str)
