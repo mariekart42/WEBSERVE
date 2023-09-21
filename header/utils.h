@@ -27,7 +27,7 @@
 #define FAILURE "FAILURE"
 #define BAD_CONTENT_TYPE "bad_contentType"
 #define INFO
-#define DEBUG
+//#define DEBUG
 
 
 // Colour shit
@@ -57,8 +57,12 @@
 #define BOLDCYAN	"\033[1m\033[36m"
 #define BOLDWHITE	"\033[1m\033[37m"
 
+
 void exitWithError(const std::string &);
 std::string comparerContentType(const std::string& fileExtension);
 std::string myItoS(int);
+bool endsWith(const std::string&, const std::string&);
+//std::vector<uint8_t> readFile(const std::string&);
+std::string generateList(const std::string& rootFolder, const std::string& currentFolder);
 
 #endif

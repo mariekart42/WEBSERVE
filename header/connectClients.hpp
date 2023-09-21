@@ -34,10 +34,10 @@ class ConnectClients
         void    connectClients(configParser&);
         void    initNewConnection(int);
         void    initClientInfo(int, configParser&);
-        int     receiveData(int);
+        int     receiveData(int, configParser&);
         void    closeConnection(int*);
-        bool    newConnection(int);
-        void    handleData(int, configParser&);
+        bool    newConnection(pollfd);
+        void    handleData(pollfd, configParser&, int);
 };
 
 #endif

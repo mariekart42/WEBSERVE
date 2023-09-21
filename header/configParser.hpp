@@ -39,6 +39,7 @@
 // Response codes
 #define DEFAULTWEBPAGE		2001
 #define DIRECTORY_LIST		2002
+#define OK		            200
 #define FILE_SAVED			201
 #define FILE_DELETED		204
 #define BAD_REQUEST			400
