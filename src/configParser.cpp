@@ -138,6 +138,7 @@ bool configParser::validConfig(int argc, char **argv)
 // if requested url is "/index.html", the first location would already be a match. if </> is not defined, then </index.html> would match.
 const std::string	configParser::getUrl() {
 
+	bool HasMatch = false;
 	bool IsRedirect = false;
 
 	// get Server based on requested Port
@@ -145,14 +146,15 @@ const std::string	configParser::getUrl() {
 
 	// check if a route of the server matches against the requested URL (from the beginning of the string)
 	StringVector::iterator route;
+	std::string current_route;
 	for (route = server._routes_vector.begin(); route != server._routes_vector.end(); ++route)
 	{
-		std::string current_route = *route;
+		current_route = *route;
 
 		// special case </> -> return true
 		if (_request_data._url == "/" && current_route == "/")
 		{
-			IsRedirect = true;
+			HasMatch = true;
 			break ;
 		}
 		// find current_route in url, if not found -> continue to next route
@@ -163,13 +165,17 @@ const std::string	configParser::getUrl() {
 			|| (current_route.at(current_route.size() - 1) != '/' && _request_data._url.at(current_route.size()) == '/') \
 			|| current_route.at(current_route.size() - 1) == '/' ))
 		{
-			IsRedirect = true;
+			HasMatch = true;
 			break ;
 		}
 
 	}
 
-	if (IsRedirect)
+	// check if route has redirect directive
+	if (!return_route(server, current_route)->second._redirect.empty())
+		IsRedirect = true;
+
+	if (HasMatch && IsRedirect)
 		std::cout << BLUE << "ROUTE PATH MATCHED " << *route << "  with URL " << _request_data._url << RESET <<  std::endl; // DEBUG
 
 	// return Url and make sure it starts with an "/"
