@@ -148,9 +148,6 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
 
     if (_info._myHTTPMethod == M_GET && content.size() > SEND_CHUNK_SIZE)
     {
-        _info._isChunkedFile = true;
-
-        std::cout << "YEEEEEE 1 detected that it is chunked file"<<std::endl;
 
         _info._fileContentType = getContentType();
         std::string header = "HTTP/1.1 " + std::to_string(200) + " " +
@@ -159,17 +156,13 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
                                                                                                                    "Content-Length: " + std::to_string(content.size()) + "\r\n\r\n";
 
         Logging::log("send Data:\n" + header, 200);
-//        const char* real = header.data();
-//        int len = header.size();
 
         char buffer[SEND_CHUNK_SIZE];
         file.seekg(0);
         file.read(buffer, SEND_CHUNK_SIZE);
 
         std::string response = header.append(buffer, SEND_CHUNK_SIZE);
-//        const char * real = response.data();
         int len = response.size();
-
 
         int check = send(_info._clientSocket, response.data(), len, 0);
         if (check <=0)
@@ -178,24 +171,6 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
             exit(69);
         }
 
-//        _statusCode = 200;
-//        _info._fileContentType = getContentType();
-
-//        initHeader();
-//        mySend(OK);
-
-
-//        char buffer[SEND_CHUNK_SIZE];
-//        file.seekg(0);
-//        file.read(buffer, SEND_CHUNK_SIZE);
-
-//        int check2 = send(_info._clientSocket, buffer, SEND_CHUNK_SIZE, 0);
-//        if (check2 < 1)
-//        {
-//            file.close();
-//            exitWithError("send failed [SPECIAL SEND-->> debug]");
-//
-//        }
         _info._filePos = file.tellg();
         _info._isChunkedFile = true;
         file.close();
@@ -275,7 +250,6 @@ void Response::sendShittyChunk(const std::string& fileName)
     if (!file)
     {
         Logging::log("Failed to open file: " + fileName, 500);
-//        _info._isChunkedFile = false;
         _info._filePos = 0;
         return ;
     }
@@ -286,8 +260,6 @@ void Response::sendShittyChunk(const std::string& fileName)
     // Read a chunk of data from the file
     file.read(buffer, SEND_CHUNK_SIZE);
 
-
-    std::cout << "BUFFER: "<<buffer<<std::endl;
     if (send(_info._clientSocket, buffer, file.gcount(), 0) == -1)
     {
         Logging::log("Failed to send Data to Client", 500);
@@ -296,20 +268,6 @@ void Response::sendShittyChunk(const std::string& fileName)
 
     if (file.eof())
     {
-//        size_t bytesRead = file.gcount();
-////        _info._filePos = file.tellg();noooooo
-//        file.seekg(_info._filePos);
-//        char chunk[bytesRead];
-//        file.read(chunk, bytesRead);
-//        if (send(_info._clientSocket, chunk, bytesRead, 0) == -1)
-//        {
-//            Logging::log("Failed to send Data to Client", 500);
-//            exit(69);
-//        }
-//
-
-
-
         file.close();
         _info._filePos = 0;
         return;
