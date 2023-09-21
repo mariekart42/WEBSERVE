@@ -753,7 +753,6 @@ void	configParser::create_port_vector()
 void	configParser::create_default_error_map()
 {
 	_default_error_map.insert ( std::pair<int,std::string>(DEFAULTWEBPAGE, PATH_DEFAULTWEBPAGE) );
-	_default_error_map.insert ( std::pair<int,std::string>(DIRECTORY_LIST, PATH_DIRECTORY_LIST) );
 	_default_error_map.insert ( std::pair<int,std::string>(FILE_SAVED, PATH_FILE_SAVED) );
 	_default_error_map.insert ( std::pair<int,std::string>(FILE_DELETED, PATH_FILE_DELETED) );
 	_default_error_map.insert ( std::pair<int,std::string>(BAD_REQUEST, PATH_BAD_REQUEST) );

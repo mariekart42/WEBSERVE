@@ -38,7 +38,6 @@
 
 // Response codes
 #define DEFAULTWEBPAGE		2001
-#define DIRECTORY_LIST		2002
 #define FILE_SAVED			201
 #define FILE_DELETED		204
 #define BAD_REQUEST			400
@@ -47,7 +46,6 @@
 #define METHOD_NOT_ALLOWED	405
 #define INTERNAL_ERROR		500
 #define PATH_DEFAULTWEBPAGE		"root/index.html"
-#define PATH_DIRECTORY_LIST		""
 #define PATH_FILE_SAVED			"root/PATH_FILE_SAVED.html"
 #define PATH_FILE_DELETED		"root/PATH_FILE_DELETED.html"
 #define PATH_BAD_REQUEST		"error/400.html"
