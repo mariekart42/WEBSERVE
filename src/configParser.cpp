@@ -558,7 +558,7 @@ void configParser::setDirective(Server& server, const std::string& _route)
 		setCGI(server, _line, _route);
 	else if (line_first_token == "redirect" && validate_directive_single(_line))
 		setRedirect(server, _line, _route);
-	else if (line_first_token != "[\\server]" && line_first_token != "#")
+	else if (line_first_token != "[\\server]" && line_first_token != "#" && line_first_token != ";")
 		std::cerr << BLUE << "Warning: invalid key \"" << line_first_token << "\" skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 }
 
