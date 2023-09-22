@@ -165,6 +165,27 @@ std::string Request::getContentType()
     return FAILURE;
 }
 
+/* only for POST
+ * returns the value as string after Content-Length:      */
+int Request::getContentLen()
+{
+    size_t foundPos = _tmp.find("Content-Length: ") + 16;
+    if (foundPos != std::string::npos)
+    {
+        size_t endPos = _tmp.find('\r', foundPos);
+        if (endPos != std::string::npos)
+        {
+            std::string contentLen = _tmp.substr(foundPos, endPos - (foundPos));
+            #ifdef DEBUG
+                        std::cout << GRN"DEBUG: Content-Length: " << contentLen << ""RESET<< std::endl;
+            #endif
+            return atoi(contentLen.c_str());
+        }
+    }
+    else
+        exitWithError("unable to extract Content-Length [EXIT]");
+    return -1;
+}
 
 /* only for POST && multipart
  * extracts boundary for multipart      */
@@ -197,6 +218,14 @@ httpMethod Request::getHTTPMethod()
         return M_error;
 }
 
+bool Request::traversalAttack(const std::string& url)
+{
+    std::size_t f1 = url.find("../");
+    std::size_t f2 = url.find("/../");
+    if (f1 != std::string::npos || f2 != std::string::npos)
+        return true; // Forbidden (prevent path traversal attack)
+    return false;
+}
 
 std::string Request::getUrlString()
 {
@@ -214,6 +243,7 @@ std::string Request::getUrlString()
         url.replace(found, 3, " ");
     if (url.empty())
         return "/";
+
     return url;
 }
 
