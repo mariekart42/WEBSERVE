@@ -61,7 +61,7 @@ void Response::sendIndexPage()
         mySend(FORBIDDEN);
 }
 
-bool Response::sendRequestedFile()
+std::streampos Response::sendRequestedFile()
 {
 #ifdef INFO
     std::cout << YEL " . . . Received Data  --  GET  " <<_info._url<<""RESET<< std::endl;
@@ -71,7 +71,7 @@ bool Response::sendRequestedFile()
     if (!_info._configInfo._getAllowed)
         return mySend(METHOD_NOT_ALLOWED);
     if (_info._url == "/")
-        return sendIndexPage(), false;
+        return sendIndexPage(), 0;
 
     if(validCGIfile() == true)
 	{
@@ -106,7 +106,7 @@ bool Response::sendRequestedFile()
             {
                 _file = readFile(_info._configInfo._rootFolder + _info._url);// REMOVED SLASH!
                 if (_info._isChunkedFile)
-                    return true;
+                    return _info._filePos;
                 if (_file.empty())   // if file doesn't exist
                     return mySend(NOT_FOUND);
                 return mySend(OK);
@@ -143,9 +143,8 @@ std::string Response::getContentType()
 
 std::vector<uint8_t> Response::readFile(const std::string &fileName)
 {
-    if (_info._isChunkedFile)
+    if (_info._filePos > 0)
     {
-        std::cout << "SEND SHITTY FILE"<<std::endl;
         sendShittyChunk(fileName);
         return static_cast<std::vector<uint8_t> >(0);
     }
@@ -157,6 +156,7 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
         Logging::log("Failed to open file: " + fileName, 500);
         return static_cast<std::vector<uint8_t> >(0);
     }
+
     // Read the file content into a vector
     std::vector<uint8_t> content(
             (std::istreambuf_iterator<char>(file)),
@@ -165,24 +165,36 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
 
     if (_info._myHTTPMethod == M_GET && content.size() > SEND_CHUNK_SIZE)
     {
-        _info._isChunkedFile = true;
-        std::cout << "YEEEEEE 1 detected that it is chunked file"<<std::endl;
+
+        _info._fileContentType = getContentType();
+        std::string header = "HTTP/1.1 " + std::to_string(200) + " " +
+                             ErrorResponse::getErrorMessage(200) + "\r\nConnection: keep-alive\r\n"
+                                                                           "Content-Type: "+_info._fileContentType+"\r\n"
+                                                                                                                   "Content-Length: " + std::to_string(content.size()) + "\r\n\r\n";
+
+        Logging::log("send Data:\n" + header, 200);
+
         char buffer[SEND_CHUNK_SIZE];
         file.seekg(0);
         file.read(buffer, SEND_CHUNK_SIZE);
 
-        int check = send(_info._clientSocket, buffer, SEND_CHUNK_SIZE, 0);
-        if (check < 1)
-        {
-            exitWithError("send failed [SPECIAL SEND-->> debug]");
+        std::string response = header.append(buffer, SEND_CHUNK_SIZE);
+        int len = response.size();
 
+        int check = send(_info._clientSocket, response.data(), len, 0);
+        if (check <=0)
+        {
+            Logging::log("Failed to send Data to Client", 500);
+            exit(69);
         }
+
         _info._filePos = file.tellg();
+        _info._isChunkedFile = true;
         file.close();
         return static_cast<std::vector<uint8_t> >(0);
     }
 
-
+    _info._isChunkedFile = false;
     return content;
 }
 
@@ -220,11 +232,11 @@ int Response::initFile(int statusCode)
 }
 
 
-bool Response::mySend(int statusCode)
+std::streampos Response::mySend(int statusCode)
 {
     initFile(statusCode);
     if (_info._isChunkedFile)
-        return true;
+        return _info._filePos;
 
     initHeader();
     Logging::log("send Data:\n" + _header, 200);
@@ -233,28 +245,20 @@ bool Response::mySend(int statusCode)
     std::string response = header + std::string(_file.begin(), _file.end());
     const char* response_data = response.data();
     int len = response.size();
-    std::cout << GRN"BEFORE SEND"RESET<<std::endl;
+
     int check = send(_info._clientSocket, response_data, len, 0);
     if (check <=0)
     {
         Logging::log("Failed to send Data to Client", 500);
         exit(69);
     }
-    std::cout << GRN"ALIVE [after single sends]"RESET<<std::endl;
 
-
-
-
-
-//    send(_info._clientSocket, _header.c_str(), _header.size(), 0);
-//    send(_info._clientSocket, (std::string(_file.begin(), _file.end())).c_str(), _file.size(), 0);
-//    std::cout << GRN"ALIVE 1 [after 2 sends]"RESET<<std::endl;
-return false;
+    return 0;
 }
 
 
 
-bool Response::sendShittyChunk(const std::string& fileName)
+void Response::sendShittyChunk(const std::string& fileName)
 {
     std::ifstream file;
     file.open(fileName, std::ios::binary);
@@ -262,12 +266,14 @@ bool Response::sendShittyChunk(const std::string& fileName)
     if (!file)
     {
         Logging::log("Failed to open file: " + fileName, 500);
-        return false;
+        _info._filePos = 0;
+        return ;
     }
 
     char	buffer[SEND_CHUNK_SIZE];
-
     file.seekg(_info._filePos);
+
+    // Read a chunk of data from the file
     file.read(buffer, SEND_CHUNK_SIZE);
 
     if (send(_info._clientSocket, buffer, file.gcount(), 0) == -1)
@@ -279,20 +285,14 @@ bool Response::sendShittyChunk(const std::string& fileName)
     if (file.eof())
     {
         file.close();
-
-        // try GCI
-
-    _info._isChunkedFile = false;
-        return false;
+        _info._filePos = 0;
+        return;
     }
-    _info._isChunkedFile = true;
-
-    std::cout << "before tellg FILEPOS: "<<_info._filePos<<std::endl;
 
     _info._filePos = file.tellg();
-    std::cout << "after tellg FILEPOS: "<<_info._filePos<<std::endl;
+    _info._isChunkedFile = true;
     file.close();
-    return true;
+    return ;
 }
 
 
@@ -405,3 +405,4 @@ bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boun
     }
     return true;
 }
+

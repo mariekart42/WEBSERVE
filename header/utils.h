@@ -26,7 +26,7 @@
 
 #define FAILURE "FAILURE"
 #define BAD_CONTENT_TYPE "bad_contentType"
-#define INFO
+//#define INFO
 //#define DEBUG
 
 
