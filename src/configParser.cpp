@@ -198,7 +198,7 @@ const std::string	configParser::getIndexFile() {
 	route = getServer(_request_data._port)._routes.find(_request_data._url);
 	if (route != getServer(_request_data._port)._routes.end())
     	return route->second._index;
-	return "index.html";
+	return INDEX;
 }
 
 bool configParser::getPostAllowed() {

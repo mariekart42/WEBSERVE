@@ -33,7 +33,7 @@
 #define MAX_EVENTS		100
 #define BACKLOG			42
 #define ROOT			"root"
-#define INDEX			"index.html"
+#define INDEX			""
 #define DEFAULT_CONF	"default.conf"
 
 // Response codes
