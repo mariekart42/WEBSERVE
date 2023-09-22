@@ -1763,3 +1763,256 @@ Content-Length: 15406
 
 === Thu Sep 21 09:50:45 2023
 === Received Data  --  GET  /images/shrek.jpeg
+
+=== Thu Sep 21 10:18:21 2023
+=== Received Data  --  GET  /
+
+=== Thu Sep 21 10:18:21 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 794
+
+
+
+=== Thu Sep 21 10:18:21 2023
+=== Received Data  --  GET  /styles/styleIndex.css
+
+=== Thu Sep 21 10:18:21 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 2277
+
+
+
+=== Thu Sep 21 10:18:21 2023
+=== Received Data  --  GET  /scripts/script.js
+
+=== Thu Sep 21 10:18:21 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 4001
+
+
+
+=== Thu Sep 21 10:18:21 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Thu Sep 21 10:18:22 2023
+=== Received Data  --  GET  /favicon.ico
+
+=== Thu Sep 21 10:18:22 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/vnd.microsoft.icon
+Content-Length: 15406
+
+
+
+=== Thu Sep 21 10:18:31 2023
+=== Received Data  --  GET  /
+
+=== Thu Sep 21 10:18:31 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 794
+
+
+
+=== Thu Sep 21 10:18:31 2023
+=== Received Data  --  GET  /styles/styleIndex.css
+
+=== Thu Sep 21 10:18:31 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 2277
+
+
+
+=== Thu Sep 21 10:18:31 2023
+=== Received Data  --  GET  /scripts/script.js
+
+=== Thu Sep 21 10:18:31 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 4001
+
+
+
+=== Thu Sep 21 10:18:31 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Thu Sep 21 10:18:31 2023
+=== Received Data  --  GET  /favicon.ico
+
+=== Thu Sep 21 10:18:31 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: image/vnd.microsoft.icon
+Content-Length: 15406
+
+
+
+=== Thu Sep 21 11:25:28 2023
+=== Done receiving Data
+
+=== Thu Sep 21 13:09:28 2023
+=== Received Data  --  GET  /
+
+=== Thu Sep 21 13:09:28 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 794
+
+
+
+=== Thu Sep 21 13:09:28 2023
+=== Received Data  --  GET  /styles/styleIndex.css
+
+=== Thu Sep 21 13:09:28 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 2277
+
+
+
+=== Thu Sep 21 13:09:28 2023
+=== Received Data  --  GET  /scripts/script.js
+
+=== Thu Sep 21 13:09:28 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 4001
+
+
+
+=== Thu Sep 21 13:09:28 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Thu Sep 21 13:09:30 2023
+=== Received Data  --  GET  /cgi.html
+
+=== Thu Sep 21 13:09:30 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 443
+
+
+
+=== Thu Sep 21 13:09:31 2023
+=== Received Data  --  GET  /cgi-bin/simple.py?name=asdas
+
+=== Thu Sep 21 13:09:32 2023
+=== send Data:
+HTTP/1.1 500 Internal Server Error
+Connection: close
+Content-Type: text/html
+Content-Length: 3130
+
+
+
+=== Thu Sep 21 13:09:35 2023
+=== Received Data  --  GET  /
+
+=== Thu Sep 21 13:09:35 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 786
+
+
+
+=== Thu Sep 21 13:09:35 2023
+=== Received Data  --  GET  /styles/styleIndex.css
+
+=== Thu Sep 21 13:09:35 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/css
+Content-Length: 2277
+
+
+
+=== Thu Sep 21 13:09:35 2023
+=== Received Data  --  GET  /scripts/script.js
+
+=== Thu Sep 21 13:09:35 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/javascript
+Content-Length: 4001
+
+
+
+=== Thu Sep 21 13:09:35 2023
+=== Received Data  --  GET  /images/yeee.jpg
+
+=== Thu Sep 21 13:09:37 2023
+=== Received Data  --  GET  /cgi.html
+
+=== Thu Sep 21 13:09:37 2023
+=== send Data:
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: text/html
+Content-Length: 443
+
+
+
+=== Thu Sep 21 13:09:38 2023
+=== Received Data  --  GET  /cgi-bin/simple.py?name=asdasd
+
+=== Thu Sep 21 13:09:39 2023
+=== send Data:
+root//cgi-bin/simple.py
+
+=== Thu Sep 21 13:16:43 2023
+=== Done receiving Data
+
+=== Thu Sep 21 13:16:43 2023
+=== Received Data  --  GET  /cgi-bin/simple.py?name=asdasd
+
+=== Thu Sep 21 13:16:44 2023
+=== send Data:
+root//cgi-bin/simple.py
+
+=== Thu Sep 21 13:16:52 2023
+=== send Data:
+root//cgi-bin/simple.py
+
+=== Thu Sep 21 13:19:25 2023
+=== Done receiving Data
+
+=== Thu Sep 21 13:19:39 2023
+=== send Data:
+root//cgi-bin/simple.py
+
+=== Thu Sep 21 13:24:04 2023
+=== Done receiving Data
+
+=== Thu Sep 21 13:29:04 2023
+=== Done receiving Data

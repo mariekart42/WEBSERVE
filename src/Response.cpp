@@ -317,7 +317,29 @@ void Response::initHeader()
 bool Response::uploadFile(const std::string& contentType, const std::string& boundary, std::ofstream *outfile)
 {
 	size_t pos = contentType.find("application/x-www-form-urlencoded");
-    if (contentType == "multipart/form-data" || pos != std::string::npos)
+	if (pos != std::string::npos){
+		validCGIfile();
+		{
+			int check = CGIpy();
+			std::cout << "Return of CGI is " << check << std::endl;
+			switch (check)
+			{
+			case -1:
+				return(mySend(500));
+			case -2:
+				return (mySend(404));
+			case -3:
+				return (mySend(408));
+			case -4:
+				return (mySend(403));
+			default:
+				std::cout << "Default case has been called" << std::endl;
+				std::cout << "Here" << std::endl;
+				return (CGIoutput());
+			}
+		}
+	}
+    if (contentType == "multipart/form-data")
         return saveRequestToFile(*outfile, boundary);
 	std::cout << "NOT FOUND" << std::endl;
     return false;
@@ -339,28 +361,10 @@ bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boun
     size_t posEndBoundary = convert.find(endBoundary);
     bool endOfFile = false;
 
-    if (NO_DATA_TO_UPLOAD && (validCGIfile() == false))
+    if NO_DATA_TO_UPLOAD
         return true;
-	if (_x_ok)
-	{
-		int check = CGIpy();
-		std::cout << "Return of CGI is " << check << std::endl;
-		switch (check)
-		{
-		case -1:
-			return(mySend(500));
-		case -2:
-			return (mySend(404));
-		case -3:
-			return (mySend(408));
-		case -4:
-			return (mySend(403));
-		default:
-			std::cout << "Default case has been called" << std::endl;
-			std::cout << "Here" << std::endl;
-			return (CGIoutput());
-		}
-	}
+
+
     if (posStartBoundary != std::string::npos)  // cut header and put stuff afterward to outfile
     {
         size_t bodyPos = convert.find("\r\n\r\n", (posStartBoundary + startBoundary.size() + 2)) + 4;

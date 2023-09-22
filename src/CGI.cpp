@@ -43,7 +43,7 @@ bool	Response::validCGIfile()
 		return false;
 	if (pos == std::string::npos)
 		return false;
-	_x_ok = true;
+	_f_ok = true;
 	return true;
 }
 
@@ -128,6 +128,8 @@ bool Response::CGIoutput(){
 		respooonse += line + "\n";
 	ss << respooonse.size();
 	respooonse = header + ss.str() + "\r\n\r\n" + respooonse;
+	std::string convert(_info._postInfo._input.begin(), _info._postInfo._input.end());
+	std::cout << convert << std::endl;
     Logging::log("send Data:\n" + _cgiPath, 200);
 
 
