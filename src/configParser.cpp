@@ -6,7 +6,7 @@
 /*   By: vfuhlenb <vfuhlenb@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 23:17:00 by vfuhlenb          #+#    #+#             */
-/*   Updated: 2023/09/21 00:30:22 by vfuhlenb         ###   ########.fr       */
+/*   Updated: 2023/09/21 23:47:57 by vfuhlenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,7 @@ const std::string	configParser::getUrl() {
 	}
 
 	// check if route has redirect directive
-	if (!return_route(server, current_route)->second._redirect.empty())
+	if (HasMatch && !return_route(server, current_route)->second._redirect.empty())
 		IsRedirect = true;
 
 	if (HasMatch && IsRedirect)
@@ -297,7 +297,7 @@ Server & configParser::getServer(int port) {
 void configParser::parse_request_data()
 {
 	bool IsFile = false;
-	bool HasSubfolder = false;
+	// bool HasSubfolder = false;
 	std::size_t PosFile;
 
 	// check if url contains a file
@@ -307,8 +307,8 @@ void configParser::parse_request_data()
 	PosLastSlash != std::string::npos ? PosFile = PosLastSlash + 1 : PosFile = 0;
 
 	// check if file is located in subfolder
-	if (PosLastSlash != 0)
-		HasSubfolder = true;
+	// if (PosLastSlash != 0)
+	// 	HasSubfolder = true;
 
 	// save the filename
 	if (IsFile)
