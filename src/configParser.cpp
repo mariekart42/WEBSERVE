@@ -67,7 +67,6 @@ bool configParser::validConfig(int argc, char **argv)
 				server._directive_line_nbr = _directive_line_nbr;
 				server._server_line_nbr = _directive_line_nbr;
 				server._error_map = _default_error_map;
-	
 				server._body_size = _settings.body_size;
 				std::string route;
 				std::string route_end;
@@ -947,5 +946,3 @@ void configParser::printLog()
 	printServerDetails(file);
 	file.close();
 }
-
-// new push2
