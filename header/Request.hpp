@@ -32,7 +32,9 @@ class Request
         static std::string getNewFilename(const std::string&, const std::string&);
         static bool checkPathInFolder(std::string, const std::string&);
         static bool pathExists(const std::string&);
+        int getContentLen();
         bool badFileContentType(const std::string&);
+        bool traversalAttack(const std::string &url);
 };
 
 #endif

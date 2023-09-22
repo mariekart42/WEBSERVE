@@ -18,6 +18,7 @@ void ErrorResponse::initializeErrorMessages()
     errorMessages[404] = "Not Found";
     errorMessages[405] = "Method not allowed";
     errorMessages[409] = "Conflict";
+    errorMessages[413] = "Request Entity Too Large";
     errorMessages[500] = "Internal Server Error";
 }
 

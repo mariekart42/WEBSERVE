@@ -9,7 +9,12 @@
 #define DATA_TO_READ (_fdPortList._fds[i].revents & POLLIN)
 #define INCOMING_DATA (_fdPortList._fds[_x].revents & (POLLIN | POLLOUT))
 #define CLIENTS (static_cast<int>(_fdPortList._fds.size()))
+#define CURRENT_FD (_fdPortList._fds[_x].fd)
+#define CURRENT_EVENT (_fdPortList._fds[_x].events)
 
+#define DATA_TO_SEND (_fdPortList._fds[_x].revents & POLLOUT)
+
+typedef std::map<int, clientInfo>::iterator ClientInfoMapIter;
 
 struct fdList
 {

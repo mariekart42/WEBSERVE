@@ -1,9 +1,9 @@
 #include "../header/connectClients.hpp"
 
 ConnectClients::ConnectClients(const fdList& initList):
-_fdPortList(initList), _clientAddressLen(sizeof(_clientAddress)),_clientAddress(),
-    _byteVector(),
-    _clientInfo()
+        _fdPortList(initList), _clientAddressLen(sizeof(_clientAddress)),_clientAddress(),
+        _byteVector(),
+        _clientInfo()
 {}
 
 
@@ -37,7 +37,7 @@ void ConnectClients::initFdList()
 
 void ConnectClients::initNewConnection()
 {
-    int socketFd = _fdPortList._fds[_x].fd;
+    int socketFd = CURRENT_FD;
     int newClientSocket = accept(socketFd, (struct sockaddr *) &_clientAddress, &_clientAddressLen);
 
     if (newClientSocket != -1)
@@ -97,6 +97,8 @@ void ConnectClients::initClientInfo(configParser& config)
         initNewInfo._myHTTPMethod = request.getHTTPMethod();
         initNewInfo._clientSocket = clientSocket;
         initNewInfo._url = config.getUrl();
+        if (request.traversalAttack(initNewInfo._url))
+            initNewInfo._globalStatusCode = FORBIDDEN;
         initNewInfo._fileContentType = request.getFileContentType(initNewInfo._url);
         initNewInfo._contentType = request.getContentType();
         initNewInfo._isMultiPart = false;
@@ -106,9 +108,14 @@ void ConnectClients::initClientInfo(configParser& config)
         initNewInfo._errorMap = config.getErrorMap();
         initNewInfo._isChunkedFile = false;
         initNewInfo._filePos = 0;
+        initNewInfo._globalStatusCode = 200;
         if (initNewInfo._myHTTPMethod == M_POST)
         {
             initNewInfo._postInfo._input = input;
+            initNewInfo._postInfo._contentLen = request.getContentLen();
+            if (initNewInfo._postInfo._contentLen > config.get_body_size())
+                initNewInfo._globalStatusCode = REQUEST_TOO_BIG;
+
             initNewInfo._configInfo._postAllowed = config.getPostAllowed();
             initNewInfo._postInfo._filename = request.getFileName(initNewInfo._contentType, initNewInfo._postInfo._filename, UPLOAD_FOLDER);
             initNewInfo._postInfo._outfile = new std::ofstream (UPLOAD_FOLDER+initNewInfo._postInfo._filename, std::ofstream::out | std::ofstream::app | std::ofstream::binary);
@@ -156,9 +163,9 @@ int ConnectClients::receiveData(configParser& config)
     memset(clientData, 0, sizeof(clientData));
     ssize_t bytesRead = recv(_fdPortList._fds[_x].fd, clientData, sizeof(clientData), O_NONBLOCK);
 
-    #ifdef DEBUG
-        std::cout << "Client Data["<<bytesRead<<"]:\n"<<clientData<<std::endl;
-    #endif
+#ifdef DEBUG
+    std::cout << "Client Data["<<bytesRead<<"]:\n"<<clientData<<std::endl;
+#endif
     if (bytesRead < 0)
         return -1;
     if (bytesRead == 0)
@@ -228,7 +235,7 @@ void ConnectClients::handleData(configParser& config)
     switch (it->second._myHTTPMethod)
     {
         case M_GET:
-//            it->second._filePos = response.sendRequestedFile();
+//            it->second._filePos = response.sendRequestedFile ();
             setPollEvent(response.sendRequestedFile());
             break;
         case M_POST:

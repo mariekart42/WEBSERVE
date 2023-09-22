@@ -1,7 +1,7 @@
 #include "../header/Response.hpp"
 
 Response::Response(int clientSocket, const clientInfo& cInfo):
-        _statusCode(-1),  _info(cInfo),  _header()
+       _localStatusCode(-1), _info(cInfo), _header()
 {
     _info._clientSocket = clientSocket;
 }
@@ -104,10 +104,10 @@ std::streampos Response::sendRequestedFile()
                 return mySend(FORBIDDEN);
             else
             {
-                _file = readFile(_info._configInfo._rootFolder + _info._url);// REMOVED SLASH!
+                _file = readFile(_info._configInfo._rootFolder + _info._url);
                 if (_info._isChunkedFile)
                     return _info._filePos;
-                if (_file.empty())   // if file doesn't exist
+                if (_file.empty())
                     return mySend(NOT_FOUND);
                 return mySend(OK);
             }
@@ -169,8 +169,9 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
         _info._fileContentType = getContentType();
         std::string header = "HTTP/1.1 " + std::to_string(200) + " " +
                              ErrorResponse::getErrorMessage(200) + "\r\nConnection: keep-alive\r\n"
-                                                                           "Content-Type: "+_info._fileContentType+"\r\n"
-                                                                                                                   "Content-Length: " + std::to_string(content.size()) + "\r\n\r\n";
+                             "Content-Type: "+_info._fileContentType+"\r\n"
+                             "Content-Length: " + std::to_string(content.size()) + "\r\n\r\n";
+
 
         Logging::log("send Data:\n" + header, 200);
 
@@ -203,31 +204,33 @@ int Response::initFile(int statusCode)
     if (statusCode == 200)
     {
         if ((_info._fileContentType = getContentType()) == FAILURE)
-            return _info._fileContentType = "text/html", _file = readFile(_info._errorMap.at(NOT_FOUND)), _statusCode = 404;
-        return _statusCode = 200;
+            return _info._fileContentType = "text/html", _file = readFile(_info._errorMap.at(NOT_FOUND)), _localStatusCode = 404;
+        return _localStatusCode = 200;
     }
 
     _info._fileContentType = "text/html";
     switch (statusCode)
     {
         case DEFAULTWEBPAGE:
-            return _file = readFile(_info._errorMap.at(DEFAULTWEBPAGE)), _statusCode = 200;
+            return _file = readFile(_info._errorMap.at(DEFAULTWEBPAGE)), _localStatusCode = 200;
         case DIRECTORY_LIST:
-            return _statusCode = 200;
+            return _localStatusCode = 200;
         case FILE_SAVED:
-            return _file = readFile(_info._errorMap.at(FILE_SAVED)), _statusCode = 201;
+            return _file = readFile(_info._errorMap.at(FILE_SAVED)), _localStatusCode = 201;
         case FILE_DELETED:
-            return _file = readFile(_info._errorMap.at(FILE_DELETED)), _statusCode = 204;
+            return _file = readFile(_info._errorMap.at(FILE_DELETED)), _localStatusCode = 204;
         case BAD_REQUEST:
-            return _file = readFile(_info._errorMap.at(BAD_REQUEST)), _statusCode = 400;
+            return _file = readFile(_info._errorMap.at(BAD_REQUEST)), _localStatusCode = 400;
         case FORBIDDEN:
-            return _file = readFile(_info._errorMap.at(FORBIDDEN)), _statusCode = 403;
+            return _file = readFile(_info._errorMap.at(FORBIDDEN)), _localStatusCode = 403;
         case NOT_FOUND:
-            return _file = readFile(_info._errorMap.at(NOT_FOUND)), _statusCode = 404;
+            return _file = readFile(_info._errorMap.at(NOT_FOUND)), _localStatusCode = 404;
         case METHOD_NOT_ALLOWED:
-            return _file = readFile(_info._errorMap.at(METHOD_NOT_ALLOWED)), _statusCode = 405;
+            return _file = readFile(_info._errorMap.at(METHOD_NOT_ALLOWED)), _localStatusCode = 405;
+        case REQUEST_TOO_BIG:
+            return _file = readFile(_info._errorMap.at(REQUEST_TOO_BIG)), _localStatusCode = 413;
         default:
-            return _file = readFile(_info._errorMap.at(INTERNAL_ERROR)), _statusCode = 500;
+            return _file = readFile(_info._errorMap.at(INTERNAL_ERROR)), _localStatusCode = 500;
     }
 }
 
@@ -299,8 +302,8 @@ void Response::sendShittyChunk(const std::string& fileName)
 
 void Response::initHeader()
 {
-    _header = "HTTP/1.1 " + std::to_string(_statusCode) + " " +
-            ErrorResponse::getErrorMessage(_statusCode) + "\r\nConnection: close\r\n"
+    _header = "HTTP/1.1 " + std::to_string(_localStatusCode) + " " +
+            ErrorResponse::getErrorMessage(_localStatusCode) + "\r\nConnection: close\r\n"
                                                          "Content-Type: "+_info._fileContentType+"\r\n"
                                                                                            "Content-Length: " + std::to_string(_file.size()) + "\r\n\r\n";
 }
@@ -396,18 +399,31 @@ bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boun
         outfile.close();
 
 
-        if (_info._postInfo._filename == BAD_CONTENT_TYPE || !_info._configInfo._postAllowed)
-        {
-            std::remove((_info._configInfo._rootFolder + "/" + _info._url + "/" + _info._postInfo._filename).c_str());
-            if (_info._postInfo._filename == BAD_CONTENT_TYPE)
-                mySend(BAD_REQUEST);
-            else
-                mySend(METHOD_NOT_ALLOWED);
-        }
-        else
-            mySend(FILE_SAVED);
+        mySend(getRightResponse());
         return false;
     }
     return true;
 }
 
+
+int Response::getRightResponse() const
+{
+    bool removeFile = true;
+    int responseStatus = FILE_SAVED;
+
+    if (_info._globalStatusCode == REQUEST_TOO_BIG)
+        responseStatus = REQUEST_TOO_BIG;
+    else if (_info._globalStatusCode == FORBIDDEN)
+        responseStatus = FORBIDDEN;
+    else if (_info._postInfo._filename == BAD_CONTENT_TYPE)
+        responseStatus = BAD_REQUEST;
+    else if (!_info._configInfo._postAllowed)
+        responseStatus = METHOD_NOT_ALLOWED;
+    else
+        removeFile = false;
+
+    if (removeFile)
+        std::remove((_info._configInfo._rootFolder + _info._url + "/" + _info._postInfo._filename).c_str());
+
+    return responseStatus;
+}

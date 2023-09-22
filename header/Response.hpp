@@ -13,11 +13,16 @@
 #define IS_FILE (s.st_mode & S_IFREG)
 #define UPLOAD_FOLDER "root/upload/"
 
+
+// TODO implement in config:
+//#define REQUEST_TOO_BIG 413
+//#define PATH_REQUEST_TOO_BIG "error/400.html"
+
 class Request;
 
 struct configInfo
 {
-    std::string _indexFile; // set to index.html/php... or FAILURE
+    std::string _indexFile;
     std::string _rootFolder;
     bool _autoIndex;
     bool _postAllowed;
@@ -31,6 +36,7 @@ struct postInfo
     std::string     _filename;
     std::string     _boundary;
     std::ofstream*  _outfile;
+    int _contentLen;
 };
 
 struct clientInfo
@@ -45,6 +51,8 @@ struct clientInfo
     configInfo  _configInfo;
     std::streampos _filePos;
     std::map<int,std::string> _errorMap;
+
+    int _globalStatusCode;
     bool _isChunkedFile;
 };
 
@@ -58,7 +66,7 @@ struct cgiInfo{
 class Response
 {
     private:
-        int _statusCode;
+        int _localStatusCode;
         clientInfo  _info;
         std::string _header;
         std::vector<uint8_t> _file;
@@ -87,7 +95,7 @@ class Response
 		bool	CGIoutput();
 
         std::vector<uint8_t> readFile(const std::string &fileName);
-
+        int getRightResponse() const;
     void sendShittyChunk(const std::string&);
 };
 
