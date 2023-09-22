@@ -146,6 +146,7 @@ class configParser {
 		bool				getPostAllowed();
 		bool				getDeleteAllowed();
 		bool				getGetAllowed();
+		StringVector&		getCgiExtensions();
 		int					getBodySize(int incoming_port); // returns body-size from server with port
 		IntVector&			getPortVector();
 		IntStringMap&		getErrorMap();
@@ -174,6 +175,7 @@ class configParser {
 		IntVector		_unique_ports;
 		RequestData		_request_data;
 		IntStringMap	_default_error_map;
+		StringVector	_empty_string_vector;
 
 		Server & getServer(int port);
 		void			parse_request_data();

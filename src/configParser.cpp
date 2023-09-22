@@ -237,6 +237,15 @@ bool configParser::getGetAllowed() {
 	return true;
 }
 
+StringVector&	configParser::getCgiExtensions()
+{
+	RouteIterator route;
+	route = getServer(_request_data._port)._routes.find(_request_data._url);
+	if (route != getServer(_request_data._port)._routes.end())
+		return route->second._cgi;
+	return _empty_string_vector;
+}
+
 int configParser::getBodySize(int incoming_port)
 {
 	return getServer(incoming_port)._body_size;
@@ -251,6 +260,7 @@ IntStringMap&	configParser::getErrorMap()
 {
 	return getServer(_request_data._port)._error_map;
 }
+
 
 int	configParser::get_timeout() const
 {
