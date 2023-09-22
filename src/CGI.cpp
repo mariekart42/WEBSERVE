@@ -67,6 +67,7 @@ int Response::CGIpy() {
 		std::cout << "No permission" << std::endl;
 		return -4;
 	}
+
 	_query = "QUERY_STRING=" + _query;
 	char *query = (char*)_query.c_str();
 	const char *pythonexec = "python3";
@@ -124,10 +125,12 @@ bool Response::CGIoutput(){
 	std::stringstream ss;
 	std::string line;
 	std::string respooonse;
+
 	while (std::getline(inputFile, line))
 		respooonse += line + "\n";
 	ss << respooonse.size();
 	respooonse = header + ss.str() + "\r\n\r\n" + respooonse;
+
 	std::string convert(_info._postInfo._input.begin(), _info._postInfo._input.end());
 	std::cout << convert << std::endl;
     Logging::log("send Data:\n" + _cgiPath, 200);

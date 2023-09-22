@@ -316,8 +316,11 @@ void Response::initHeader()
 
 bool Response::uploadFile(const std::string& contentType, const std::string& boundary, std::ofstream *outfile)
 {
-	size_t pos = contentType.find("application/x-www-form-urlencoded");
-	if (pos != std::string::npos){
+    if (contentType == "multipart/form-data")
+        return saveRequestToFile(*outfile, boundary);
+	else if (contentType == "application/x-www-form-urlencoded")
+	{
+		std::cout << RED"FOUND application/x-www-form-urlencoded"RESET << std::endl;
 		validCGIfile();
 		{
 			int check = CGIpy();
@@ -339,9 +342,6 @@ bool Response::uploadFile(const std::string& contentType, const std::string& bou
 			}
 		}
 	}
-    if (contentType == "multipart/form-data")
-        return saveRequestToFile(*outfile, boundary);
-	std::cout << "NOT FOUND" << std::endl;
     return false;
 }
 

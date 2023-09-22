@@ -78,6 +78,7 @@ class Response
 		bool	validCGIfile();
 		int		CGIpy();
 		bool	CGIoutput();
+		bool	CGIoutput(std::string filename);
 		bool	_f_ok;
 
         std::vector<uint8_t> readFile(const std::string &fileName);

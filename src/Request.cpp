@@ -149,6 +149,21 @@ std::string Request::getFileName(const std::string& contentType, const std::stri
 std::string Request::getContentType()
 {
     size_t foundPos = _tmp.find("Content-Type: ");
+    size_t specialStart = _tmp.find("application/x-www-form-urlencoded");
+
+    if (specialStart != std::string::npos)
+	{
+		size_t specialEnd = _tmp.find("\r\n", specialStart);
+        if (specialEnd != std::string::npos)
+        {
+            std::string specialType = "application/x-www-form-urlencoded";
+            #ifdef DEBUG
+                std::cout << GRN"DEBUG: Content-Type: " << specialType << ""RESET<< std::endl;
+            #endif
+            return specialType;
+		}
+	}
+	
 
     if (foundPos != std::string::npos)
     {
