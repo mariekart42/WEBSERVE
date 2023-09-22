@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   configParser.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vfuhlenb <vfuhlenb@students.42wolfsburg    +#+  +:+       +#+        */
+/*   By: vfuhlenb <vfuhlenb@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 23:16:58 by vfuhlenb          #+#    #+#             */
-/*   Updated: 2023/09/19 13:56:55 by vfuhlenb         ###   ########.fr       */
+/*   Updated: 2023/09/22 23:59:51 by vfuhlenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@
 #define FORBIDDEN			403
 #define NOT_FOUND			404
 #define METHOD_NOT_ALLOWED	405
+#define REQUEST_TOO_BIG		413
 #define INTERNAL_ERROR		500
 #define PATH_DEFAULTWEBPAGE		"root/index.html"
 #define PATH_DIRECTORY_LIST		""
@@ -55,6 +56,7 @@
 #define PATH_FORBIDDEN			"error/403.html"
 #define PATH_404_ERRORWEBSITE	"error/404.html"
 #define PATH_METHOD_NOT_ALLOWED	"error/405.html"
+#define PATH_REQUEST_TOO_BIG	"error/413.html"
 #define PATH_500_ERRORWEBSITE	"error/500.html"
 
 typedef std::vector<std::string> StringVector;
