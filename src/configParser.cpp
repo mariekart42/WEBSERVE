@@ -6,7 +6,7 @@
 /*   By: vfuhlenb <vfuhlenb@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 23:17:00 by vfuhlenb          #+#    #+#             */
-/*   Updated: 2023/09/21 00:30:22 by vfuhlenb         ###   ########.fr       */
+/*   Updated: 2023/09/22 23:58:43 by vfuhlenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ bool configParser::validConfig(int argc, char **argv)
 				server._directive_line_nbr = _directive_line_nbr;
 				server._server_line_nbr = _directive_line_nbr;
 				server._error_map = _default_error_map;
-	
 				server._body_size = _settings.body_size;
 				std::string route;
 				std::string route_end;
@@ -84,6 +83,7 @@ bool configParser::validConfig(int argc, char **argv)
 						throw std::invalid_argument("location can`t be empty");
 					if (line_first_token.at(0) == '<' && line_first_token.at(1) != '\\')
 					{
+						check_path_traversal(line_first_token);
 						route = line_first_token;
 						route.erase(0,1);
 						route.erase(route.size()-1,1);
@@ -172,7 +172,7 @@ const std::string	configParser::getUrl() {
 	}
 
 	// check if route has redirect directive
-	if (!return_route(server, current_route)->second._redirect.empty())
+	if (HasMatch && !return_route(server, current_route)->second._redirect.empty())
 		IsRedirect = true;
 
 	if (HasMatch && IsRedirect)
@@ -198,7 +198,7 @@ const std::string	configParser::getIndexFile() {
 	route = getServer(_request_data._port)._routes.find(_request_data._url);
 	if (route != getServer(_request_data._port)._routes.end())
     	return route->second._index;
-	return "index.html";
+	return INDEX;
 }
 
 bool configParser::getPostAllowed() {
@@ -237,6 +237,15 @@ bool configParser::getGetAllowed() {
 	return true;
 }
 
+StringVector&	configParser::getCgiExtensions()
+{
+	RouteIterator route;
+	route = getServer(_request_data._port)._routes.find(_request_data._url);
+	if (route != getServer(_request_data._port)._routes.end())
+		return route->second._cgi;
+	return _empty_string_vector;
+}
+
 int configParser::getBodySize(int incoming_port)
 {
 	return getServer(incoming_port)._body_size;
@@ -251,6 +260,7 @@ IntStringMap&	configParser::getErrorMap()
 {
 	return getServer(_request_data._port)._error_map;
 }
+
 
 int	configParser::get_timeout() const
 {
@@ -296,7 +306,7 @@ Server & configParser::getServer(int port) {
 void configParser::parse_request_data()
 {
 	bool IsFile = false;
-	bool HasSubfolder = false;
+	// bool HasSubfolder = false;
 	std::size_t PosFile;
 
 	// check if url contains a file
@@ -306,8 +316,8 @@ void configParser::parse_request_data()
 	PosLastSlash != std::string::npos ? PosFile = PosLastSlash + 1 : PosFile = 0;
 
 	// check if file is located in subfolder
-	if (PosLastSlash != 0)
-		HasSubfolder = true;
+	// if (PosLastSlash != 0)
+	// 	HasSubfolder = true;
 
 	// save the filename
 	if (IsFile)
@@ -558,7 +568,7 @@ void configParser::setDirective(Server& server, const std::string& _route)
 		setCGI(server, _line, _route);
 	else if (line_first_token == "redirect" && validate_directive_single(_line))
 		setRedirect(server, _line, _route);
-	else if (line_first_token != "[\\server]" && line_first_token != "#")
+	else if (line_first_token != "[\\server]" && line_first_token != "#" && line_first_token != ";")
 		std::cerr << BLUE << "Warning: invalid key \"" << line_first_token << "\" skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 }
 
@@ -765,6 +775,7 @@ void	configParser::create_default_error_map()
 	_default_error_map.insert ( std::pair<int,std::string>(FORBIDDEN, PATH_FORBIDDEN) );
 	_default_error_map.insert ( std::pair<int,std::string>(NOT_FOUND, PATH_404_ERRORWEBSITE) );
 	_default_error_map.insert ( std::pair<int,std::string>(METHOD_NOT_ALLOWED, PATH_METHOD_NOT_ALLOWED) );
+	_default_error_map.insert ( std::pair<int,std::string>(REQUEST_TOO_BIG, PATH_REQUEST_TOO_BIG) );
 	_default_error_map.insert ( std::pair<int,std::string>(INTERNAL_ERROR, PATH_500_ERRORWEBSITE) );
 }
 
@@ -946,5 +957,3 @@ void configParser::printLog()
 	printServerDetails(file);
 	file.close();
 }
-
-// new push2

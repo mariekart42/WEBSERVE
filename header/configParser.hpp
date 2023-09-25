@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   configParser.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vfuhlenb <vfuhlenb@students.42wolfsburg    +#+  +:+       +#+        */
+/*   By: vfuhlenb <vfuhlenb@student.42wolfsburg.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 23:16:58 by vfuhlenb          #+#    #+#             */
-/*   Updated: 2023/09/19 13:56:55 by vfuhlenb         ###   ########.fr       */
+/*   Updated: 2023/09/22 23:59:51 by vfuhlenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 #define MAX_EVENTS		100
 #define BACKLOG			42
 #define ROOT			"root"
-#define INDEX			"index.html"
+#define INDEX			""
 #define DEFAULT_CONF	"default.conf"
 
 // Response codes
@@ -46,6 +46,7 @@
 #define FORBIDDEN			403
 #define NOT_FOUND			404
 #define METHOD_NOT_ALLOWED	405
+#define REQUEST_TOO_BIG		413
 #define INTERNAL_ERROR		500
 #define PATH_DEFAULTWEBPAGE		"root/index.html"
 #define PATH_DIRECTORY_LIST		""
@@ -55,6 +56,7 @@
 #define PATH_FORBIDDEN			"error/403.html"
 #define PATH_404_ERRORWEBSITE	"error/404.html"
 #define PATH_METHOD_NOT_ALLOWED	"error/405.html"
+#define PATH_REQUEST_TOO_BIG	"error/413.html"
 #define PATH_500_ERRORWEBSITE	"error/500.html"
 
 typedef std::vector<std::string> StringVector;
@@ -146,6 +148,7 @@ class configParser {
 		bool				getPostAllowed();
 		bool				getDeleteAllowed();
 		bool				getGetAllowed();
+		StringVector&		getCgiExtensions();
 		int					getBodySize(int incoming_port); // returns body-size from server with port
 		IntVector&			getPortVector();
 		IntStringMap&		getErrorMap();
@@ -174,6 +177,7 @@ class configParser {
 		IntVector		_unique_ports;
 		RequestData		_request_data;
 		IntStringMap	_default_error_map;
+		StringVector	_empty_string_vector;
 
 		Server & getServer(int port);
 		void			parse_request_data();
