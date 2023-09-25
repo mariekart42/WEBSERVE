@@ -790,7 +790,7 @@ void configParser::check_path_traversal(const std::string path)
 bool configParser::check_file(const std::string path)
 {
 	std::ifstream file;
-	file.open(path);
+	file.open(path.c_str());
 	if (!file)
 	{
 		file.close();

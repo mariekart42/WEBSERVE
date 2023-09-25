@@ -1,5 +1,6 @@
 
 #include "../header/Request.hpp"
+#include <sstream>
 
 Request::Request(const std::vector<uint8_t>& clientData):
     _tmp(std::string(clientData.begin(), clientData.end())), _statusCode()
@@ -59,14 +60,14 @@ bool Request::fileExists(const std::string& checkFilename, const std::string& up
     const std::string& filename = checkFilename;
 
     DIR* dir = opendir(uploadFolder.c_str());
-    if (dir == nullptr)
+    if (dir == NULL)
     {
         Logging::log("Failed to open directory", 500);
         return false;
     }
 
     struct dirent* entry;
-    while ((entry = readdir(dir)) != nullptr)
+    while ((entry = readdir(dir)) != NULL)
     {
         if (strcmp(entry->d_name, filename.c_str()) == 0)
         {
@@ -90,9 +91,12 @@ std::string Request::getNewFilename(const std::string& checkFilename, const std:
     std::string fileExtension = checkFilename.substr(lastDotPos, checkFilename.size());
 
     int fileCount = 1;
-    while (fileExists(filename + " (" + std::to_string(fileCount) + ")" + fileExtension, uploadFolder))
+    std::stringstream ss;
+    ss << fileCount;
+    std::string s_fileCount = ss.str();
+    while (fileExists(filename + " (" + s_fileCount + ")" + fileExtension, uploadFolder))
         fileCount++;
-    return (filename + " (" + std::to_string(fileCount) + ")"+ fileExtension);
+    return (filename + " (" + s_fileCount + ")"+ fileExtension);
 }
 
 
@@ -121,7 +125,7 @@ std::string Request::getFileName(const std::string& contentType, const std::stri
 
                 }
                 #ifdef DEBUG
-                    std::cout << GRN"DEBUG: filename: " << fileName << ""RESET<< std::endl;
+                    std::cout << GRN << "DEBUG: filename: " << fileName << "" << RESET << std::endl;
                 #endif
                 if (getFileContentType(fileName) == FAILURE)
                     return BAD_CONTENT_TYPE;
@@ -172,7 +176,7 @@ std::string Request::getContentType()
         {
             std::string contentType = _tmp.substr(foundPos + 14, endPos - (foundPos + 14));
             #ifdef DEBUG
-                std::cout << GRN"DEBUG: Content-Type: " << contentType << ""RESET<< std::endl;
+                std::cout << GRN << "DEBUG: Content-Type: " << contentType << "" << RESET << std::endl;
             #endif
             return contentType;
         }
@@ -192,7 +196,7 @@ int Request::getContentLen()
         {
             std::string contentLen = _tmp.substr(foundPos, endPos - (foundPos));
             #ifdef DEBUG
-                        std::cout << GRN"DEBUG: Content-Length: " << contentLen << ""RESET<< std::endl;
+                        std::cout << GRN"DEBUG: Content-Length: " << contentLen << "" << RESET << std::endl;
             #endif
             return atoi(contentLen.c_str());
         }

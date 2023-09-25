@@ -14,7 +14,7 @@ void Logging::log(const std::string& message, int statusCode)
     }
 //    logFile << " ======= ";
     std::time_t currentTime;
-    currentTime = std::time(nullptr); // Get current time
+    currentTime = std::time(NULL); // Get current time
     if (statusCode == 200)
     {
         logFile << "\n=== "<< std::asctime(std::localtime(&currentTime)) << "=== "<<message<<std::endl;
