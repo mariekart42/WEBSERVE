@@ -118,7 +118,8 @@ void ConnectClients::initClientInfo(configParser& config)
 
             initNewInfo._configInfo._postAllowed = config.getPostAllowed();
             initNewInfo._postInfo._filename = request.getFileName(initNewInfo._contentType, initNewInfo._postInfo._filename, UPLOAD_FOLDER);
-            initNewInfo._postInfo._outfile = new std::ofstream (UPLOAD_FOLDER+initNewInfo._postInfo._filename, std::ofstream::out | std::ofstream::app | std::ofstream::binary);
+            std::string temp_filename = UPLOAD_FOLDER + initNewInfo._postInfo._filename;
+            initNewInfo._postInfo._outfile = new std::ofstream (temp_filename.c_str(), std::ofstream::out | std::ofstream::app | std::ofstream::binary);
             chmod((UPLOAD_FOLDER+initNewInfo._postInfo._filename).c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH); // no execution permission for user
             if (initNewInfo._contentType == "multipart/form-data")
             {

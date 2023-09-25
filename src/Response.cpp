@@ -11,7 +11,7 @@ Response::~Response() {}
 void Response::deleteFile()
 {
     #ifdef INFO
-        std::cout << RED " . . . Received Data  --  DELETE  " <<_info._url<<""RESET<< std::endl;
+        std::cout << RED " . . . Received Data  --  DELETE  " <<_info._url<< "" << RESET << std::endl;
     #endif
     Logging::log("Received Data  --  DELETE  " + _info._url, 200);
 
@@ -64,7 +64,7 @@ void Response::sendIndexPage()
 std::streampos Response::sendRequestedFile()
 {
 #ifdef INFO
-    std::cout << YEL " . . . Received Data  --  GET  " <<_info._url<<""RESET<< std::endl;
+    std::cout << YEL " . . . Received Data  --  GET  " << _info._url << "" << RESET << std::endl;
 #endif
     Logging::log("Received Data  --  GET  " + _info._url, 200);
 
@@ -132,7 +132,7 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
         return static_cast<std::vector<uint8_t> >(0);
     }
     std::ifstream file;
-    file.open(fileName, std::ios::binary);
+    file.open(fileName.c_str(), std::ios::binary);
 
     if (!file)
     {
@@ -150,10 +150,13 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
     {
 
         _info._fileContentType = getContentType();
-        std::string header = "HTTP/1.1 " + std::to_string(200) + " " +
+        std::stringstream ss;
+        ss << content.size();
+        std::string s_content_size = ss.str();
+        std::string header = "HTTP/1.1 200 " +
                              ErrorResponse::getErrorMessage(200) + "\r\nConnection: keep-alive\r\n"
                              "Content-Type: "+_info._fileContentType+"\r\n"
-                             "Content-Length: " + std::to_string(content.size()) + "\r\n\r\n";
+                             "Content-Length: " + s_content_size + "\r\n\r\n";
 
 
         Logging::log("send Data:\n" + header, 200);
@@ -247,7 +250,7 @@ std::streampos Response::mySend(int statusCode)
 void Response::sendShittyChunk(const std::string& fileName)
 {
     std::ifstream file;
-    file.open(fileName, std::ios::binary);
+    file.open(fileName.c_str(), std::ios::binary);
 
     if (!file)
     {
@@ -285,10 +288,16 @@ void Response::sendShittyChunk(const std::string& fileName)
 
 void Response::initHeader()
 {
-    _header = "HTTP/1.1 " + std::to_string(_localStatusCode) + " " +
+    std::stringstream ss;
+    ss << _localStatusCode;
+    std::string s_localStatusCode = ss.str();
+    std::stringstream ss2;
+    ss2 << _file.size();
+    std::string s_file_size = ss2.str();
+    _header = "HTTP/1.1 " + s_localStatusCode + " " +
             ErrorResponse::getErrorMessage(_localStatusCode) + "\r\nConnection: close\r\n"
                                                          "Content-Type: "+_info._fileContentType+"\r\n"
-                                                                                           "Content-Length: " + std::to_string(_file.size()) + "\r\n\r\n";
+                                                                                           "Content-Length: " + s_file_size + "\r\n\r\n";
 }
 
 
@@ -310,7 +319,7 @@ bool Response::uploadFile(const std::string& contentType, const std::string& bou
 bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boundary)
 {
     #ifdef INFO
-        std::cout << BLU " . . . Received Data  --  POST  " <<_info._url<<""RESET<< std::endl;
+        std::cout << BLU " . . . Received Data  --  POST  " <<_info._url<< "" << RESET << std::endl;
     #endif
     Logging::log("Received Data  --  POST  " + _info._url, 200);
 
