@@ -100,7 +100,7 @@ std::streampos Response::sendRequestedFile()
             return mySend(getDirectoryIndexPage(_info._url));
         else if IS_FILE
         {
-            if (endsWith(_info._url, "/.DS_Store"))
+            if (endsWith(_info._url, ".DS_Store"))
                 return mySend(FORBIDDEN);
             else
             {

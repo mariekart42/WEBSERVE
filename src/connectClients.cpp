@@ -35,16 +35,16 @@ void ConnectClients::initFdList()
 }
 
 
-void ConnectClients::initNewConnection(int socketFd)
+void ConnectClients::initNewConnection()
 {
+    int socketFd = _fdPortList._fds[_x].fd;
     int newClientSocket = accept(socketFd, (struct sockaddr *) &_clientAddress, &_clientAddressLen);
 
     if (newClientSocket != -1)
     {
         // Find an available slot or expand the vector
         bool foundSlot = false;
-        int portSize = _fdPortList._fds.size();
-        for (int j = 0; j < portSize; j++)
+        for (int j = 0; j < CLIENTS; j++)
         {
             if (_fdPortList._fds[j].fd == -1)
             {
@@ -75,33 +75,32 @@ void ConnectClients::initNewConnection(int socketFd)
 
 
 
-void ConnectClients::initClientInfo(int _clientSocket, configParser& config)
+void ConnectClients::initClientInfo(configParser& config)
 {
     std::vector<uint8_t> input = _byteVector;
+    int clientSocket = _fdPortList._fds[_x].fd;
 
-    std::map<int, clientInfo>::iterator rm = _clientInfo.find(_clientSocket);
+    std::map<int, clientInfo>::iterator rm = _clientInfo.find(clientSocket);
     if (rm->second._filePos > 0)
         return;
     if (rm != _clientInfo.end() && !rm->second._isMultiPart)
         _clientInfo.erase(rm);
 
-    std::map<int, clientInfo>::iterator it = _clientInfo.find(_clientSocket);
+    std::map<int, clientInfo>::iterator it = _clientInfo.find(clientSocket);
     if (it == _clientInfo.end())   // IF NOT INITTED YET
     {
         clientInfo initNewInfo;
         Request request(input);
 
-        config.setData(request.getUrlString(), "127.0.0.1", request.getPort()); // TODO Marie
+        config.setData(request.getUrlString(), "127.0.0.1", request.getPort());
 
-//        int currentPort = request.getPort();
-        // httpMethod getHTTP(myHHTTP, Port, Url);
         initNewInfo._myHTTPMethod = request.getHTTPMethod();
-        initNewInfo._clientSocket = _clientSocket;
+        initNewInfo._clientSocket = clientSocket;
         initNewInfo._url = config.getUrl();
         initNewInfo._fileContentType = request.getFileContentType(initNewInfo._url);
         initNewInfo._contentType = request.getContentType();
         initNewInfo._isMultiPart = false;
-        initNewInfo._configInfo._rootFolder = ROOT; // TODO : als macro lassen oder getter?
+        initNewInfo._configInfo._rootFolder = ROOT;
         initNewInfo._configInfo._autoIndex = config.getAutoIndex();
         initNewInfo._configInfo._indexFile = config.getIndexFile();
         initNewInfo._errorMap = config.getErrorMap();
@@ -130,7 +129,7 @@ void ConnectClients::initClientInfo(int _clientSocket, configParser& config)
         }
         else
             initNewInfo._configInfo._getAllowed = config.getGetAllowed();
-        _clientInfo[_clientSocket] = initNewInfo;
+        _clientInfo[clientSocket] = initNewInfo;
     }
     else if (it->second._isMultiPart)   // only for multipart!!
     {
@@ -143,25 +142,20 @@ void ConnectClients::initClientInfo(int _clientSocket, configParser& config)
     }
 }
 
-int ConnectClients::receiveData(int i, configParser& config)
+int ConnectClients::receiveData(configParser& config)
 {
-//    configParser config;
-    if (_fdPortList._fds[i].revents & POLLOUT)
+    if (_fdPortList._fds[_x].revents & POLLOUT)
         return 69;
     int len = _fdPortList._ports.size();
-    if (i >= len)
-    {
-        std::cout << "INVALID PORT ACCESS"<<std::endl;
+    if (_x >= len)
         return 0;
-    }
 
-    int clientBodySize = config.getBodySize(_fdPortList._ports.at(i));
+    int clientBodySize = config.getBodySize(_fdPortList._ports.at(_x));
     char clientData[clientBodySize];
 
     memset(clientData, 0, sizeof(clientData));
-    ssize_t bytesRead = recv(_fdPortList._fds[i].fd, clientData, sizeof(clientData), O_NONBLOCK);
+    ssize_t bytesRead = recv(_fdPortList._fds[_x].fd, clientData, sizeof(clientData), O_NONBLOCK);
 
-    std::cout << "bytes Read: "<<bytesRead<< "\nclientBodySize: "<<clientBodySize<<"  at port: "<< _fdPortList._ports.at(i)<<std::endl;
     #ifdef DEBUG
         std::cout << "Client Data["<<bytesRead<<"]:\n"<<clientData<<std::endl;
     #endif
@@ -169,7 +163,6 @@ int ConnectClients::receiveData(int i, configParser& config)
         return -1;
     if (bytesRead == 0)
         return 0;
-
 
     // converting client data to vector
     size_t charArraySize = bytesRead;
@@ -181,54 +174,62 @@ int ConnectClients::receiveData(int i, configParser& config)
 }
 
 
-void ConnectClients::closeConnection(int *i)
+void ConnectClients::closeConnection()
 {
     int len = _fdPortList._ports.size();
-    if (*i >= len)
+    if (_x >= len)
     {
-        len = _fdPortList._fds.size();
-        if (*i >= len)
+        if (_x >= CLIENTS)
             return;
-        close(_fdPortList._fds[*i].fd);
-        _fdPortList._fds.erase(_fdPortList._fds.begin() + *i);
+        close(_fdPortList._fds[_x].fd);
+        _fdPortList._fds.erase(_fdPortList._fds.begin() + _x);
         return ;
     }
 
     Logging::log("Done receiving Data", 200);
-    close(_fdPortList._fds[*i].fd);
-    _fdPortList._fds.erase(_fdPortList._fds.begin() + *i);
-    _fdPortList._ports.erase(_fdPortList._ports.begin() + *i);
-    --*i;
+    close(_fdPortList._fds[_x].fd);
+    _fdPortList._fds.erase(_fdPortList._fds.begin() + _x);
+    _fdPortList._ports.erase(_fdPortList._ports.begin() + _x);
+    --_x;
 }
 
-bool ConnectClients::newConnection(pollfd poll)
+bool ConnectClients::newConnection()
 {
     int portSize = _fdPortList._sockets.size();
     for (int i = 0; i < portSize; i++)
     {
-        if (_fdPortList._sockets.at(i) == poll.fd)
+        if (_fdPortList._sockets.at(i) == _fdPortList._fds[_x].fd)
             return (true);
     }
     return false;
 }
 
-void ConnectClients::handleData(pollfd poll, configParser& config, int i)
+void ConnectClients::setPollEvent(int filePos)
 {
-    initClientInfo(poll.fd, config);
+    std::map<int, clientInfo>::iterator it;
+    it = _clientInfo.find(_fdPortList._fds[_x].fd);
+
+    it->second._filePos = filePos;
+
+    if (filePos > 0)
+        _fdPortList._fds[_x].events = POLLOUT;
+    else
+        _fdPortList._fds[_x].events = 0;
+}
+
+void ConnectClients::handleData(configParser& config)
+{
+    initClientInfo(config);
 
     std::map<int, clientInfo>::iterator it;
-    it = _clientInfo.find(poll.fd);
-    Response response(poll.fd, it->second);
+    it = _clientInfo.find(_fdPortList._fds[_x].fd);
+    Response response(_fdPortList._fds[_x].fd, it->second);
 
     switch (it->second._myHTTPMethod)
     {
         case M_GET:
-            it->second._filePos = response.sendRequestedFile();
-            std::cout << GRN"filePos: "RESET<<it->second._filePos<<std::endl;
-            if (it->second._filePos > 0)
-                _fdPortList._fds[i].events = POLLOUT;
-            else
-                _fdPortList._fds[i].events = 0;
+//            it->second._filePos = response.sendRequestedFile();
+            setPollEvent(response.sendRequestedFile());
             break;
         case M_POST:
             it->second._isMultiPart = response.uploadFile(it->second._contentType,
@@ -246,41 +247,29 @@ void ConnectClients::handleData(pollfd poll, configParser& config, int i)
 
 void ConnectClients::clientConnected(configParser& config)
 {
-    int portSize = _fdPortList._fds.size();
-    for (int i = 0; i < portSize; ++i)
+    for (_x = 0; _x < CLIENTS; _x++)
     {
-        pollfd poll = _fdPortList._fds[i];
-        if (_fdPortList._fds[i].revents & (POLLIN | POLLOUT))
+        if (INCOMING_DATA)
         {
-            if (newConnection(poll))
-                initNewConnection(poll.fd);
+            if (newConnection())
+                initNewConnection();
             else
             {
-                switch (receiveData(i, config))
+                switch (receiveData(config))
                 {
                     case 69:
-                        handleData(poll, config, i);
+                        handleData(config);
                         break;
                     case 0:
-                        closeConnection(&i);
+                        closeConnection();
                         break;
                     default:
                         Logging::log("Unable to read Data from connected Client", 500);
-                        closeConnection(&i);
-//                        exit(69);
+                        closeConnection();
                         break;
                 }
             }
         }
-//        else if (_fdPortList._fds[i].revents & POLLOUT)
-//        {
-//            std::cout <<GRN"------ -- --- -- - POLLOUT - - ------ -- --- -"RESET<<std::endl;
-//            std::map<int, clientInfo>::iterator it;
-//            it = _clientInfo.find(poll.fd);
-//            Response response(poll.fd, it->second);
-//            it->second._isChunkedFile = response.sendShittyChunk();
-//
-//        }
     }
 }
 
@@ -293,9 +282,8 @@ void ConnectClients::connectClients(configParser& config)
     std::cout << GRN " . . Server ready to connect Clients" RESET << std::endl;
     while (69)
     {
-//            std::cout << YEL"while loop"RESET<<std::endl;
         // poll checks _fdList for read & write events at the same time
-        switch (poll(&_fdPortList._fds[0], _fdPortList._fds.size(), config.get_timeout()))
+        switch (poll(&_fdPortList._fds[0], CLIENTS, config.get_timeout()))
         {
             case -1:
                 exitWithError("Poll function returned Error [EXIT]");
@@ -306,7 +294,6 @@ void ConnectClients::connectClients(configParser& config)
             default:
                 clientConnected(config);
                 break;
-            std::cout << GRN"poll loop"RESET<<std::endl;
         }
     }
 }

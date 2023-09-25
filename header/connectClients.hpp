@@ -7,6 +7,8 @@
 
 #define MAX_USERS 10
 #define DATA_TO_READ (_fdPortList._fds[i].revents & POLLIN)
+#define INCOMING_DATA (_fdPortList._fds[_x].revents & (POLLIN | POLLOUT))
+#define CLIENTS (static_cast<int>(_fdPortList._fds.size()))
 
 
 struct fdList
@@ -19,6 +21,7 @@ struct fdList
 class ConnectClients
 {
     private:
+        int _x;
         fdList _fdPortList;
         socklen_t _clientAddressLen;
         struct addrinfo _clientAddress;
@@ -32,12 +35,13 @@ class ConnectClients
         void    clientConnected(configParser&);
         void    initFdList();
         void    connectClients(configParser&);
-        void    initNewConnection(int);
-        void    initClientInfo(int, configParser&);
-        int     receiveData(int, configParser&);
-        void    closeConnection(int*);
-        bool    newConnection(pollfd);
-        void    handleData(pollfd, configParser&, int);
+        void    initNewConnection();
+        void    initClientInfo(configParser&);
+        int     receiveData(configParser&);
+        void    closeConnection();
+        bool    newConnection();
+        void    handleData(configParser&);
+        void    setPollEvent(int);
 };
 
 #endif
