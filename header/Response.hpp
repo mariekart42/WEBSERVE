@@ -58,6 +58,8 @@ class Response
         std::map<int, std::ofstream> _fileStreams;
 		std::string	_cgiPath;
 		std::string	_query;
+		std::string	_fileEnding;
+		std::string	_body;
 
     public:
         Response(int, const clientInfo&);
@@ -74,12 +76,10 @@ class Response
         bool        saveRequestToFile(std::ofstream&, const std::string&);
         void        deleteFile();
 
-		bool	checkForPython(void);
-		bool	validCGIfile();
-		int		CGIpy();
+		bool	checkForP(void);
+		bool	validCGIextension();
+		int		callCGI();
 		bool	CGIoutput();
-		bool	CGIoutput(std::string filename);
-		bool	_f_ok;
 
         std::vector<uint8_t> readFile(const std::string &fileName);
 

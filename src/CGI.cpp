@@ -9,45 +9,64 @@
 
 #define TIMEOUT 300 // TODO PLEASE REDEFINE IT REEEeeee
 
-bool	Response::checkForPython(void){
-	int result = std::system("python3 --version > temp.txt");
+bool	Response::checkForP(void){
+
+	int result = false;
+
+	if (_fileEnding == ".py") {
+		result = std::system("python3 --version");
+	} else if (_fileEnding == ".pl") {
+		result = std::system("perl --version");
+	}
 
 	if (result == 0) {
-		std::cout << "Python is installed." << std::endl;
+		std::cout << "language is installed." << std::endl;
 		remove("temp.txt");
 		return true;
 	}
-	std::cout << "Python is not installed." << std::endl;
+
+	std::cout << "language is not installed." << std::endl;
 	remove("temp.txt");
 	return false;
 }
 
-bool	Response::validCGIfile()
-{//should be changed into ending check
-
-	std::string _cgi_allowed_file_ending = ".py"; //please change this into ending
-	std::cout << this->_info._url << std::endl;
-	size_t	pos = this->_info._url.find("?");
-	if (pos != std::string::npos){			//seperate query
-		this->_query = this->_info._url.substr(pos+1);
+bool Response::validCGIextension() {
+	std::vector<std::string> allowed_ending;
+	allowed_ending.push_back(".py");
+	allowed_ending.push_back(".pl");
+	std::string	temp;
+	size_t		dot;
+	size_t pos = _info._url.find("?");
+	if (pos != std::string::npos){
 		this->_cgiPath = this->_info._url.substr(0, pos);
+		this->_query = this->_info._url.substr(pos+1);
 	}
 	else
 		this->_cgiPath = this->_info._url;
-	pos = this->_cgiPath.find(_cgi_allowed_file_ending);
-	if (_cgiPath.size() < _cgi_allowed_file_ending.size())
+
+	// Find the last dot in the _cgiPath
+	std::cout << "Path is " << _cgiPath << std::endl;
+	std::cout << "Extension check" << std::endl;
+	dot = _cgiPath.find_last_of('.');
+	if (dot == std::string::npos)
 		return false;
-	std::string temp = this->_cgiPath.substr(_cgiPath.size()- (_cgi_allowed_file_ending.size()));
-	std::cout << "comparing " << temp << " with " << _cgi_allowed_file_ending << std::endl;
-	if (temp != _cgi_allowed_file_ending)
-		return false;
-	if (pos == std::string::npos)
-		return false;
-	_f_ok = true;
-	return true;
+	temp = _cgiPath.substr(dot);
+	for (size_t i = 0; i < allowed_ending.size(); i++)
+	{
+		std::cout << "We compare " << temp << " with " << allowed_ending[i] << std::endl;
+		if (_cgiPath.size() < allowed_ending[i].size())
+			continue;
+		if(temp == allowed_ending[i]){
+			_fileEnding = temp;
+			return true;
+		}
+	}
+	return false; // Return false if the file extension is not allowed or not found.
 }
 
-int Response::CGIpy() {
+
+
+int Response::callCGI(){
 	int pipefd[2];
 	int status;
 
@@ -55,27 +74,44 @@ int Response::CGIpy() {
 	struct timeval start;
 	struct timeval end;
 
-	if (checkForPython() == false)
+	if (checkForP() == false)
 		return -1;
 	_cgiPath = this->_info._configInfo._rootFolder + _cgiPath;
 	std::cout << "_cgiPath: >>" << _cgiPath<<"<<" << std::endl;
+
+	//file doesn't exist
 	if(access(this->_cgiPath.c_str(), F_OK ) != 0){
-		std::cout << "no cgi file" << std::endl;
 		return -2;
 	}
+
+	//no permission
 	if(access(this->_cgiPath.c_str(), X_OK ) != 0){
-		std::cout << "No permission" << std::endl;
 		return -4;
 	}
 
+	//not supported file ending
+	if(_fileEnding != ".py" && _fileEnding != ".pl")
+		return -5;
+	if (!_body.empty())
+		_query = _body;
 	_query = "QUERY_STRING=" + _query;
-	char *query = (char*)_query.c_str();
-	const char *pythonexec = "python3";
+	std::cout << "created query: "<< _query << std::endl;
+
+
+char *query = (char*)_query.c_str();
+const char *exec;
+
+	if (_fileEnding == ".py") {
+		exec = "python3";
+	} else {
+		exec = "perl";
+	}
 	char *env[] = {query, NULL};
-	char *python = (char*)pythonexec;
-	char* cmd = (char*)_cgiPath.c_str();
-	char* argv[] = {python, cmd, NULL};
-	int file = open("root/temp", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR); //TODO hardcoded. Do whatever for naming or keep it
+	char *p = (char*)exec;
+	char *cmd = (char*)_cgiPath.c_str();
+	char *argv[] = {p, cmd, NULL};
+
+	int file = open("root/tempCGI", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR); //TODO hardcoded. Do whatever for naming or keep it
 	gettimeofday(&start, NULL);
 
 
@@ -92,11 +128,19 @@ int Response::CGIpy() {
 	if (pid == 0) {
 		close(pipefd[0]);
 		dup2(file, STDOUT_FILENO);
-		if (execve("/usr/bin/python3", argv, env) == -1) {
-			std::cerr << "what is wrong" << std::endl;
-			close(file);
-			exit(1);
+		if (_fileEnding == ".py"){
+			if (execve("/usr/bin/python3", argv, env) == -1) {
+				std::cerr << "what is wrong" << std::endl;
+				close(file);
+				exit(1);
+			}
 		}
+		else
+			if (execve("/usr/bin/perl", argv, env) == -1) {
+				std::cerr << "what is wrong" << std::endl;
+				close(file);
+				exit(1);
+			}
 		close(file);
 	}
 	else {
@@ -108,7 +152,7 @@ int Response::CGIpy() {
 	int diff = (end.tv_sec - start.tv_sec) * 1000.0 + (end.tv_usec - start.tv_usec) / 1000.0;
 	std::cout << "Time out: " << diff  << "ms compared with " << TIMEOUT << "ms" << std::endl;
 	if (diff >= TIMEOUT ) {
-		remove("root/temp");//TODO here as well
+		remove("root/tempCGI");//TODO here as well
 		return -3;
 	}
 	return 0;
@@ -116,8 +160,7 @@ int Response::CGIpy() {
 
 
 bool Response::CGIoutput(){
-	std::cout << "CGI OUTPUT"<< std::endl;
-	std::ifstream inputFile("root/temp");
+	std::ifstream inputFile("root/tempCGI");
 	//error check if file is open
 	if (!inputFile.is_open())
 		return (mySend(500));
@@ -132,16 +175,16 @@ bool Response::CGIoutput(){
 	respooonse = header + ss.str() + "\r\n\r\n" + respooonse;
 
 	std::string convert(_info._postInfo._input.begin(), _info._postInfo._input.end());
-	std::cout << convert << std::endl;
-    Logging::log("send Data:\n" + _cgiPath, 200);
+	Logging::log("send Data:\n" + _cgiPath, 200);
 
 
-    ssize_t check = send(_info._clientSocket, (respooonse).c_str(), respooonse.size(), 0);
+	ssize_t check = send(_info._clientSocket, (respooonse).c_str(), respooonse.size(), 0);
 	std::cout << respooonse << std::endl;
-    if (check <=0)
-    {
-        Logging::log("Failed to send Data to Client", 500);
-        exit(69);
-    }
+	if (check <=0)
+	{
+		Logging::log("Failed to send Data to Client", 500);
+		exit(69);
+	}
+	remove("root/tempCGI");
 	return false;
 }

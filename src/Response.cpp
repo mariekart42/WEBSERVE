@@ -73,9 +73,9 @@ std::streampos Response::sendRequestedFile()
     if (_info._url == "/")
         return sendIndexPage(), 0;
 
-    if(validCGIfile() == true)
+    if(validCGIextension() == true)
 	{
-		int check = CGIpy();
+		int check = callCGI();
 		std::cout << "Return of CGI is " << check << std::endl;
 		switch (check)
 		{
@@ -320,10 +320,14 @@ bool Response::uploadFile(const std::string& contentType, const std::string& bou
         return saveRequestToFile(*outfile, boundary);
 	else if (contentType == "application/x-www-form-urlencoded")
 	{
+
 		std::cout << RED"FOUND application/x-www-form-urlencoded"RESET << std::endl;
-		validCGIfile();
+		validCGIextension();
 		{
-			int check = CGIpy();
+			std::string	convert(_info._postInfo._input.begin(), _info._postInfo._input.end());
+			size_t		body = convert.find("\r\n\r\n");
+			_body = convert.substr(body+4);
+			int check = callCGI();
 			std::cout << "Return of CGI is " << check << std::endl;
 			switch (check)
 			{
@@ -335,6 +339,8 @@ bool Response::uploadFile(const std::string& contentType, const std::string& bou
 				return (mySend(408));
 			case -4:
 				return (mySend(403));
+			case -5:
+				return (mySend(501));
 			default:
 				std::cout << "Default case has been called" << std::endl;
 				std::cout << "Here" << std::endl;
@@ -342,7 +348,7 @@ bool Response::uploadFile(const std::string& contentType, const std::string& bou
 			}
 		}
 	}
-    return false;
+	return false;
 }
 
 bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boundary)
