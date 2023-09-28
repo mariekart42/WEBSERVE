@@ -653,6 +653,8 @@ void configParser::setAutoindex(Server& server, const std::string& str, const st
 			it->second._autoindex = "true";
 		else if (getToken(str, 3) != "false" && getToken(str, 3) != "off" && getToken(str, 3) != "0")
 			throw std::invalid_argument("invalid directive value");
+		else
+			it->second._autoindex = "false";
 	}
 	else
 		std::cerr << BLUE << "Warning: directive \"" << getToken(str, 1) << "\" needs to be in locationblock, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
