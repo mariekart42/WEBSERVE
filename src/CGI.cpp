@@ -13,9 +13,9 @@ bool	Response::checkForP(void){
 
 	int result = false;
 
-	if (_fileEnding == ".py") {
+	if (_cgiInfo._fileEnding == ".py") {
 		result = std::system("python3 --version");
-	} else if (_fileEnding == ".pl") {
+	} else if (_cgiInfo._fileEnding == ".pl") {
 		result = std::system("perl --version");
 	}
 
@@ -38,26 +38,26 @@ bool Response::validCGIextension() {
 	size_t		dot;
 	size_t pos = _info._url.find("?");
 	if (pos != std::string::npos){
-		this->_cgiPath = this->_info._url.substr(0, pos);
-		this->_query = this->_info._url.substr(pos+1);
+		this->_cgiInfo._cgiPath = this->_info._url.substr(0, pos);
+		this->_cgiInfo._query = this->_info._url.substr(pos+1);
 	}
 	else
-		this->_cgiPath = this->_info._url;
+		this->_cgiInfo._cgiPath = this->_info._url;
 
 	// Find the last dot in the _cgiPath
-	std::cout << "Path is " << _cgiPath << std::endl;
+	std::cout << "Path is " << _cgiInfo._cgiPath << std::endl;
 	std::cout << "Extension check" << std::endl;
-	dot = _cgiPath.find_last_of('.');
+	dot = _cgiInfo._cgiPath.find_last_of('.');
 	if (dot == std::string::npos)
 		return false;
-	temp = _cgiPath.substr(dot);
+	temp = _cgiInfo._cgiPath.substr(dot);
 	for (size_t i = 0; i < allowed_ending.size(); i++)
 	{
 		std::cout << "We compare " << temp << " with " << allowed_ending[i] << std::endl;
-		if (_cgiPath.size() < allowed_ending[i].size())
+		if (_cgiInfo._cgiPath.size() < allowed_ending[i].size())
 			continue;
 		if(temp == allowed_ending[i]){
-			_fileEnding = temp;
+			_cgiInfo._fileEnding = temp;
 			return true;
 		}
 	}
@@ -76,39 +76,40 @@ int Response::callCGI(){
 
 	if (checkForP() == false)
 		return -1;
-	_cgiPath = this->_info._configInfo._rootFolder + _cgiPath;
-	std::cout << "_cgiPath: >>" << _cgiPath<<"<<" << std::endl;
+	_cgiInfo._cgiPath = this->_info._configInfo._rootFolder + _cgiInfo._cgiPath;
 
 	//file doesn't exist
-	if(access(this->_cgiPath.c_str(), F_OK ) != 0){
+	if(access(this->_cgiInfo._cgiPath.c_str(), F_OK ) != 0){
 		return -2;
 	}
 
 	//no permission
-	if(access(this->_cgiPath.c_str(), X_OK ) != 0){
+	if(access(this->_cgiInfo._cgiPath.c_str(), X_OK ) != 0){
 		return -4;
 	}
 
 	//not supported file ending
-	if(_fileEnding != ".py" && _fileEnding != ".pl")
+	if(_cgiInfo._fileEnding != ".py" && _cgiInfo._fileEnding != ".pl")
 		return -5;
-	if (!_body.empty())
-		_query = _body;
-	_query = "QUERY_STRING=" + _query;
-	std::cout << "created query: "<< _query << std::endl;
+
+	if (!_cgiInfo._body.empty())
+		_cgiInfo._query = _cgiInfo._body;
+
+	_cgiInfo._query = "QUERY_STRING=" + _cgiInfo._query;
+	std::cout << "created query: "<< _cgiInfo._query << std::endl;
 
 
-char *query = (char*)_query.c_str();
+char *query = (char*)_cgiInfo._query.c_str();
 const char *exec;
 
-	if (_fileEnding == ".py") {
+	if (_cgiInfo._fileEnding == ".py") {
 		exec = "python3";
 	} else {
 		exec = "perl";
 	}
 	char *env[] = {query, NULL};
 	char *p = (char*)exec;
-	char *cmd = (char*)_cgiPath.c_str();
+	char *cmd = (char*)_cgiInfo._cgiPath.c_str();
 	char *argv[] = {p, cmd, NULL};
 
 	int file = open("root/tempCGI", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR); //TODO hardcoded. Do whatever for naming or keep it
@@ -128,7 +129,7 @@ const char *exec;
 	if (pid == 0) {
 		close(pipefd[0]);
 		dup2(file, STDOUT_FILENO);
-		if (_fileEnding == ".py"){
+		if (_cgiInfo._fileEnding == ".py"){
 			if (execve("/usr/bin/python3", argv, env) == -1) {
 				std::cerr << "what is wrong" << std::endl;
 				close(file);
@@ -175,11 +176,10 @@ bool Response::CGIoutput(){
 	respooonse = header + ss.str() + "\r\n\r\n" + respooonse;
 
 	std::string convert(_info._postInfo._input.begin(), _info._postInfo._input.end());
-	Logging::log("send Data:\n" + _cgiPath, 200);
+	Logging::log("send Data:\n" + _cgiInfo._cgiPath, 200);
 
 
 	ssize_t check = send(_info._clientSocket, (respooonse).c_str(), respooonse.size(), 0);
-	std::cout << respooonse << std::endl;
 	if (check <=0)
 	{
 		Logging::log("Failed to send Data to Client", 500);

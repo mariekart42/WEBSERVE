@@ -48,6 +48,13 @@ struct clientInfo
     bool _isChunkedFile;
 };
 
+struct cgiInfo{
+	std::string _cgiPath;
+	std::string _query;
+	std::string _fileEnding;
+	std::string _body;
+};
+
 class Response
 {
     private:
@@ -56,10 +63,8 @@ class Response
         std::string _header;
         std::vector<uint8_t> _file;
         std::map<int, std::ofstream> _fileStreams;
-		std::string	_cgiPath;
-		std::string	_query;
-		std::string	_fileEnding;
-		std::string	_body;
+		cgiInfo _cgiInfo;
+
 
     public:
         Response(int, const clientInfo&);

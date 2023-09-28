@@ -16,3 +16,4 @@ int main(int ac, char **av)
 //        std::cout << conf.getErrorMsg() << std::endl;
     return 0;
 }
+ 
