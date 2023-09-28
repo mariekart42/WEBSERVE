@@ -6,6 +6,7 @@
 #include <sstream>
 #include <sys/types.h>
 #include <sys/time.h>
+#include <sys/wait.h>
 
 // #define TIMEOUT_CGI 30000 // TODO PLEASE REDEFINE IT REEEeeee
 

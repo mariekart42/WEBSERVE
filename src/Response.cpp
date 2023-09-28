@@ -332,7 +332,7 @@ bool Response::uploadFile(const std::string& contentType, const std::string& bou
         return saveRequestToFile(*outfile, boundary);
 	else if (contentType == "application/x-www-form-urlencoded")
 	{
-		std::cout << RED"FOUND application/x-www-form-urlencoded"RESET << std::endl;
+		std::cout << RED << "FOUND application/x-www-form-urlencoded" << RESET << std::endl;
 		validCGIextension();
 		{
 			std::string	convert(_info._postInfo._input.begin(), _info._postInfo._input.end());

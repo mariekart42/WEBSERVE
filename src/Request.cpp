@@ -162,7 +162,7 @@ std::string Request::getContentType()
         {
             std::string specialType = "application/x-www-form-urlencoded";
             #ifdef DEBUG
-                std::cout << GRN"DEBUG: Content-Type: " << specialType << ""RESET<< std::endl;
+                std::cout << GRN << "DEBUG: Content-Type: " << specialType << "" << RESET << std::endl;
             #endif
             return specialType;
 		}
