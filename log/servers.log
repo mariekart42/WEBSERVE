@@ -7,45 +7,24 @@ GLOBAL SETTINGS
 	max_events = 100
 	backlog = 10
 
-4 Servers with 4 unique ports:
+3 Servers with 3 unique ports:
 
 
 SERVER 1 [28]
-	listen = 2020
-	host = 0.0.0.0
-	body_size = 7777
-	error_page 201 = root/PATH_FILE_SAVED.html
-	error_page 204 = root/PATH_FILE_DELETED.html
-	error_page 400 = error/400.html
-	error_page 403 = error/403.html
-	error_page 404 = error/404.html
-	error_page 405 = error/405.html
-	error_page 500 = error/500.html
-	error_page 2001 = root/index.html
-	</>
-		methods = GET POST DELETE 
-	<\/>
-	<scripts>
-		methods = GET POST DELETE 
-	<\scripts>
-	<upload>
-		methods = GET POST DELETE 
-	<\upload>
-
-SERVER 2 [43]
 	listen = 3030
 	host = 0.0.0.0
-	body_size = 7777
+	body_size = 20000
 	error_page 201 = root/PATH_FILE_SAVED.html
 	error_page 204 = root/PATH_FILE_DELETED.html
 	error_page 400 = error/400.html
 	error_page 403 = error/403.html
 	error_page 404 = error/404.html
 	error_page 405 = error/405.html
+	error_page 413 = error/413.html
 	error_page 500 = error/500.html
 	error_page 2001 = root/index.html
 
-SERVER 3 [47]
+SERVER 2 [42]
 	listen = 4040
 	host = 0.0.0.0
 	body_size = 7777
@@ -55,10 +34,11 @@ SERVER 3 [47]
 	error_page 403 = error/403.html
 	error_page 404 = error/404.html
 	error_page 405 = error/405.html
+	error_page 413 = error/413.html
 	error_page 500 = error/500.html
 	error_page 2001 = root/index.html
 
-SERVER 4 [51]
+SERVER 3 [46]
 	listen = 5050
 	host = 0.0.0.0
 	body_size = 7777
@@ -68,5 +48,6 @@ SERVER 4 [51]
 	error_page 403 = error/403.html
 	error_page 404 = error/404.html
 	error_page 405 = error/405.html
+	error_page 413 = error/413.html
 	error_page 500 = error/500.html
 	error_page 2001 = root/index.html

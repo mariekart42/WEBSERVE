@@ -59,7 +59,7 @@ std::string generateList(const std::string& rootFolder, const std::string& curre
     if (dir)
     {
         struct dirent* entry;
-        while ((entry = readdir(dir)) != NULL) {
+        while ((entry = readdir(dir)) != 0) {
             std::string itemName = entry->d_name;
 
             if (itemName != "." && itemName != "..") {

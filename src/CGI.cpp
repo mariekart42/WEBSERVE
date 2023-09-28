@@ -7,7 +7,7 @@
 #include <sys/types.h>
 #include <sys/time.h>
 
-#define TIMEOUT 300 // TODO PLEASE REDEFINE IT REEEeeee
+// #define TIMEOUT_CGI 30000 // TODO PLEASE REDEFINE IT REEEeeee
 
 bool	Response::checkForP(void){
 
@@ -69,6 +69,7 @@ bool Response::validCGIextension() {
 int Response::callCGI(){
 	int pipefd[2];
 	int status;
+	int result;
 
 
 	struct timeval start;
@@ -107,18 +108,18 @@ const char *exec;
 	} else {
 		exec = "perl";
 	}
-	char *env[] = {query, NULL};
+	char *env[] = {query, 0};
 	char *p = (char*)exec;
 	char *cmd = (char*)_cgiInfo._cgiPath.c_str();
-	char *argv[] = {p, cmd, NULL};
+	char *argv[] = {p, cmd, 0};
 
 	int file = open("root/tempCGI", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR); //TODO hardcoded. Do whatever for naming or keep it
-	gettimeofday(&start, NULL);
+	gettimeofday(&start, 0);
 
 
 	if (pipe(pipefd) == -1) {
 		std::cerr << "Something went wrong creating the pipe!" << std::endl;
-		exit(1);
+		exit(1); // TODO VF implement Exception
 	}
 
 	int pid = fork();
@@ -145,14 +146,18 @@ const char *exec;
 		close(file);
 	}
 	else {
+		// usleep(TIMEOUT * 1000);
 		close(pipefd[1]);
-		waitpid(pid, &status, 0);
+		result = waitpid(pid, &status, 0);
+
+		if (result == 0)
+			std::cout << RED << "CHILD ALIVE" << RESET << std::endl;
 	}
-	gettimeofday(&end, NULL);
+	gettimeofday(&end, 0);
 
 	int diff = (end.tv_sec - start.tv_sec) * 1000.0 + (end.tv_usec - start.tv_usec) / 1000.0;
 	std::cout << "Time out: " << diff  << "ms compared with " << TIMEOUT << "ms" << std::endl;
-	if (diff >= TIMEOUT ) {
+	if (TIMEOUT > 0 && diff >= TIMEOUT ) {
 		remove("root/tempCGI");//TODO here as well
 		return -3;
 	}

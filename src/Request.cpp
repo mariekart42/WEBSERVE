@@ -60,14 +60,14 @@ bool Request::fileExists(const std::string& checkFilename, const std::string& up
     const std::string& filename = checkFilename;
 
     DIR* dir = opendir(uploadFolder.c_str());
-    if (dir == NULL)
+    if (dir == 0)
     {
         Logging::log("Failed to open directory", 500);
         return false;
     }
 
     struct dirent* entry;
-    while ((entry = readdir(dir)) != NULL)
+    while ((entry = readdir(dir)) != 0)
     {
         if (strcmp(entry->d_name, filename.c_str()) == 0)
         {
