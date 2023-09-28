@@ -188,8 +188,10 @@ bool Response::CGIoutput(){
 	if (check <=0)
 	{
 		Logging::log("Failed to send Data to Client", 500);
+		inputFile.close();
 		exit(69);
 	}
 	remove("root/tempCGI");
+	inputFile.close();
 	return false;
 }

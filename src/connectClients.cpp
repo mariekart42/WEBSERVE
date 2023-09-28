@@ -231,6 +231,10 @@ void ConnectClients::handleData(configParser& config)
 
     std::map<int, clientInfo>::iterator it;
     it = _clientInfo.find(_fdPortList._fds[_x].fd);
+
+    if (it == _clientInfo.end())
+        return ;
+
     Response response(_fdPortList._fds[_x].fd, it->second);
 
     switch (it->second._myHTTPMethod)
@@ -288,6 +292,7 @@ void ConnectClients::connectClients(configParser& config)
     initFdList();
 
     std::cout << GRN " . . Server ready to connect Clients" RESET << std::endl;
+    int counter = 0;
     while (69)
     {
         // poll checks _fdList for read & write events at the same time
@@ -303,5 +308,8 @@ void ConnectClients::connectClients(configParser& config)
                 clientConnected(config);
                 break;
         }
+        counter++;
+        if (counter == 1000)
+            break;
     }
 }

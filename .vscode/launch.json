@@ -5,17 +5,9 @@
       "type": "lldb",
       "request": "launch",
       "name": "Debug",
-      "program": "/Users/dnguyen/WEBSERVE/webshit",
+      "program": "/Users/vfuhlenb/42/42-webserv-marieee/webshit",
       "args": [],
-      "cwd": "${workspaceFolder}"
-    },
-    {
-      "name": "C/C++ Runner: Debug Session",
-      "type": "lldb",
-      "request": "launch",
-      "args": [],
-      "cwd": "/Users/dnguyen/WEBSERVE",
-      "program": "/Users/dnguyen/WEBSERVE/build/Debug/outDebug"
+      "cwd": "/Users/vfuhlenb/42/42-webserv-marieee/"
     }
   ]
 }
