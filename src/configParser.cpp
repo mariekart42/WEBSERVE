@@ -91,7 +91,6 @@ bool configParser::validConfig(int argc, char **argv)
 						_context = LOCATION;
 						route_end = route;
 						route_end.insert(0, "<\\").append(">");
-						// std::cout << "ROUTE " << route << " ROUTE_END " << route_end << std::endl; // DEBUG
 					}
 					else if (line_first_token == route_end)
 						_context = SERVER;
@@ -127,10 +126,14 @@ bool configParser::validConfig(int argc, char **argv)
 		return false;
 	}
 	create_port_vector();
-	std::cout << BOLDGREEN << "\nInfo: webserv running using configuration \"" << _file_path << "\"" << RESET_COLOR << std::endl;
-	printGlobalSettings();
-	printServerDetails();
-	printLog();
+	#ifdef INFO
+		std::cout << BOLDGREEN << "\nInfo: webserv running using configuration \"" << _file_path << "\"" << RESET_COLOR << std::endl;
+		printGlobalSettings();
+		printServerDetails();
+	#endif
+	#ifdef LOG
+		printLog();
+	#endif
 	return true;
 }
 
@@ -175,8 +178,10 @@ const std::string	configParser::getUrl() {
 	if (HasMatch && !return_route(server, current_route)->second._redirect.empty())
 		IsRedirect = true;
 
+	#ifdef DEBUG
 	if (HasMatch && IsRedirect)
 		std::cout << BLUE << "ROUTE PATH MATCHED " << *route << "  with URL " << _request_data._url << RESET <<  std::endl; // DEBUG
+	#endif
 
 	// return Url and make sure it starts with an "/"
 	if (IsRedirect)
@@ -598,7 +603,9 @@ void configParser::setErrorPage(Server& server, const std::string& str)
 		std::string new_path = ROOT;
 		path = remove_leading_character(path, '/');
 		new_path.append(path);
-		std::cout << "Custom Error: " << new_path << std::endl; 
+		#ifdef DEBUG
+			std::cout << "Custom Error: " << new_path << std::endl;
+		#endif
 		check_file(new_path);
 		ret.first->second = new_path;
 	}
@@ -826,7 +833,9 @@ std::string configParser::handle_redirection(const std::string route, Server& se
 	redirected_url = remove_leading_character(redirected_url, '/');
 	redirected_url = prepend_forward_slash(redirected_url);
 	redirected_url.insert(0, return_route(server, route)->second._redirect);
-	std::cout << RED << "REDIRECTED URL " << redirected_url << RESET << std::endl;
+	#ifdef DEBUG
+		std::cout << RED << "REDIRECTED URL " << redirected_url << RESET << std::endl;
+	#endif
 	return redirected_url;
 }
 

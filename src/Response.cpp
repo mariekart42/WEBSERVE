@@ -13,8 +13,9 @@ void Response::deleteFile()
     #ifdef INFO
         std::cout << RED " . . . Received Data  --  DELETE  " <<_info._url<< "" << RESET << std::endl;
     #endif
-    Logging::log("Received Data  --  DELETE  " + _info._url, 200);
-
+    #ifdef LOG
+        Logging::log("Received Data  --  DELETE  " + _info._url, 200);
+    #endif
     if (!_info._configInfo._deleteAllowed)
         return mySend(METHOD_NOT_ALLOWED), (void)0;
 
@@ -63,10 +64,12 @@ void Response::sendIndexPage()
 
 std::streampos Response::sendRequestedFile()
 {
-#ifdef INFO
-    std::cout << YEL " . . . Received Data  --  GET  " << _info._url << "" << RESET << std::endl;
-#endif
-    Logging::log("Received Data  --  GET  " + _info._url, 200);
+    #ifdef INFO
+        std::cout << YEL " . . . Received Data  --  GET  " << _info._url << "" << RESET << std::endl;
+    #endif
+    #ifdef LOG
+        Logging::log("Received Data  --  GET  " + _info._url, 200);
+    #endif
 
     if (!_info._configInfo._getAllowed)
         return mySend(METHOD_NOT_ALLOWED);
@@ -113,17 +116,21 @@ std::streampos Response::sendRequestedFile()
             }
         }
         else
-            return Logging::log("ERROR: unexpected Error in sendRequestedFile()", 500), mySend(500);
+        {
+            #ifdef LOG
+                Logging::log("ERROR: unexpected Error in sendRequestedFile()", 500);
+            #endif
+            return mySend(500);
+        }
     }
     else
         return mySend(NOT_FOUND);
 }
 
-
 std::string Response::getContentType()
 {
-   if (_info._url.find('.') != std::string::npos)
-   {
+    if (_info._url.find('.') != std::string::npos)
+    {
        std::string fileExtension;
        size_t startPos = _info._url.find_last_of('.');
        size_t endPos = _info._url.size();
@@ -136,9 +143,11 @@ std::string Response::getContentType()
        if (contentType == FAILURE)
            mySend(404);
        return contentType;
-   }
-   Logging::log("is File but can't detect file extension", 500);
-   return FAILURE;
+    }
+    #ifdef LOG
+        Logging::log("is File but can't detect file extension", 500);
+    #endif
+    return FAILURE;
 }
 
 std::vector<uint8_t> Response::readFile(const std::string &fileName)
@@ -153,7 +162,9 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
 
     if (!file)
     {
-        Logging::log("Failed to open file: " + fileName, 500);
+        #ifdef LOG
+            Logging::log("Failed to open file: " + fileName, 500);
+        #endif
         return static_cast<std::vector<uint8_t> >(0);
     }
 
@@ -173,8 +184,9 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
                              "Content-Type: "+_info._fileContentType+"\r\n"
                              "Content-Length: " + myItoS(content.size()) + "\r\n\r\n";
 
-
-        Logging::log("send Data:\n" + header, 200);
+        #ifdef LOG
+            Logging::log("send Data:\n" + header, 200);
+        #endif
 
         char buffer[SEND_CHUNK_SIZE];
         file.seekg(0);
@@ -186,7 +198,9 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
         int check = send(_info._clientSocket, response.data(), len, 0);
         if (check <=0)
         {
-            Logging::log("Failed to send Data to Client", 500);
+            #ifdef LOG
+                Logging::log("Failed to send Data to Client", 500);
+            #endif
             exit(69);
         }
 
@@ -243,7 +257,9 @@ std::streampos Response::mySend(int statusCode)
         return _info._filePos;
 
     initHeader();
-    Logging::log("send Data:\n" + _header, 200);
+    #ifdef LOG
+        Logging::log("send Data:\n" + _header, 200);
+    #endif
 
     std::string header = _header;
     std::string response = header + std::string(_file.begin(), _file.end());
@@ -253,7 +269,9 @@ std::streampos Response::mySend(int statusCode)
     int check = send(_info._clientSocket, response_data, len, 0);
     if (check <=0)
     {
-        Logging::log("Failed to send Data to Client", 500);
+        #ifdef LOG
+            Logging::log("Failed to send Data to Client", 500);
+        #endif
         exit(69);
     }
 
@@ -269,7 +287,9 @@ void Response::sendShittyChunk(const std::string& fileName)
 
     if (!file)
     {
-        Logging::log("Failed to open file: " + fileName, 500);
+        #ifdef LOG
+            Logging::log("Failed to open file: " + fileName, 500);
+        #endif
         _info._filePos = 0;
         return ;
     }
@@ -282,7 +302,9 @@ void Response::sendShittyChunk(const std::string& fileName)
 
     if (send(_info._clientSocket, buffer, file.gcount(), 0) == -1)
     {
-        Logging::log("Failed to send Data to Client", 500);
+        #ifdef LOG
+            Logging::log("Failed to send Data to Client", 500);
+        #endif
         exit(69);
     }
 
@@ -359,7 +381,9 @@ bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boun
     #ifdef INFO
         std::cout << BLU " . . . Received Data  --  POST  " <<_info._url<< "" << RESET << std::endl;
     #endif
-    Logging::log("Received Data  --  POST  " + _info._url, 200);
+    #ifdef LOG
+        Logging::log("Received Data  --  POST  " + _info._url, 200);
+    #endif
 
     std::string convert(_info._postInfo._input.begin(), _info._postInfo._input.end());
     std::string startBoundary = "--"+boundary+"\r\n";

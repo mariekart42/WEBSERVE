@@ -180,13 +180,16 @@ bool Response::CGIoutput(){
 	respooonse = header + myItoS(respooonse.size()) + "\r\n\r\n" + respooonse;
 
 	std::string convert(_info._postInfo._input.begin(), _info._postInfo._input.end());
-	Logging::log("send Data:\n" + _cgiInfo._cgiPath, 200);
-
+	#ifdef LOG
+		Logging::log("send Data:\n" + _cgiInfo._cgiPath, 200);
+   	#endif
 
 	ssize_t check = send(_info._clientSocket, (respooonse).c_str(), respooonse.size(), 0);
 	if (check <=0)
 	{
-		Logging::log("Failed to send Data to Client", 500);
+		#ifdef LOG
+			Logging::log("Failed to send Data to Client", 500);
+   		#endif
 		inputFile.close();
 		exit(69);
 	}

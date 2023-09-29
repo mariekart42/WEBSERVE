@@ -3,13 +3,24 @@
 Logging::Logging(){}
 Logging::~Logging(){}
 
+// static void logg(const std::string &message)
+// {
+// 	std::cout << message << std::endl;
+// }
+
+// static void exitWithError(const std::string &msg)
+// {
+// 	logg(RED"ERROR: " + msg + RESET);
+// 	exit(1);
+// }
 
 void Logging::log(const std::string& message, int statusCode)
 {
     std::ofstream logFile(LOG_PATH, std::ios::app);
     if (!logFile)
     {
-        exitWithError("Unable to open Logfile [EXIT]");
+        std::cout << RED << "Unable to open Logfile" << RESET << std::endl;
+        // exitWithError("Unable to open Logfile [EXIT]");
         return;
     }
 //    logFile << " ======= ";

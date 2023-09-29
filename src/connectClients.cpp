@@ -193,8 +193,9 @@ void ConnectClients::closeConnection()
         _fdPortList._fds.erase(_fdPortList._fds.begin() + _x);
         return ;
     }
-
-    Logging::log("Done receiving Data", 200);
+    #ifdef LOG
+        Logging::log("Done receiving Data", 200);
+    #endif
     close(_fdPortList._fds[_x].fd);
     _fdPortList._fds.erase(_fdPortList._fds.begin() + _x);
     _fdPortList._ports.erase(_fdPortList._ports.begin() + _x);
@@ -252,7 +253,9 @@ void ConnectClients::handleData(configParser& config)
             response.deleteFile();
             break;
         default:
-            Logging::log("cant detect HTTPMethod", 500);
+            #ifdef LOG
+                Logging::log("cant detect HTTPMethod", 500);
+            #endif
             break;
     }
 }
@@ -276,7 +279,9 @@ void ConnectClients::clientConnected(configParser& config)
                         closeConnection();
                         break;
                     default:
-                        Logging::log("Unable to read Data from connected Client", 500);
+                        #ifdef LOG
+                            Logging::log("Unable to read Data from connected Client", 500);
+                        #endif
                         closeConnection();
                         break;
                 }
@@ -290,9 +295,12 @@ void ConnectClients::clientConnected(configParser& config)
 void ConnectClients::connectClients(configParser& config)
 {
     initFdList();
-
+    #ifdef INFO
     std::cout << GRN " . . Server ready to connect Clients" RESET << std::endl;
-    int counter = 0;
+    #endif
+    #ifdef DEBUG_LEAKS
+        int counter = 0;
+    #endif
     while (69)
     {
         // poll checks _fdList for read & write events at the same time
@@ -302,14 +310,18 @@ void ConnectClients::connectClients(configParser& config)
                 exitWithError("Poll function returned Error [EXIT]");
                 break;
             case 0:
-                Logging::log("waiting for client to connect", 200);
+                #ifdef LOG
+                    Logging::log("waiting for client to connect", 200);
+                #endif
                 break;
             default:
                 clientConnected(config);
                 break;
         }
-        counter++;
-        if (counter == 1000)
-            break;
+        #ifdef DEBUG_LEAKS
+            counter++;
+            if (counter == 1000)
+                break;
+        #endif
     }
 }

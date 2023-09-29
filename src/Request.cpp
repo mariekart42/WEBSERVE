@@ -62,7 +62,9 @@ bool Request::fileExists(const std::string& checkFilename, const std::string& up
     DIR* dir = opendir(uploadFolder.c_str());
     if (dir == 0)
     {
-        Logging::log("Failed to open directory", 500);
+        #ifdef LOG
+            Logging::log("Failed to open directory", 500);
+        #endif
         return false;
     }
 

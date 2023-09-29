@@ -34,7 +34,9 @@ bool endsWith(const std::string& str, const std::string& end)
 //
 //    if (!file)
 //    {
-//        Logging::log("Failed to open file: " + fileName, 500);
+//        #ifdef LOG
+//          Logging::log("Failed to open file: " + fileName, 500);
+//        #endif
 //        return static_cast<std::vector<uint8_t> >(0);
 //    }
 //    // Read the file content into a vector

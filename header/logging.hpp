@@ -1,9 +1,11 @@
 #ifndef LOGGING_HPP
 #define LOGGING_HPP
 
+#include <iostream>
+#include <fstream>
+#include "colors.h"
 
-
-#include "utils.h"
+// #include "utils.h"
 
 #define LOG_PATH "log/log.log"
 //#define INFO_LOG_PATH ""
