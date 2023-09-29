@@ -46,15 +46,19 @@ bool Response::validCGIextension() {
 		this->_cgiInfo._cgiPath = this->_info._url;
 
 	// Find the last dot in the _cgiPath
-	std::cout << "Path is " << _cgiInfo._cgiPath << std::endl;
-	std::cout << "Extension check" << std::endl;
+	#ifdef DEBUG
+		std::cout << "Path is " << _cgiInfo._cgiPath << std::endl;
+		std::cout << "Extension check" << std::endl;
+	#endif
 	dot = _cgiInfo._cgiPath.find_last_of('.');
 	if (dot == std::string::npos)
 		return false;
 	temp = _cgiInfo._cgiPath.substr(dot);
 	for (size_t i = 0; i < allowed_ending.size(); i++)
 	{
-		std::cout << "We compare " << temp << " with " << allowed_ending[i] << std::endl;
+		#ifdef DEBUG
+			std::cout << "We compare " << temp << " with " << allowed_ending[i] << std::endl;
+		#endif
 		if (_cgiInfo._cgiPath.size() < allowed_ending[i].size())
 			continue;
 		if(temp == allowed_ending[i]){

@@ -94,7 +94,9 @@ std::streampos Response::sendRequestedFile()
 			return (CGIoutput());
 		}
 	}
-    std::cout <<"ALIVE 1"<<std::endl;
+    #ifdef DEBUG
+        std::cout <<"ALIVE 1"<<std::endl;
+    #endif
 
     struct stat s = {};
     if IS_FOLDER_OR_FILE

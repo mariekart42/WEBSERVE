@@ -295,9 +295,7 @@ void ConnectClients::clientConnected(configParser& config)
 void ConnectClients::connectClients(configParser& config)
 {
     initFdList();
-    #ifdef INFO
     std::cout << GRN " . . Server ready to connect Clients" RESET << std::endl;
-    #endif
     #ifdef DEBUG_LEAKS
         int counter = 0;
     #endif
