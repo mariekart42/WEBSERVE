@@ -44,7 +44,8 @@ void ConnectClients::initNewConnection()
     {
         // Find an available slot or expand the vector
         bool foundSlot = false;
-        for (int j = 0; j < CLIENTS; j++)
+        int fdListSize = _fdPortList._fds.size();
+        for (int j = 0; j < fdListSize; j++)
         {
             if (_fdPortList._fds[j].fd == -1)
             {
@@ -187,7 +188,8 @@ void ConnectClients::closeConnection()
     int len = _fdPortList._ports.size();
     if (_x >= len)
     {
-        if (_x >= CLIENTS)
+        int fdListLen = _fdPortList._fds.size();
+        if (_x >= fdListLen)
             return;
         close(_fdPortList._fds[_x].fd);
         _fdPortList._fds.erase(_fdPortList._fds.begin() + _x);
@@ -223,7 +225,10 @@ void ConnectClients::setPollEvent(int filePos)
     if (filePos > 0)
         _fdPortList._fds[_x].events = POLLOUT;
     else
+    {
         _fdPortList._fds[_x].events = 0;
+        closeConnection();
+    }
 }
 
 void ConnectClients::handleData(configParser& config)
@@ -262,7 +267,8 @@ void ConnectClients::handleData(configParser& config)
 
 void ConnectClients::clientConnected(configParser& config)
 {
-    for (_x = 0; _x < CLIENTS; _x++)
+    int fdListLen = _fdPortList._fds.size();
+    for (_x = 0; _x < fdListLen; _x++)
     {
         if (INCOMING_DATA)
         {
@@ -302,7 +308,7 @@ void ConnectClients::connectClients(configParser& config)
     while (69)
     {
         // poll checks _fdList for read & write events at the same time
-        switch (poll(&_fdPortList._fds[0], CLIENTS, config.get_timeout()))
+        switch (poll(&_fdPortList._fds[0], _fdPortList._fds.size(), config.get_timeout()))
         {
             case -1:
                 exitWithError("Poll function returned Error [EXIT]");

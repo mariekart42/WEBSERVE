@@ -5,7 +5,7 @@
 #include "configParser.hpp"
 
 
-#define MAX_USERS 10
+#define MAX_USERS 100
 #define DATA_TO_READ (_fdPortList._fds[i].revents & POLLIN)
 #define INCOMING_DATA (_fdPortList._fds[_x].revents & (POLLIN | POLLOUT))
 #define CLIENTS (static_cast<int>(_fdPortList._fds.size()))
