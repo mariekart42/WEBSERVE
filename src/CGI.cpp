@@ -106,7 +106,7 @@ int Response::callCGI(){
 
 
 char *query = (char*)_cgiInfo._query.c_str();
-const char *exec;
+ std::string exec;
 
 	if (_cgiInfo._fileEnding == ".py") {
 		exec = "python3";
@@ -114,9 +114,9 @@ const char *exec;
 		exec = "perl";
 	}
 	char *env[] = {query, 0};
-	char *p = (char*)exec;
+//	char *p = (char*)exec;
 	char *cmd = (char*)_cgiInfo._cgiPath.c_str();
-	char *argv[] = {p, cmd, 0};
+	char *argv[] = {const_cast<char *>(exec.c_str()), cmd, 0};
 
 	int file = open("root/tempCGI", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR); //TODO hardcoded. Do whatever for naming or keep it
 	gettimeofday(&start, 0);
@@ -135,7 +135,8 @@ const char *exec;
 	if (pid == 0) {
 		close(pipefd[0]);
 		dup2(file, STDOUT_FILENO);
-		if (_cgiInfo._fileEnding == ".py"){
+		if (_cgiInfo._fileEnding == ".py")
+        {
 			if (execve("/usr/bin/python3", argv, env) == -1) {
 				std::cerr << "what is wrong" << std::endl;
 				close(file);
@@ -150,14 +151,17 @@ const char *exec;
 			}
 		close(file);
 	}
-	else {
+	else
+    {
 		// usleep(TIMEOUT * 1000);
 		close(pipefd[1]);
 		result = waitpid(pid, &status, 0);
 
 		if (result == 0)
 			std::cout << RED << "CHILD ALIVE" << RESET << std::endl;
+
 	}
+    close(file);
 	gettimeofday(&end, 0);
 
 	int diff = (end.tv_sec - start.tv_sec) * 1000.0 + (end.tv_usec - start.tv_usec) / 1000.0;

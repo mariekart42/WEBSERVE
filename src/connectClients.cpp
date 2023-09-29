@@ -253,6 +253,11 @@ void ConnectClients::handleData(configParser& config)
             it->second._isMultiPart = response.uploadFile(it->second._contentType,
                                                           it->second._postInfo._boundary,
                                                           it->second._postInfo._outfile);
+            if (!it->second._isMultiPart)
+            {
+                it->second._postInfo._outfile->close();
+                delete it->second._postInfo._outfile;
+            }
             break;
         case M_DELETE:
             response.deleteFile();
