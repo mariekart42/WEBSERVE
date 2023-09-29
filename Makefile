@@ -1,4 +1,4 @@
-NAME = webshit
+NAME = webserv
 CXX = c++
 CXXFLAGS = -g -std=c++98 -Wall -Werror -Wextra #-fsanitize=address
 HEADER_DIR = ./header
