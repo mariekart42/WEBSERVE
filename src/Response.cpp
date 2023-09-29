@@ -167,13 +167,11 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
     {
 
         _info._fileContentType = getContentType();
-        std::stringstream ss;
-        ss << content.size();
-        std::string s_content_size = ss.str();
+
         std::string header = "HTTP/1.1 200 " +
                              ErrorResponse::getErrorMessage(200) + "\r\nConnection: keep-alive\r\n"
                              "Content-Type: "+_info._fileContentType+"\r\n"
-                             "Content-Length: " + s_content_size + "\r\n\r\n";
+                             "Content-Length: " + myItoS(content.size()) + "\r\n\r\n";
 
 
         Logging::log("send Data:\n" + header, 200);
@@ -305,16 +303,10 @@ void Response::sendShittyChunk(const std::string& fileName)
 
 void Response::initHeader()
 {
-    std::stringstream ss;
-    ss << _localStatusCode;
-    std::string s_localStatusCode = ss.str();
-    std::stringstream ss2;
-    ss2 << _file.size();
-    std::string s_file_size = ss2.str();
-    _header = "HTTP/1.1 " + s_localStatusCode + " " +
+    _header = "HTTP/1.1 " + myItoS(_localStatusCode) + " " +
             ErrorResponse::getErrorMessage(_localStatusCode) + "\r\nConnection: close\r\n"
                                                          "Content-Type: "+_info._fileContentType+"\r\n"
-                                                                                           "Content-Length: " + s_file_size + "\r\n\r\n";
+                                                                                           "Content-Length: " + myItoS(_file.size()) + "\r\n\r\n";
 }
 
 

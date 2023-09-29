@@ -172,14 +172,12 @@ bool Response::CGIoutput(){
 	if (!inputFile.is_open())
 		return (mySend(500));
 	std::string header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: "; // little clean up here needed
-	std::stringstream ss;
 	std::string line;
 	std::string respooonse;
 
 	while (std::getline(inputFile, line))
 		respooonse += line + "\n";
-	ss << respooonse.size();
-	respooonse = header + ss.str() + "\r\n\r\n" + respooonse;
+	respooonse = header + myItoS(respooonse.size()) + "\r\n\r\n" + respooonse;
 
 	std::string convert(_info._postInfo._input.begin(), _info._postInfo._input.end());
 	Logging::log("send Data:\n" + _cgiInfo._cgiPath, 200);

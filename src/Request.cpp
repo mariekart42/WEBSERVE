@@ -91,12 +91,10 @@ std::string Request::getNewFilename(const std::string& checkFilename, const std:
     std::string fileExtension = checkFilename.substr(lastDotPos, checkFilename.size());
 
     int fileCount = 1;
-    std::stringstream ss;
-    ss << fileCount;
-    std::string s_fileCount = ss.str();
-    while (fileExists(filename + " (" + s_fileCount + ")" + fileExtension, uploadFolder))
+
+    while (fileExists(filename + " (" + myItoS(fileCount) + ")" + fileExtension, uploadFolder))
         fileCount++;
-    return (filename + " (" + s_fileCount + ")"+ fileExtension);
+    return (filename + " (" + myItoS(fileCount) + ")"+ fileExtension);
 }
 
 
