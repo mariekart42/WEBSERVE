@@ -474,7 +474,7 @@ void configParser::setGlobal()
 		else
 		{
 			_settings.timeout = string_to_int(getToken(_line, 3));
-			if (_settings.timeout >= 0 && _settings.timeout < 60)
+			if (_settings.timeout >= 1 && _settings.timeout < 60)
 				std::cerr << BLUE << "Warning: timeout set to \"" << _settings.timeout << "\" in line: " << _directive_line_nbr << " -> Values under 60 might lead to unstable up and download" << RESET_COLOR << std::endl;
 			_settings_check.timeout = true;
 		}
