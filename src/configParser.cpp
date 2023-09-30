@@ -127,9 +127,9 @@ bool configParser::validConfig(int argc, char **argv)
 	}
 	create_port_vector();
 		std::cout << BOLDGREEN << "\nInfo: webserv running using configuration \"" << _file_path << "\"" << RESET_COLOR << std::endl;
-	#ifdef INFO
 		printGlobalSettings();
 		printServerDetails();
+	#ifdef INFO
 	#endif
 	#ifdef LOG
 		printLog();

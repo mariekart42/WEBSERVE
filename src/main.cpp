@@ -11,6 +11,7 @@ int main(int ac, char **av)
 
         SetServer set;
         set.setServer(ac, av);
+        std::cout << BOLDGREEN << "\nWebserv successfully terminated." << RESET << std::endl;
 //    }
 //    else
 //        std::cout << conf.getErrorMsg() << std::endl;

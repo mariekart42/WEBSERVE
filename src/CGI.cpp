@@ -21,7 +21,9 @@ bool	Response::checkForP(void){
 	}
 
 	if (result == 0) {
+		#ifdef DEBUG
 		std::cout << "language is installed." << std::endl;
+		#endif
 		remove("temp.txt");
 		return true;
 	}
@@ -102,11 +104,13 @@ int Response::callCGI(){
 		_cgiInfo._query = _cgiInfo._body;
 
 	_cgiInfo._query = "QUERY_STRING=" + _cgiInfo._query;
+	#ifdef DEBUG
 	std::cout << "created query: "<< _cgiInfo._query << std::endl;
+	#endif
 
 
-char *query = (char*)_cgiInfo._query.c_str();
- std::string exec;
+	char *query = (char*)_cgiInfo._query.c_str();
+	std::string exec;
 
 	if (_cgiInfo._fileEnding == ".py") {
 		exec = "python3";
@@ -165,7 +169,9 @@ char *query = (char*)_cgiInfo._query.c_str();
 	gettimeofday(&end, 0);
 
 	int diff = (end.tv_sec - start.tv_sec) * 1000.0 + (end.tv_usec - start.tv_usec) / 1000.0;
+	#ifdef DEBUG
 	std::cout << "Time out: " << diff  << "ms compared with " << TIMEOUT << "ms" << std::endl;
+	#endif
 	if (TIMEOUT > 0 && diff >= TIMEOUT ) {
 		remove("root/tempCGI");//TODO here as well
 		return -3;
@@ -192,7 +198,7 @@ bool Response::CGIoutput(){
 		Logging::log("send Data:\n" + _cgiInfo._cgiPath, 200);
    	#endif
 
-	ssize_t check = send(_info._clientSocket, (respooonse).c_str(), respooonse.size(), 0);
+	ssize_t check = send(_info._clientSocket, (respooonse).c_str(), respooonse.size(), MSG_DONTWAIT);
 	if (check <=0)
 	{
 		#ifdef LOG

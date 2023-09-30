@@ -1,5 +1,6 @@
 #include "../header/Response.hpp"
 #include <sys/fcntl.h>
+#include <sys/socket.h>
 
 Response::Response(int clientSocket, const clientInfo& cInfo):
        _localStatusCode(-1), _info(cInfo), _header()
@@ -80,7 +81,9 @@ std::streampos Response::sendRequestedFile()
     if(validCGIextension() == true)
 	{
 		int check = callCGI();
+        #ifdef DEBUG
 		std::cout << "Return of CGI is " << check << std::endl;
+        #endif
 		switch (check)
 		{
 		case -1:
@@ -90,8 +93,10 @@ std::streampos Response::sendRequestedFile()
 		case -3:
 			return (mySend(408));
 		default:
+        #ifdef DEBUG
 			std::cout << "Default case has been called" << std::endl;
 			std::cout << "Here" << std::endl;
+        #endif
 			return (CGIoutput());
 		}
 	}
@@ -198,7 +203,7 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
         std::string response = header.append(buffer, SEND_CHUNK_SIZE);
         int len = response.size();
 
-        int check = send(_info._clientSocket, response.data(), len, 0);
+        int check = send(_info._clientSocket, response.data(), len, MSG_DONTWAIT);
         if (check <=0)
         {
             #ifdef LOG
@@ -269,7 +274,7 @@ std::streampos Response::mySend(int statusCode)
     const char* response_data = response.data();
     int len = response.size();
 
-    int check = send(_info._clientSocket, response_data, len, 0);
+    int check = send(_info._clientSocket, response_data, len, MSG_DONTWAIT);
     if (check <=0)
     {
         #ifdef LOG
@@ -303,7 +308,7 @@ void Response::sendShittyChunk(const std::string& fileName)
     // Read a chunk of data from the file
     file.read(buffer, SEND_CHUNK_SIZE);
 
-    if (send(_info._clientSocket, buffer, file.gcount(), O_NONBLOCK | MSG_DONTROUTE | MSG_OOB) == -1)
+    if (send(_info._clientSocket, buffer, file.gcount(), MSG_DONTWAIT) == -1)
     {
         #ifdef LOG
             Logging::log("Failed to send Data to Client", 500);
@@ -356,7 +361,9 @@ bool Response::uploadFile(const std::string& contentType, const std::string& bou
 			size_t		body = convert.find("\r\n\r\n");
 			_cgiInfo._body = convert.substr(body+4);
 			int check = callCGI();
+            #ifdef DEBUG
 			std::cout << "Return of CGI is " << check << std::endl;
+            #endif
 			switch (check)
 			{
 			case -1:
@@ -370,8 +377,10 @@ bool Response::uploadFile(const std::string& contentType, const std::string& bou
 			case -5:
 				return (mySend(501));
 			default:
+            #ifdef DEBUG
 				std::cout << "Default case has been called" << std::endl;
 				std::cout << "Here" << std::endl;
+            #endif
 				return (CGIoutput());
 			}
 		}

@@ -1,5 +1,17 @@
 #include "../header/connectClients.hpp"
 
+
+volatile sig_atomic_t	g_shutdown_flag = 0;
+
+static void signalHandler(int sigNum)
+{
+	if (sigNum == SIGINT || sigNum == SIGTERM)
+	{
+		std::cout << "\nReceived shutdown signal. Terminating webserv..." << std::endl;
+		g_shutdown_flag = 1;
+	}
+}
+
 ConnectClients::ConnectClients(const fdList& initList):
         _fdPortList(initList), _clientAddressLen(sizeof(_clientAddress)),_clientAddress(),
         _byteVector(),
@@ -175,7 +187,7 @@ int ConnectClients::receiveData(configParser& config)
     char clientData[clientBodySize];
 
     memset(clientData, 0, sizeof(clientData));
-    ssize_t bytesRead = recv(_fdPortList._fds[_x].fd, clientData, sizeof(clientData), O_NONBLOCK);
+    ssize_t bytesRead = recv(_fdPortList._fds[_x].fd, clientData, sizeof(clientData), MSG_DONTWAIT);
 
 #ifdef DEBUG
     std::cout << "Client Data["<<bytesRead<<"]:\n"<<clientData<<std::endl;
@@ -213,7 +225,7 @@ void ConnectClients::closeConnection()
     close(_fdPortList._fds[_x].fd);
     _fdPortList._fds.erase(_fdPortList._fds.begin() + _x);
     _fdPortList._ports.erase(_fdPortList._ports.begin() + _x);
-    --_x;
+    _x--;
 }
 
 bool ConnectClients::newConnection()
@@ -289,7 +301,7 @@ void ConnectClients::clientConnected(configParser& config)
     {
         if (INCOMING_DATA)
         {
-            if (newConnection())
+            if (newConnection() && !g_shutdown_flag)
                 initNewConnection();
             else
             {
@@ -313,8 +325,6 @@ void ConnectClients::clientConnected(configParser& config)
     }
 }
 
-
-
 void ConnectClients::connectClients(configParser& config)
 {
     initFdList();
@@ -324,11 +334,22 @@ void ConnectClients::connectClients(configParser& config)
     #endif
     while (69)
     {
+        signal(SIGINT, signalHandler);
+	    signal(SIGTERM, signalHandler);
         // poll checks _fdList for read & write events at the same time
-        switch (poll(&_fdPortList._fds[0], _fdPortList._fds.size(), config.get_timeout()))
+        if (g_shutdown_flag == 1)
+        {
+            clientConnected(config);
+            break;
+        }
+        int ret = 0;
+        if (!g_shutdown_flag)
+            ret = poll(&_fdPortList._fds[0], _fdPortList._fds.size(), config.get_timeout());
+        switch (ret)
         {
             case -1:
-                exitWithError("Poll function returned Error [EXIT]");
+                if (!g_shutdown_flag)
+                    exitWithError("Poll function returned Error [EXIT]");
                 break;
             case 0:
                 #ifdef LOG

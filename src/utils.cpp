@@ -8,8 +8,11 @@ void logg(const std::string &message)
 
 void exitWithError(const std::string &msg)
 {
+    #ifdef LOG
 	logg(RED"ERROR: " + msg + RESET);
-	exit(1);
+    #endif
+    std::cout << BOLDRED << msg << RESET << std::endl;
+	// exit(1);
 }
 
 int setNonBlocking(int fd)
