@@ -56,6 +56,12 @@ void ConnectClients::initNewConnection()
             if (_fdPortList._fds[j].fd == -1)
             {
                 _fdPortList._fds[j].fd = newClientSocket;
+                if (setNonBlocking(_fdPortList._fds[j].fd))
+                {
+                    #ifdef INFO
+                        std::cout << BOLDRED << "fcntl error, could not set flag to O_NONBLOCK" << RESET << std::endl;
+                    #endif
+                }
                 _fdPortList._fds[j].events = POLLIN;
                 foundSlot = true;
                 break;

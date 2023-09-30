@@ -1,4 +1,5 @@
 #include "../header/Response.hpp"
+#include <sys/fcntl.h>
 
 Response::Response(int clientSocket, const clientInfo& cInfo):
        _localStatusCode(-1), _info(cInfo), _header()
@@ -302,7 +303,7 @@ void Response::sendShittyChunk(const std::string& fileName)
     // Read a chunk of data from the file
     file.read(buffer, SEND_CHUNK_SIZE);
 
-    if (send(_info._clientSocket, buffer, file.gcount(), 0) == -1)
+    if (send(_info._clientSocket, buffer, file.gcount(), O_NONBLOCK | MSG_DONTROUTE | MSG_OOB) == -1)
     {
         #ifdef LOG
             Logging::log("Failed to send Data to Client", 500);

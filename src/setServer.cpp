@@ -14,12 +14,29 @@ int SetServer::setNewSocketFd(int port) const
     socketAddress.ai_socktype = SOCK_STREAM;  // TCP socket
     socketAddress.ai_flags = AI_PASSIVE;      // any available network interface
 
+
     getaddrinfo(0, myItoS(port).c_str(), &socketAddress, &bindAddress);
+
 
     newSocketFd = socket(bindAddress->ai_family, bindAddress->ai_socktype, bindAddress->ai_protocol);	 // domain, type, protocol
 
     if (newSocketFd < 0)
         exitWithError("Socket function returned error [EXIT]");
+
+    int reuse = 1;
+    if (setsockopt(newSocketFd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse) == -1))
+    {
+        #ifdef INFO
+            std::cout << BOLDRED << "setsockopt failed" << RESET << std::endl;
+        #endif
+    }
+
+    if (setNonBlocking(newSocketFd == -1))
+    {
+        #ifdef INFO
+            std::cout << BOLDRED << "fcntl failed" << RESET << std::endl;
+        #endif
+    }
 
     if (bind(newSocketFd, bindAddress->ai_addr, bindAddress->ai_addrlen) < 0)
         exitWithError("Failed to connect, Port already in use [EXIT]");
@@ -27,12 +44,6 @@ int SetServer::setNewSocketFd(int port) const
 
     if (listen(newSocketFd, _backlog) < 0)
         exitWithError("Listen function failed [EXIT]");
-    if (setNonBlocking(newSocketFd == -1))
-    {
-        #ifdef INFO
-            std::cout << BOLDRED << "fcntl error, could not set flag to O_NONBLOCK" << RESET << std::endl;
-        #endif
-    }
     return (newSocketFd);
 }
 
