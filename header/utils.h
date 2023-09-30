@@ -21,6 +21,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <netdb.h>
+#include <csignal>
 
 #include "logging.hpp"
 #include "colors.h"
