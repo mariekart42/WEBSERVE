@@ -10,7 +10,7 @@ int SetServer::setNewSocketFd(int port) const
     struct addrinfo *bindAddress;
 
     memset(&socketAddress, 0, sizeof(socketAddress));
-    socketAddress.ai_family = AF_UNSPEC;        // communicate over IPv4 // !CHANGED
+    socketAddress.ai_family = AF_INET;        // communicate over IPv4 // !CHANGED
     socketAddress.ai_socktype = SOCK_STREAM;  // TCP socket
     socketAddress.ai_flags = AI_PASSIVE;      // any available network interface
 
@@ -27,6 +27,12 @@ int SetServer::setNewSocketFd(int port) const
 
     if (listen(newSocketFd, _backlog) < 0)
         exitWithError("Listen function failed [EXIT]");
+    if (setNonBlocking(newSocketFd == -1))
+    {
+        #ifdef INFO
+            std::cout << BOLDRED << "fcntl error, could not set flag to O_NONBLOCK" << RESET << std::endl;
+        #endif
+    }
     return (newSocketFd);
 }
 

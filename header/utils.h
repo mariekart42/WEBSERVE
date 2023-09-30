@@ -28,15 +28,16 @@
 #define FAILURE "FAILURE"
 #define BAD_CONTENT_TYPE "bad_contentType"
 // #define INFO
-#define LOG
+// #define LOG
 // #define DEBUG
 // #define DEBUG_LEAKS
 
-void exitWithError(const std::string &);
+void 		exitWithError(const std::string &);
 std::string comparerContentType(const std::string& fileExtension);
 std::string myItoS(int);
-bool endsWith(const std::string&, const std::string&);
+bool 		endsWith(const std::string&, const std::string&);
+int			setNonBlocking(int fd);
+std::string	generateList(const std::string& rootFolder, const std::string& currentFolder);
 //std::vector<uint8_t> readFile(const std::string&);
-std::string generateList(const std::string& rootFolder, const std::string& currentFolder);
 
 #endif

@@ -1,4 +1,5 @@
 #include "../header/utils.h"
+#include <sys/fcntl.h>
 
 void logg(const std::string &message)
 {
@@ -11,6 +12,15 @@ void exitWithError(const std::string &msg)
 	exit(1);
 }
 
+int setNonBlocking(int fd)
+{
+    int flags = fcntl(fd, F_GETFL, 0);
+    if (flags == -1)
+        return -1;
+    if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) == -1)
+        return -1;
+    return 0;
+}
 
 std::string myItoS(int val)
 {
