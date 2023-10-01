@@ -25,7 +25,8 @@ clean:
 	@$(RM) $(OBJ_DIR)
 
 fclean: clean
-	@$(RM) $(NAME)
+	@$(RM) $(NAME) root/upload/*
+	@find log/ -type f ! -name .gitkeep -exec $(RM) {} \;
 	@echo "Success, directory cleaned"
 
 re: fclean all
