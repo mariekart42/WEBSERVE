@@ -189,9 +189,9 @@ int ConnectClients::receiveData(configParser& config)
     memset(clientData, 0, sizeof(clientData));
     ssize_t bytesRead = recv(_fdPortList._fds[_x].fd, clientData, sizeof(clientData), MSG_DONTWAIT);
 
-#ifdef DEBUG
+    #ifdef DEBUG
     std::cout << "Client Data["<<bytesRead<<"]:\n"<<clientData<<std::endl;
-#endif
+    #endif
     if (bytesRead < 0)
         return -1;
     if (bytesRead == 0)
@@ -264,7 +264,10 @@ void ConnectClients::handleData(configParser& config)
     it = _clientInfo.find(_fdPortList._fds[_x].fd);
 
     if (it == _clientInfo.end())
+    {
+        // closeConnection(); // VF testing
         return ;
+    }
 
     Response response(_fdPortList._fds[_x].fd, it->second);
 
