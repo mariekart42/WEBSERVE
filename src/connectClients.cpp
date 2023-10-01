@@ -66,7 +66,7 @@ void ConnectClients::initNewConnection()
 
     // Find an available slot or expand the vector
     bool foundSlot = false;
-    int fdListSize = _fdPortList._fds.size();
+    int fdListSize = _fdPortList._fds.size() /3 ;
     for (int j = 0; j < fdListSize; j++)
     {
         if (_fdPortList._fds[j].fd == -1)
@@ -107,7 +107,7 @@ void ConnectClients::initClientInfo(configParser& config)
     int clientSocket = _fdPortList._fds[_x].fd;
 
     std::map<int, clientInfo>::iterator rm = _clientInfo.find(clientSocket);
-    if (rm->second._filePos > 0)
+    if (rm != _clientInfo.end() && rm->second._filePos > 0)
         return;
     if (rm != _clientInfo.end() && !rm->second._isMultiPart)
         _clientInfo.erase(rm);
@@ -188,7 +188,8 @@ int ConnectClients::receiveData(configParser& config)
     char clientData[clientBodySize];
 
     memset(clientData, 0, sizeof(clientData));
-    ssize_t bytesRead = recv(_fdPortList._fds[_x].fd, clientData, sizeof(clientData), MSG_DONTWAIT);
+    // ssize_t bytesRead = recv(_fdPortList._fds[_x].fd, clientData, sizeof(clientData), MSG_DONTWAIT); // before
+    ssize_t bytesRead = recv(_fdPortList._fds[_x].fd, clientData, sizeof(clientData), 0);
 
     #ifdef DEBUG
     std::cout << "Client Data["<<bytesRead<<"]:\n"<<clientData<<std::endl;
@@ -213,7 +214,7 @@ void ConnectClients::closeConnection()
     int len = _fdPortList._ports.size();
     if (_x >= len)
     {
-        int fdListLen = _fdPortList._fds.size();
+        int fdListLen = _fdPortList._fds.size() / 3;
         if (_x >= fdListLen)
             return;
         close(_fdPortList._fds[_x].fd);
@@ -301,7 +302,7 @@ void ConnectClients::handleData(configParser& config)
 
 void ConnectClients::clientConnected(configParser& config)
 {
-    int fdListLen = _fdPortList._fds.size();
+    int fdListLen = _fdPortList._fds.size() / 3;
     for (_x = 0; _x < fdListLen; _x++)
     {
         if (INCOMING_DATA)
@@ -357,9 +358,9 @@ void ConnectClients::connectClients(configParser& config)
                     exitWithError("Poll function returned Error [EXIT]");
                 break;
             case 0:
-                #ifdef LOG
-                    Logging::log("waiting for client to connect", 200);
-                #endif
+                // #ifdef LOG
+                //     Logging::log("waiting for client to connect", 200);
+                // #endif
                 break;
             default:
                 clientConnected(config);

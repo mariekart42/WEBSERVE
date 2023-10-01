@@ -12,7 +12,7 @@ void exitWithError(const std::string &msg)
 	logg(RED"ERROR: " + msg + RESET);
     #endif
     std::cout << BOLDRED << msg << RESET << std::endl;
-	// exit(1);
+	exit(1);
 }
 
 int setNonBlocking(int fd)

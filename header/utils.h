@@ -21,6 +21,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <netdb.h>
+#include <csignal>
 
 #include "logging.hpp"
 #include "colors.h"
@@ -28,8 +29,8 @@
 #define FAILURE "FAILURE"
 #define BAD_CONTENT_TYPE "bad_contentType"
 #define INFO
-// #define LOG
-// #define DEBUG
+#define LOG
+#define DEBUG
 // #define DEBUG_LEAKS
 
 void 		exitWithError(const std::string &);
