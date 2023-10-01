@@ -296,7 +296,8 @@ void ConnectClients::handleData(configParser& config)
 
 void ConnectClients::clientConnected(configParser& config)
 {
-    for (_x = 0; _x < static_cast<int>(_fdPortList._fds.size()); _x++)
+    int fdListLen = _fdPortList._fds.size();
+    for (_x = 0; _x < fdListLen; _x++)
     {
         if (INCOMING_DATA)
         {
