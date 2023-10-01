@@ -58,47 +58,48 @@ void ConnectClients::initNewConnection()
     int socketFd = CURRENT_FD;
     int newClientSocket = accept(socketFd, (struct sockaddr *) &_clientAddress, &_clientAddressLen);
 
-    if (newClientSocket != -1)
+    if (newClientSocket == -1)
     {
-        // Find an available slot or expand the vector
-        bool foundSlot = false;
-        int fdListSize = _fdPortList._fds.size();
-        for (int j = 0; j < fdListSize; j++)
-        {
-            if (_fdPortList._fds[j].fd == -1)
-            {
-                _fdPortList._fds[j].fd = newClientSocket;
-                if (setNonBlocking(_fdPortList._fds[j].fd))
-                {
-                    #ifdef INFO
-                        std::cout << BOLDRED << "fcntl error, could not set flag to O_NONBLOCK" << RESET << std::endl;
-                    #endif
-                }
-                _fdPortList._fds[j].events = POLLIN;
-                foundSlot = true;
-                break;
-            }
-        }
-        if (!foundSlot)
-        {
-            pollfd newClient = {newClientSocket, POLLIN, 0};
-            _fdPortList._fds.push_back(newClient);
-        }
+        close(newClientSocket);
+        return ;
+    }
 
-        for (std::vector<int>::size_type i = 0; i < _fdPortList._sockets.size(); ++i)
+    // Find an available slot or expand the vector
+    bool foundSlot = false;
+    int fdListSize = _fdPortList._fds.size();
+    for (int j = 0; j < fdListSize; j++)
+    {
+        if (_fdPortList._fds[j].fd == -1)
         {
-            if (_fdPortList._sockets[i] == socketFd)
+            _fdPortList._fds[j].fd = newClientSocket;
+            if (setNonBlocking(_fdPortList._fds[j].fd))
             {
-                // The target value is found; store the position
-                int pos = static_cast<int>(i);
-                _fdPortList._ports.push_back(_fdPortList._ports.at(pos));
-                break;
+                #ifdef INFO
+                    std::cout << BOLDRED << "fcntl error, could not set flag to O_NONBLOCK" << RESET << std::endl;
+                #endif
             }
+            _fdPortList._fds[j].events = POLLIN;
+            foundSlot = true;
+            break;
+        }
+    }
+    if (!foundSlot)
+    {
+        pollfd newClient = {newClientSocket, POLLIN, 0};
+        _fdPortList._fds.push_back(newClient);
+    }
+
+    for (std::vector<int>::size_type i = 0; i < _fdPortList._sockets.size(); ++i)
+    {
+        if (_fdPortList._sockets[i] == socketFd)
+        {
+            // The target value is found; store the position
+            int pos = static_cast<int>(i);
+            _fdPortList._ports.push_back(_fdPortList._ports.at(pos));
+            break;
         }
     }
 }
-
-
 
 void ConnectClients::initClientInfo(configParser& config)
 {
