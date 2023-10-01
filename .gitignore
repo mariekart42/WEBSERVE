@@ -1,6 +1,6 @@
 vf
 .vscode
-log
+log/*
 .DS_Store
 root/.DS_Store
 .build
