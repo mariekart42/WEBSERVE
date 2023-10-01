@@ -30,7 +30,7 @@
 #define MAX_CLIENTS		100
 #define BODY_SIZE		9000
 #define BODY_SIZE_MIN	2000
-#define BODY_SIZE_MAX	8300000
+#define BODY_SIZE_MAX	10000000
 #define MAX_EVENTS		100
 #define BACKLOG			42
 #define ROOT			"root"

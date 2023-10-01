@@ -554,16 +554,18 @@ void configParser::setDirective(Server& server, const std::string& _route)
 		{
 			long size = string_to_int(getToken(_line, 3));
 			server._body_size = size;
-			if (size < BODY_SIZE_MIN)
-			{
-				server._body_size = 2000;
-				std::cerr << BLUE << "Warning: body_size on line: " << _directive_line_nbr << " is set to " << size << " -> recommended range is between 2000-8300000. Value has been set to " << BOLDGREEN "2000" << RESET_COLOR << std::endl;
-			}
-			else if (size > BODY_SIZE_MAX)
-			{
-				server._body_size = 8300000;
-				std::cerr << BLUE << "Warning: body_size on line: " << _directive_line_nbr << " is set to " << size << " -> recommended range is between 2000-8300000. Value has been set to " << BOLDGREEN << "8300000" << RESET_COLOR << std::endl;
-			}
+			if (size < BODY_SIZE_MIN || size > BODY_SIZE_MAX)
+				std::cerr << BLUE << "Warning: body_size on line: " << _directive_line_nbr << " is set to " << size << " -> recommended range is between 2000-10000000 (2kb - 10MB)." << RESET_COLOR << std::endl;
+			// if (size < BODY_SIZE_MIN)
+			// {
+			// 	server._body_size = 2000;
+			// 	std::cerr << BLUE << "Warning: body_size on line: " << _directive_line_nbr << " is set to " << size << " -> recommended range is between 2000-8300000. Value has been set to " << BOLDGREEN "2000" << RESET_COLOR << std::endl;
+			// }
+			// else if (size > BODY_SIZE_MAX)
+			// {
+			// 	server._body_size = 8300000;
+			// 	std::cerr << BLUE << "Warning: body_size on line: " << _directive_line_nbr << " is set to " << size << " -> recommended range is between 2000-8300000. Value has been set to " << BOLDGREEN << "8300000" << RESET_COLOR << std::endl;
+			// }
 		}
 	}
 	else if (line_first_token == "error_page" && validate_directive_single(_line))

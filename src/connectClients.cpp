@@ -1,5 +1,6 @@
 #include "../header/connectClients.hpp"
 #include <sys/poll.h>
+#include <sys/types.h>
 
 
 #ifndef DEBUG_LEAKS
@@ -192,8 +193,9 @@ int ConnectClients::receiveData(configParser& config)
     if (_x >= len)
         return 0;
 
-    long clientBodySize = config.getBodySize(_fdPortList._ports.at(_x));
-    char clientData[clientBodySize];
+(void)config;
+    int dataLen = 9000;
+    char clientData[dataLen];
 
     memset(clientData, 0, sizeof(clientData));
     // ssize_t bytesRead = recv(_fdPortList._fds[_x].fd, clientData, sizeof(clientData), MSG_DONTWAIT); // before
@@ -386,6 +388,13 @@ void ConnectClients::connectClients(configParser& config)
                 #ifdef DEBUG
                     Logging::log("waiting for client to connect", 200);
                 #endif
+                if (g_shutdown_flag == 1)
+                {
+                    for (size_t x = 0; x <= _fdPortList._sockets.size(); x++)
+                    {
+                        close(_fdPortList._fds[x].fd);
+                    }
+                }
                 break;
             default:
                 clientConnected(config);
