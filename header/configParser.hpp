@@ -25,11 +25,12 @@
 #include "utils.h"
 
 // Global settings
-#define TIMEOUT			300
+#define CGI_TIMEOUT		300
+#define TIMEOUT			0
 #define MAX_CLIENTS		100
 #define BODY_SIZE		9000
 #define BODY_SIZE_MIN	2000
-#define BODY_SIZE_MAX	1000000
+#define BODY_SIZE_MAX	8300000
 #define MAX_EVENTS		100
 #define BACKLOG			42
 #define ROOT			"root"
@@ -90,7 +91,7 @@ typedef StringLocationMap::iterator RouteIterator;
 
 typedef struct Server{
 	int					_port;
-	int					_body_size;
+	long				_body_size;
 	std::string			_host;
 	StringVector		_server_name;
 	IntStringMap		_error_map; // response-code : path
@@ -181,7 +182,7 @@ class configParser {
 
 		Server & getServer(int port);
 		void			parse_request_data();
-		int				string_to_int(const std::string&);
+		long			string_to_int(const std::string&);
 		std::string		getToken(const std::string& str, int n);
 		int				countToken(const std::string& str);
 		int				validate_directive_single(const std::string& str);

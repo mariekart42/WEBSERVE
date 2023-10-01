@@ -332,14 +332,14 @@ void configParser::parse_request_data()
 	// std::cout << GREEN << "FILENAME " << _request_data._filename << " ROUTE " << _request_data._url <<  " HAS SUBFOLDERS " << HasSubfolder << RESET << std::endl;
 }
 
-int	configParser::string_to_int(const std::string& str)
+long	configParser::string_to_int(const std::string& str)
 {
 	std::istringstream stream(str);
-	int number;
+	long number;
 	if (stream >> number)
 		return number;
 	else
-		throw std::invalid_argument("not a valid integer");
+		throw std::invalid_argument("not a valid long");
 }
 
 std::string configParser::getToken(const std::string& str, int n)
@@ -426,7 +426,7 @@ void configParser::validate_minimal_server_configuration(Server& server)
 	{
 		if (addStatus(server, "host"))
 			server._host = "0.0.0.0"; // setting default value
-		std::cerr << BLUE << "Warning: host missing on server " << server._server_nbr << " [" << server._server_line_nbr << "] -> default value of 0.0.0.0 is set" << RESET_COLOR << std::endl;
+		std::cerr << BLUE << "Warning: host missing on server " << server._server_nbr << " [" << server._server_line_nbr << "] -> default value of " << BOLDGREEN <<  "0.0.0.0" << BLUE << " has been set" << RESET_COLOR << std::endl;
 	}
 
 	it = server._status.find("body_size");
@@ -434,7 +434,7 @@ void configParser::validate_minimal_server_configuration(Server& server)
 	{
 		if (addStatus(server, "body_size"))
 			server._body_size = BODY_SIZE; // setting default value
-		std::cerr << BLUE << "Warning: body_size missing on server " << server._server_nbr << " [" << server._server_line_nbr << "] -> default value of " << BODY_SIZE << " is set" << RESET_COLOR << std::endl;
+		std::cerr << BLUE << "Warning: body_size missing on server " << server._server_nbr << " [" << server._server_line_nbr << "] -> default value of " << BOLDGREEN << BODY_SIZE << BLUE << " has been set" << RESET_COLOR << std::endl;
 	}
 }
 
@@ -552,10 +552,18 @@ void configParser::setDirective(Server& server, const std::string& _route)
 	{
 		if (addStatus(server, "body_size"))
 		{
-			int size = string_to_int(getToken(_line, 3));
-			if (size < BODY_SIZE_MIN || size > BODY_SIZE_MAX)
-				std::cerr << BLUE << "Warning: body_size on line: " << _directive_line_nbr << " is set to " << size << " -> recommended range is between 2000-1000000" << RESET_COLOR << std::endl;
-			server._body_size = string_to_int(getToken(_line, 3));
+			long size = string_to_int(getToken(_line, 3));
+			server._body_size = size;
+			if (size < BODY_SIZE_MIN)
+			{
+				server._body_size = 2000;
+				std::cerr << BLUE << "Warning: body_size on line: " << _directive_line_nbr << " is set to " << size << " -> recommended range is between 2000-8300000. Value has been set to " << BOLDGREEN "2000" << RESET_COLOR << std::endl;
+			}
+			else if (size > BODY_SIZE_MAX)
+			{
+				server._body_size = 8300000;
+				std::cerr << BLUE << "Warning: body_size on line: " << _directive_line_nbr << " is set to " << size << " -> recommended range is between 2000-8300000. Value has been set to " << BOLDGREEN << "8300000" << RESET_COLOR << std::endl;
+			}
 		}
 	}
 	else if (line_first_token == "error_page" && validate_directive_single(_line))

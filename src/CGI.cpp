@@ -4,11 +4,10 @@
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
+#include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/wait.h>
-
-// #define TIMEOUT_CGI 30000 // TODO PLEASE REDEFINE IT REEEeeee
 
 bool	Response::checkForP(void){
 
@@ -27,8 +26,9 @@ bool	Response::checkForP(void){
 		remove("temp.txt");
 		return true;
 	}
-
+	#ifdef INFO
 	std::cout << "language is not installed." << std::endl;
+	#endif
 	remove("temp.txt");
 	return false;
 }
@@ -157,12 +157,15 @@ int Response::callCGI(){
 	}
 	else
     {
-		// usleep(TIMEOUT * 1000);
 		close(pipefd[1]);
 		result = waitpid(pid, &status, 0);
 
 		if (result == 0)
+		{
+			#ifdef DEBUG
 			std::cout << RED << "CHILD ALIVE" << RESET << std::endl;
+			#endif
+		}
 
 	}
     close(file);
@@ -170,9 +173,9 @@ int Response::callCGI(){
 
 	int diff = (end.tv_sec - start.tv_sec) * 1000.0 + (end.tv_usec - start.tv_usec) / 1000.0;
 	#ifdef DEBUG
-	std::cout << "Time out: " << diff  << "ms compared with " << TIMEOUT << "ms" << std::endl;
+	std::cout << "Time out: " << diff  << "ms compared with " << CGI_TIMEOUT << "ms" << std::endl;
 	#endif
-	if (TIMEOUT > 0 && diff >= TIMEOUT ) {
+	if (CGI_TIMEOUT > 0 && diff >= CGI_TIMEOUT ) {
 		remove("root/tempCGI");//TODO here as well
 		return -3;
 	}
@@ -205,7 +208,6 @@ bool Response::CGIoutput(){
 			Logging::log("Failed to send Data to Client", 500);
    		#endif
 		inputFile.close();
-		exit(69);
 	}
 	remove("root/tempCGI");
 	inputFile.close();

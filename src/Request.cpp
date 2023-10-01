@@ -87,7 +87,14 @@ std::string Request::getNewFilename(const std::string& checkFilename, const std:
     size_t lastDotPos = checkFilename.rfind('.'); // Find the last dot position
 
     if (lastDotPos == std::string::npos) // If dot is found
-        exitWithError("unexpected Error: could not getNewFilename [EXIT]");
+    {
+        #ifdef INFO
+        std::cout << BOLDRED << "Error: could not getNewFilename" << RESET << std::endl;
+        #endif
+        #ifdef LOG
+            Logging::log("unexpected Error: could not getNewFilename", 500);
+        #endif
+    }
 
     std::string filename = checkFilename.substr(0, lastDotPos); // Take substring up to the last dot
     std::string fileExtension = checkFilename.substr(lastDotPos, checkFilename.size());
@@ -202,7 +209,14 @@ int Request::getContentLen()
         }
     }
     else
-        exitWithError("unable to extract Content-Length [EXIT]");
+    {
+        #ifdef INFO
+        std::cout << BOLDRED << "Error: unable to extract Content-Length" << RESET << std::endl;
+        #endif
+        #ifdef LOG
+            Logging::log("Error: unable to extract Content-Length", 500);
+        #endif
+    }
     return -1;
 }
 
@@ -281,7 +295,14 @@ int Request::getPort()
         return atoi(resultStr.c_str());
     }
     else
-        exitWithError("unable to extract Port from request [EXIT]");
+    {
+        #ifdef INFO
+        std::cout << BOLDRED << "Error: unable to extract Port from request" << RESET << std::endl;
+        #endif
+        #ifdef LOG
+            Logging::log("Error: unable to extract Port from request", 500);
+        #endif
+    }
     return -1;
 }
 

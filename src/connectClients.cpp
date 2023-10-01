@@ -1,6 +1,8 @@
 #include "../header/connectClients.hpp"
+#include <sys/poll.h>
 
 
+#ifndef DEBUG_LEAKS
 volatile sig_atomic_t	g_shutdown_flag = 0;
 
 static void signalHandler(int sigNum)
@@ -11,6 +13,10 @@ static void signalHandler(int sigNum)
 		g_shutdown_flag = 1;
 	}
 }
+#endif
+#ifdef DEBUG_LEAKS
+int g_shutdown_flag = 0;
+#endif
 
 ConnectClients::ConnectClients(const fdList& initList):
         _fdPortList(initList), _clientAddressLen(sizeof(_clientAddress)),_clientAddress(),
@@ -31,7 +37,7 @@ void ConnectClients::initFdList()
         for (int i = 0; i < MAX_USERS; i++) {
             pollfd newSocket = {};
             newSocket.fd = -1;
-            newSocket.events = 0;
+            newSocket.events = POLLOUT | POLLERR | POLLNVAL | POLLHUP;
             newSocket.revents = 0;
             _fdPortList._fds.push_back(newSocket);
 
@@ -45,7 +51,8 @@ void ConnectClients::initFdList()
                         std::cout << BOLDRED << "fcntl error, could not set flag to O_NONBLOCK" << RESET << std::endl;
                     #endif
                 }
-                _fdPortList._fds[k].events = POLLIN;
+                _fdPortList._fds[k].events = POLLIN | POLLERR | POLLNVAL | POLLHUP;
+                _fdPortList._fds[k].revents = 0;
                 break;
             }
         }
@@ -66,7 +73,7 @@ void ConnectClients::initNewConnection()
 
     // Find an available slot or expand the vector
     bool foundSlot = false;
-    int fdListSize = _fdPortList._fds.size() /3 ;
+    int fdListSize = _fdPortList._fds.size();
     for (int j = 0; j < fdListSize; j++)
     {
         if (_fdPortList._fds[j].fd == -1)
@@ -78,7 +85,8 @@ void ConnectClients::initNewConnection()
                     std::cout << BOLDRED << "fcntl error, could not set flag to O_NONBLOCK" << RESET << std::endl;
                 #endif
             }
-            _fdPortList._fds[j].events = POLLIN;
+            _fdPortList._fds[j].events = POLLIN | POLLERR | POLLNVAL | POLLHUP;
+            _fdPortList._fds[j].revents = 0;
             foundSlot = true;
             break;
         }
@@ -139,7 +147,7 @@ void ConnectClients::initClientInfo(configParser& config)
         {
             initNewInfo._postInfo._input = input;
             initNewInfo._postInfo._contentLen = request.getContentLen();
-            if (initNewInfo._postInfo._contentLen > config.get_body_size())
+            if (initNewInfo._postInfo._contentLen > config.getBodySize(request.getPort()))
                 initNewInfo._globalStatusCode = REQUEST_TOO_BIG;
 
             initNewInfo._configInfo._postAllowed = config.getPostAllowed();
@@ -184,7 +192,7 @@ int ConnectClients::receiveData(configParser& config)
     if (_x >= len)
         return 0;
 
-    int clientBodySize = config.getBodySize(_fdPortList._ports.at(_x));
+    long clientBodySize = config.getBodySize(_fdPortList._ports.at(_x));
     char clientData[clientBodySize];
 
     memset(clientData, 0, sizeof(clientData));
@@ -211,10 +219,9 @@ int ConnectClients::receiveData(configParser& config)
 
 void ConnectClients::closeConnection()
 {
-    int len = _fdPortList._ports.size();
-    if (_x >= len)
+    if (_x >= static_cast<int>(_fdPortList._ports.size()))
     {
-        int fdListLen = _fdPortList._fds.size() / 3;
+        int fdListLen = _fdPortList._fds.size();
         if (_x >= fdListLen)
             return;
         close(_fdPortList._fds[_x].fd);
@@ -302,9 +309,17 @@ void ConnectClients::handleData(configParser& config)
 
 void ConnectClients::clientConnected(configParser& config)
 {
-    int fdListLen = _fdPortList._fds.size() / 3;
-    for (_x = 0; _x < fdListLen; _x++)
+    // int fdListLen = _fdPortList._fds.size();
+    for (_x = 0; _x < static_cast<int>(_fdPortList._fds.size()); _x++)
     {
+        if (SOCKET_ERROR)
+        {
+            #ifdef DEBUG
+            std::cout << BOLDRED << "SOCKET_ERROR" << RESET << std::endl;
+            #endif
+            closeConnection();
+            break ;
+        }
         if (INCOMING_DATA)
         {
             if (g_shutdown_flag == 0 && newConnection())
@@ -336,12 +351,15 @@ void ConnectClients::connectClients(configParser& config)
     initFdList();
     std::cout << GRN " . . Server ready to connect Clients" RESET << std::endl;
     #ifdef DEBUG_LEAKS
-        int counter = 0;
+    int counter = 0;
+    g_shutdown_flag = 0;
     #endif
     while (69)
     {
+        #ifndef DEBUG_LEAKS
         signal(SIGINT, signalHandler);
 	    signal(SIGTERM, signalHandler);
+        #endif
         // poll checks _fdList for read & write events at the same time
         if (g_shutdown_flag == 1)
         {
@@ -349,27 +367,34 @@ void ConnectClients::connectClients(configParser& config)
             break;
         }
         int ret = 0;
-        if (!g_shutdown_flag)
-            ret = poll(&_fdPortList._fds[0], _fdPortList._fds.size(), config.get_timeout());
+        if (g_shutdown_flag == 0)
+            ret = poll(&_fdPortList._fds[0], (_fdPortList._fds.size()), config.get_timeout());
         switch (ret)
         {
             case -1:
-                if (!g_shutdown_flag)
-                    exitWithError("Poll function returned Error [EXIT]");
+                #ifdef INFO
+                if (g_shutdown_flag == 0)
+                {
+                    std::cout << RED << "Error: Poll function returned Error" << RESET << std::endl;
+                }
+                #endif
+                #ifdef LOG
+                    Logging::log("Error: Poll function returned Error", 500);
+                #endif
                 break;
             case 0:
-                // #ifdef LOG
-                //     Logging::log("waiting for client to connect", 200);
-                // #endif
+                #ifdef DEBUG
+                    Logging::log("waiting for client to connect", 200);
+                #endif
                 break;
             default:
                 clientConnected(config);
                 break;
         }
         #ifdef DEBUG_LEAKS
-            counter++;
-            if (counter == 1000)
-                break;
+        counter++;
+        if (counter == 1000)
+            break;
         #endif
     }
 }
