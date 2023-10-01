@@ -301,7 +301,7 @@ void ConnectClients::clientConnected(configParser& config)
     {
         if (INCOMING_DATA)
         {
-            if (newConnection() && !g_shutdown_flag)
+            if (g_shutdown_flag == 0 && newConnection())
                 initNewConnection();
             else
             {
