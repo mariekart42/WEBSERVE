@@ -24,12 +24,12 @@ void Logging::log(const std::string& message, int statusCode)
         return;
     }
 //    logFile << " ======= ";
-    time_t currentTime;
-    currentTime = time(0); // Get current time
-    tm* timeinfo = localtime(&currentTime);
+    std::time_t currentTime;
+    currentTime = std::time(0); // Get current time
+    std::tm* timeinfo = std::localtime(&currentTime);
     std::string time_format = "%Y-%m-%d %H:%M:%S";
     char buffer[80];
-    strftime(buffer, 80, time_format.c_str(), timeinfo);
+    std::strftime(buffer, 80, time_format.c_str(), timeinfo);
 
     if (statusCode == 200)
     {

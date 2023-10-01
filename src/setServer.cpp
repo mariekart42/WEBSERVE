@@ -1,5 +1,4 @@
 #include "../header/setServer.hpp"
-#include <netdb.h>
 #include <sys/socket.h>
 
 SetServer::SetServer(){}
@@ -14,7 +13,7 @@ int SetServer::setNewSocketFd(int port) const
     memset(&socketAddress, 0, sizeof(socketAddress));
     socketAddress.ai_family = AF_UNSPEC;        // communicate over IPv4 // !CHANGED
     socketAddress.ai_socktype = SOCK_STREAM;  // TCP socket
-    socketAddress.ai_flags = AI_PASSIVE;      // any available network interface
+    socketAddress.ai_flags = IPPROTO_TCP;      // any available network interface
 
 
     getaddrinfo(0, myItoS(port).c_str(), &socketAddress, &bindAddress);
@@ -23,10 +22,7 @@ int SetServer::setNewSocketFd(int port) const
     newSocketFd = socket(bindAddress->ai_family, bindAddress->ai_socktype, bindAddress->ai_protocol);	 // domain, type, protocol
 
     if (newSocketFd < 0)
-    {
-        freeaddrinfo(bindAddress);
         exitWithError("Socket function returned error [EXIT]");
-    }
 
     int reuse = 1;
     if (setsockopt(newSocketFd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse)) == -1)
@@ -44,17 +40,11 @@ int SetServer::setNewSocketFd(int port) const
     }
 
     if (bind(newSocketFd, bindAddress->ai_addr, bindAddress->ai_addrlen) < 0)
-    {
-        freeaddrinfo(bindAddress);
         exitWithError("Failed to connect, Port already in use [EXIT]");
-    }
     freeaddrinfo(bindAddress);
 
     if (listen(newSocketFd, _backlog) < 0)
-    {
-        freeaddrinfo(bindAddress);
         exitWithError("Listen function failed [EXIT]");
-    }
     return (newSocketFd);
 }
 
