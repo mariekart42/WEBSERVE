@@ -217,6 +217,7 @@ void ConnectClients::closeConnection()
             return;
         close(_fdPortList._fds[_x].fd);
         _fdPortList._fds.erase(_fdPortList._fds.begin() + _x);
+        _x--; // This is necessary otherwise the webserver is unstable
         return ;
     }
     #ifdef LOG
