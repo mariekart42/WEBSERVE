@@ -35,7 +35,7 @@ void ConnectClients::initFdList()
     int portSize = _fdPortList._sockets.size();
     for (int x = 0; x < portSize; x++)
     {
-        for (int i = 0; i < MAX_USERS; i++) {
+        for (int i = 0; i < portSize; i++) {
             pollfd newSocket = {};
             newSocket.fd = -1;
             newSocket.events = POLLOUT | POLLERR | POLLNVAL | POLLHUP;
@@ -43,7 +43,7 @@ void ConnectClients::initFdList()
             _fdPortList._fds.push_back(newSocket);
 
         }
-        for (int k = 0 + x; k < MAX_USERS; k++) {
+        for (int k = 0 + x; k < portSize; k++) {
             if (_fdPortList._fds[k].fd == -1) {
                 _fdPortList._fds[k].fd = _fdPortList._sockets.at(x);
                 if (setNonBlocking(_fdPortList._fds[k].fd == -1))
@@ -198,8 +198,7 @@ int ConnectClients::receiveData(configParser& config)
     char clientData[dataLen];
 
     memset(clientData, 0, sizeof(clientData));
-    // ssize_t bytesRead = recv(_fdPortList._fds[_x].fd, clientData, sizeof(clientData), MSG_DONTWAIT); // before
-    ssize_t bytesRead = recv(_fdPortList._fds[_x].fd, clientData, sizeof(clientData), 0);
+    ssize_t bytesRead = recv(_fdPortList._fds[_x].fd, clientData, sizeof(clientData), MSG_DONTWAIT); // MSG_DONTWAIT
 
     #ifdef DEBUG
     std::cout << "Client Data["<<bytesRead<<"]:\n"<<clientData<<std::endl;
@@ -393,6 +392,10 @@ void ConnectClients::connectClients(configParser& config)
                     for (size_t x = 0; x <= _fdPortList._fds.size(); x++)
                     {
                         close(_fdPortList._fds[x].fd);
+                    }
+                    for (size_t x = 0; x <= _fdPortList._sockets.size(); x++)
+                    {
+                        close(_fdPortList._sockets[x]);
                     }
                 }
                 break;

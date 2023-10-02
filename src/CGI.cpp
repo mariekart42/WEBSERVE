@@ -201,7 +201,7 @@ bool Response::CGIoutput(){
 		Logging::log("send Data:\n" + _cgiInfo._cgiPath, 200);
    	#endif
 
-	ssize_t check = send(_info._clientSocket, (respooonse).c_str(), respooonse.size(), MSG_DONTWAIT);
+	ssize_t check = send(_info._clientSocket, (respooonse).c_str(), respooonse.size(), MSG_DONTWAIT); // MSG_DONTWAIT
 	if (check <=0)
 	{
 		#ifdef LOG

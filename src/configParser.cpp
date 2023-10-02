@@ -131,11 +131,7 @@ bool configParser::validConfig(int argc, char **argv)
 		std::cout << BOLDGREEN << "\nInfo: webserv running using configuration \"" << _file_path << "\"" << RESET_COLOR << std::endl;
 		printGlobalSettings();
 		printServerDetails();
-	#ifdef INFO
-	#endif
-	#ifdef LOG
 		printLog();
-	#endif
 	return true;
 }
 
