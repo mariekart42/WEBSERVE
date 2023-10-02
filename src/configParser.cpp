@@ -119,10 +119,12 @@ bool configParser::validConfig(int argc, char **argv)
 		}
 		if (!_servers_index.size())
 			throw std::runtime_error("no server configuration declared");
+		_file.close();
 	}
 	catch (std::exception &e)
 	{
 		std::cerr << BOLDRED << "Error: in \"" << _file_path << "\" on line " << _directive_line_nbr << " : " << e.what() << " [EXIT]" << RESET_COLOR << std::endl;
+		_file.close();
 		return false;
 	}
 	create_port_vector();
