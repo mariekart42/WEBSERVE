@@ -332,14 +332,14 @@ void configParser::parse_request_data()
 	// std::cout << GREEN << "FILENAME " << _request_data._filename << " ROUTE " << _request_data._url <<  " HAS SUBFOLDERS " << HasSubfolder << RESET << std::endl;
 }
 
-long	configParser::string_to_int(const std::string& str)
+int	configParser::string_to_int(const std::string& str)
 {
 	std::istringstream stream(str);
-	long number;
+	int number;
 	if (stream >> number)
 		return number;
 	else
-		throw std::invalid_argument("not a valid long");
+		throw std::invalid_argument("not a valid int");
 }
 
 std::string configParser::getToken(const std::string& str, int n)
@@ -552,7 +552,7 @@ void configParser::setDirective(Server& server, const std::string& _route)
 	{
 		if (addStatus(server, "body_size"))
 		{
-			long size = string_to_int(getToken(_line, 3));
+			int size = string_to_int(getToken(_line, 3));
 			server._body_size = size;
 			if (size < BODY_SIZE_MIN || size > BODY_SIZE_MAX)
 				std::cerr << BLUE << "Warning: body_size on line: " << _directive_line_nbr << " is set to " << size << " -> recommended range is between 2000-10000000 (2kb - 10MB)." << RESET_COLOR << std::endl;

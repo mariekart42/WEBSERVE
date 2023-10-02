@@ -91,7 +91,7 @@ typedef StringLocationMap::iterator RouteIterator;
 
 typedef struct Server{
 	int					_port;
-	long				_body_size;
+	int					_body_size;
 	std::string			_host;
 	StringVector		_server_name;
 	IntStringMap		_error_map; // response-code : path
@@ -182,7 +182,7 @@ class configParser {
 
 		Server & getServer(int port);
 		void			parse_request_data();
-		long			string_to_int(const std::string&);
+		int			string_to_int(const std::string&);
 		std::string		getToken(const std::string& str, int n);
 		int				countToken(const std::string& str);
 		int				validate_directive_single(const std::string& str);
