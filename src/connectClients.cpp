@@ -390,7 +390,7 @@ void ConnectClients::connectClients(configParser& config)
                 #endif
                 if (g_shutdown_flag == 1)
                 {
-                    for (size_t x = 0; x <= _fdPortList._sockets.size(); x++)
+                    for (size_t x = 0; x <= _fdPortList._fds.size(); x++)
                     {
                         close(_fdPortList._fds[x].fd);
                     }
