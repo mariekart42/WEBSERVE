@@ -9,146 +9,146 @@
 #include <sys/time.h>
 #include <sys/wait.h>
 
-bool	Response::checkForP(void){
 
+int Response::validCGIextension()
+{
+	std::vector<std::string> allowed_ending;// = _info._cgiFileExtension;
+	allowed_ending.push_back(".py");
+//	allowed_ending.push_back(".pl");
+
+	std::string	temp;
+	size_t		dot;
+	size_t pos = _info._url.find('?');
+
+	if (pos != std::string::npos)
+	{
+		_info._cgiInfo._cgiPath = _info._url.substr(0, pos);
+		_info._cgiInfo._query = _info._url.substr(pos+1);
+	}
+	else
+		_info._cgiInfo._cgiPath = _info._url;
+
+	dot = _info._cgiInfo._cgiPath.find_last_of('.');
+
+	if (dot != std::string::npos)
+	{
+		temp = _info._cgiInfo._cgiPath.substr(dot);
+
+		for (size_t i = 0; i < allowed_ending.size(); i++)
+		{
+			if (_info._cgiInfo._cgiPath.size() < allowed_ending[i].size())
+				continue;
+			if (temp == allowed_ending[i])
+			{
+				_info._cgiInfo._fileExtension = temp;
+				return callCGI();
+			}
+		}
+	}
+	return 69; // Return false if the file extension is not allowed or not found.
+}
+
+bool	Response::checkLanguage()
+{
 	int result = false;
 
-	if (_cgiInfo._fileEnding == ".py") {
+	if (_info._cgiInfo._fileExtension == ".py")
 		result = std::system("python3 --version");
-	} else if (_cgiInfo._fileEnding == ".pl") {
+	else if (_info._cgiInfo._fileExtension == ".pl")
 		result = std::system("perl --version");
-	}
 
-	if (result == 0) {
-		#ifdef DEBUG
-		std::cout << "language is installed." << std::endl;
-		#endif
-		remove("temp.txt");
-		return true;
-	}
-	#ifdef INFO
-	std::cout << "language is not installed." << std::endl;
-	#endif
 	remove("temp.txt");
+	if (result == 0)
+		return true;
+
+	#ifdef INFO
+		std::cout << "language is not installed." << std::endl;
+	#endif
+
 	return false;
 }
 
-bool Response::validCGIextension() {
-	std::vector<std::string> allowed_ending;
-	allowed_ending.push_back(".py");
-	allowed_ending.push_back(".pl");
-	std::string	temp;
-	size_t		dot;
-	size_t pos = _info._url.find("?");
-	if (pos != std::string::npos){
-		this->_cgiInfo._cgiPath = this->_info._url.substr(0, pos);
-		this->_cgiInfo._query = this->_info._url.substr(pos+1);
-	}
-	else
-		this->_cgiInfo._cgiPath = this->_info._url;
 
-	// Find the last dot in the _cgiPath
-	#ifdef DEBUG
-		std::cout << "Path is " << _cgiInfo._cgiPath << std::endl;
-		std::cout << "Extension check" << std::endl;
-	#endif
-	dot = _cgiInfo._cgiPath.find_last_of('.');
-	if (dot == std::string::npos)
-		return false;
-	temp = _cgiInfo._cgiPath.substr(dot);
-	for (size_t i = 0; i < allowed_ending.size(); i++)
-	{
-		#ifdef DEBUG
-			std::cout << "We compare " << temp << " with " << allowed_ending[i] << std::endl;
-		#endif
-		if (_cgiInfo._cgiPath.size() < allowed_ending[i].size())
-			continue;
-		if(temp == allowed_ending[i]){
-			_cgiInfo._fileEnding = temp;
-			return true;
-		}
-	}
-	return false; // Return false if the file extension is not allowed or not found.
+int Response::inputCheck()
+{
+	if (!checkLanguage())
+		return INTERNAL_ERROR;
+	_info._cgiInfo._cgiPath = _info._configInfo._rootFolder + _info._cgiInfo._cgiPath;
+
+	//not supported file ending
+	if (_info._cgiInfo._fileExtension != ".py" && _info._cgiInfo._fileExtension != ".pl")
+		return METHOD_NOT_ALLOWED;
+
+	//file doesn't exist
+	if (access(_info._cgiInfo._cgiPath.c_str(), F_OK ) != 0)
+		return NOT_FOUND;
+
+	//no permission
+	if (access(_info._cgiInfo._cgiPath.c_str(), X_OK ) != 0)
+		return FORBIDDEN;
+	return 69;
 }
 
-
-
-int Response::callCGI(){
+int Response::callCGI()
+{
 	int pipefd[2];
 	int status;
-	int result;
-
-
 	struct timeval start;
 	struct timeval end;
 
-	if (checkForP() == false)
-		return -1;
-	_cgiInfo._cgiPath = this->_info._configInfo._rootFolder + _cgiInfo._cgiPath;
+	if (int check = inputCheck() < 0)
+		return check;
 
-	//file doesn't exist
-	if(access(this->_cgiInfo._cgiPath.c_str(), F_OK ) != 0){
-		return -2;
-	}
+	if (!_info._cgiInfo._body.empty())
+		_info._cgiInfo._query = _info._cgiInfo._body;
 
-	//no permission
-	if(access(this->_cgiInfo._cgiPath.c_str(), X_OK ) != 0){
-		return -4;
-	}
+	_info._cgiInfo._query = "QUERY_STRING=" + _info._cgiInfo._query;
 
-	//not supported file ending
-	if(_cgiInfo._fileEnding != ".py" && _cgiInfo._fileEnding != ".pl")
-		return -5;
+	char *query = (char*)_info._cgiInfo._query.c_str();
 
-	if (!_cgiInfo._body.empty())
-		_cgiInfo._query = _cgiInfo._body;
-
-	_cgiInfo._query = "QUERY_STRING=" + _cgiInfo._query;
-	#ifdef DEBUG
-	std::cout << "created query: "<< _cgiInfo._query << std::endl;
-	#endif
-
-
-	char *query = (char*)_cgiInfo._query.c_str();
 	std::string exec;
 
-	if (_cgiInfo._fileEnding == ".py") {
+	if (_info._cgiInfo._fileExtension == ".py")
 		exec = "python3";
-	} else {
+	else
 		exec = "perl";
-	}
+
 	char *env[] = {query, 0};
-//	char *p = (char*)exec;
-	char *cmd = (char*)_cgiInfo._cgiPath.c_str();
+	char *cmd = (char*)_info._cgiInfo._cgiPath.c_str();
 	char *argv[] = {const_cast<char *>(exec.c_str()), cmd, 0};
 
 	int file = open("root/tempCGI", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR); //TODO hardcoded. Do whatever for naming or keep it
 	gettimeofday(&start, 0);
 
 
-	if (pipe(pipefd) == -1) {
+
+
+	if (pipe(pipefd) == -1)
+	{
 		std::cerr << "Something went wrong creating the pipe!" << std::endl;
 		exit(1); // TODO VF implement Exception
 	}
 
 	int pid = fork();
-	if (pid == -1) {
+	if (pid == -1)
 		std::cerr << "Something went wrong with fork" << std::endl;
-	}
 
-	if (pid == 0) {
+	if (pid == 0)
+	{
 		close(pipefd[0]);
 		dup2(file, STDOUT_FILENO);
-		if (_cgiInfo._fileEnding == ".py")
+		if (_info._cgiInfo._fileExtension == ".py")
         {
-			if (execve("/usr/bin/python3", argv, env) == -1) {
+			if (execve("/usr/bin/python3", argv, env) == -1)
+			{
 				std::cerr << "what is wrong" << std::endl;
 				close(file);
 				exit(1);
 			}
 		}
 		else
-			if (execve("/usr/bin/perl", argv, env) == -1) {
+			if (execve("/usr/bin/perl", argv, env) == -1)
+			{
 				std::cerr << "what is wrong" << std::endl;
 				close(file);
 				exit(1);
@@ -158,15 +158,7 @@ int Response::callCGI(){
 	else
     {
 		close(pipefd[1]);
-		result = waitpid(pid, &status, 0);
-
-		if (result == 0)
-		{
-			#ifdef DEBUG
-			std::cout << RED << "CHILD ALIVE" << RESET << std::endl;
-			#endif
-		}
-
+		waitpid(pid, &status, 0);
 	}
     close(file);
 	gettimeofday(&end, 0);
@@ -198,7 +190,7 @@ bool Response::CGIoutput(){
 
 	std::string convert(_info._postInfo._input.begin(), _info._postInfo._input.end());
 	#ifdef LOG
-		Logging::log("send Data:\n" + _cgiInfo._cgiPath, 200);
+		Logging::log("send Data:\n" + _info._cgiInfo._cgiPath, 200);
    	#endif
 
 	ssize_t check = send(_info._clientSocket, (respooonse).c_str(), respooonse.size(), MSG_DONTWAIT);

@@ -39,6 +39,14 @@ struct postInfo
     int _contentLen;
 };
 
+struct cgiInfo
+{
+	std::string _cgiPath;
+	std::string _query;
+	std::string _fileExtension;
+	std::string _body;
+};
+
 struct clientInfo
 {
     int         _clientSocket;
@@ -49,19 +57,14 @@ struct clientInfo
     bool        _isMultiPart;
     postInfo    _postInfo;
     configInfo  _configInfo;
+	cgiInfo _cgiInfo;
     std::streampos _filePos;
     std::map<int,std::string> _errorMap;
-
+	std::vector<std::string> _cgiFileExtension;
     int _globalStatusCode;
     bool _isChunkedFile;
 };
 
-struct cgiInfo{
-	std::string _cgiPath;
-	std::string _query;
-	std::string _fileEnding;
-	std::string _body;
-};
 
 class Response
 {
@@ -71,7 +74,6 @@ class Response
         std::string _header;
         std::vector<uint8_t> _file;
         std::map<int, std::ofstream> _fileStreams;
-		cgiInfo _cgiInfo;
 
 
     public:
@@ -89,10 +91,12 @@ class Response
         bool        saveRequestToFile(std::ofstream&, const std::string&);
         void        deleteFile();
 
-		bool	checkForP(void);
-		bool	validCGIextension();
+		bool	checkLanguage();
+		int	validCGIextension();
 		int		callCGI();
 		bool	CGIoutput();
+		bool isCgi();
+		int inputCheck();
 
         std::vector<uint8_t> readFile(const std::string &fileName);
         int getRightResponse() const;

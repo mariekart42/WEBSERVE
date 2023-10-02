@@ -64,6 +64,27 @@ void Response::sendIndexPage()
         mySend(FORBIDDEN);
 }
 
+
+bool Response::isCgi()
+{
+	switch (validCGIextension())
+	{
+		case 69:
+			return false;
+		case METHOD_NOT_ALLOWED:
+			return mySend(METHOD_NOT_ALLOWED), true;
+		case NOT_FOUND:
+			return mySend(NOT_FOUND), true;
+		case FORBIDDEN:
+			return mySend(FORBIDDEN), true;
+		case INTERNAL_ERROR:
+			return mySend(INTERNAL_ERROR), true;
+		default:
+			return CGIoutput(), true;
+	}
+}
+
+
 std::streampos Response::sendRequestedFile()
 {
     #ifdef INFO
@@ -78,31 +99,36 @@ std::streampos Response::sendRequestedFile()
     if (_info._url == "/")
         return sendIndexPage(), 0;
 
-    if(validCGIextension() == true)
-	{
-		int check = callCGI();
-        #ifdef DEBUG
-		std::cout << "Return of CGI is " << check << std::endl;
-        #endif
-		switch (check)
-		{
-		case -1:
-			return(mySend(500));
-		case -2:
-			return (mySend(404));
-		case -3:
-			return (mySend(408));
-		default:
-        #ifdef DEBUG
-			std::cout << "Default case has been called" << std::endl;
-			std::cout << "Here" << std::endl;
-        #endif
-			return (CGIoutput());
-		}
-	}
-    #ifdef DEBUG
-        std::cout <<"ALIVE 1"<<std::endl;
-    #endif
+
+	if (isCgi())
+		return 0;
+
+//	// HEEERE
+//	if (validCGIextension())
+//	{
+//		if (_info._myHTTPMethod == M_POST)
+//		{
+//			std::string	convert(_info._postInfo._input.begin(), _info._postInfo._input.end());
+//			size_t		body = convert.find("\r\n\r\n");
+//			_info._cgiInfo._body = convert.substr(body+4);
+//		}
+//		switch (callCGI())
+//		{
+//			case -1:
+//				return mySend(500), false;
+//			case -2:
+//				return mySend(404), false;
+//			case -3:
+//				return mySend(408), false;
+//			case -4:
+//				return mySend(403), false;
+//			case -5:
+//				return mySend(501), false;
+//			default:
+//				return CGIoutput(), false;
+//		}
+//	}
+
 
     struct stat s = {};
     if IS_FOLDER_OR_FILE
@@ -353,40 +379,7 @@ bool Response::uploadFile(const std::string& contentType, const std::string& bou
     if (contentType == "multipart/form-data")
         return saveRequestToFile(*outfile, boundary);
 	else if (contentType == "application/x-www-form-urlencoded")
-	{
-        #ifdef DEBUG
-		std::cout << RED << "FOUND application/x-www-form-urlencoded" << RESET << std::endl;
-        #endif
-		validCGIextension();
-		{
-			std::string	convert(_info._postInfo._input.begin(), _info._postInfo._input.end());
-			size_t		body = convert.find("\r\n\r\n");
-			_cgiInfo._body = convert.substr(body+4);
-			int check = callCGI();
-            #ifdef DEBUG
-			std::cout << "Return of CGI is " << check << std::endl;
-            #endif
-			switch (check)
-			{
-			case -1:
-				return(mySend(500));
-			case -2:
-				return (mySend(404));
-			case -3:
-				return (mySend(408));
-			case -4:
-				return (mySend(403));
-			case -5:
-				return (mySend(501));
-			default:
-            #ifdef DEBUG
-				std::cout << "Default case has been called" << std::endl;
-				std::cout << "Here" << std::endl;
-            #endif
-				return (CGIoutput());
-			}
-		}
-	}
+		isCgi();
 	return false;
 }
 
@@ -410,7 +403,6 @@ bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boun
 
     if NO_DATA_TO_UPLOAD
         return true;
-
 
     if (posStartBoundary != std::string::npos)  // cut header and put stuff afterward to outfile
     {
@@ -436,8 +428,6 @@ bool Response::saveRequestToFile(std::ofstream &outfile, const std::string& boun
     if (endOfFile)
     {
         outfile.close();
-
-
         mySend(getRightResponse());
         return false;
     }

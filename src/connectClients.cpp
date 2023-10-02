@@ -144,6 +144,7 @@ void ConnectClients::initClientInfo(configParser& config)
         initNewInfo._isChunkedFile = false;
         initNewInfo._filePos = 0;
         initNewInfo._globalStatusCode = 200;
+		initNewInfo._cgiFileExtension = config.getCgiExtensions();
         if (initNewInfo._myHTTPMethod == M_POST)
         {
             initNewInfo._postInfo._input = input;
