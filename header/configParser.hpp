@@ -185,6 +185,7 @@ class configParser {
 		int			string_to_int(const std::string&);
 		std::string		getToken(const std::string& str, int n);
 		int				countToken(const std::string& str);
+		bool			validate_cgi(const std::string& str);
 		int				validate_directive_single(const std::string& str);
 		int				validate_directive_multi(const std::string& str);
 		void			validate_minimal_server_configuration(Server& server);

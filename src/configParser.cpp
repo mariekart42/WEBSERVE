@@ -366,6 +366,13 @@ int configParser::countToken(const std::string& str)
 	return count;
 }
 
+bool configParser::validate_cgi(const std::string& str)
+{
+	if (str == ".py" || str == ".pl")
+		return true;
+	return false;
+}
+
 int configParser::validate_directive_single(const std::string& str)
 {
 	std::string line_first_token = getToken(str, 1);
@@ -702,7 +709,8 @@ void configParser::setCGI(Server& server, const std::string& str, const std::str
 		server._status.insert ( std::pair<std::string,int const>("cgi",_directive_line_nbr) );
 		while (i <= count && getToken(str, i).c_str()[0] != '#') // TODO VF check for existing entries in Vector
 		{
-			it->second._cgi.push_back(getToken(str, i));
+			if (validate_cgi(getToken(str, i)))
+				it->second._cgi.push_back(getToken(str, i));
 			i++;
 		}
 	}
