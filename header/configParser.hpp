@@ -153,6 +153,8 @@ class configParser {
 		int					getBodySize(int incoming_port); // returns body-size from server with port
 		IntVector&			getPortVector();
 		IntStringMap&		getErrorMap();
+		bool				getHasRedirection();
+		const std::string&	getCurrentRoute() const;
 		// global settings
 		int			get_timeout() const;
 		int			get_max_clients() const;
@@ -180,9 +182,12 @@ class configParser {
 		IntStringMap	_default_error_map;
 		StringVector	_empty_string_vector;
 
+		// temp
+		std::string		_current_route;
+
 		Server & getServer(int port);
 		void			parse_request_data();
-		int			string_to_int(const std::string&);
+		int				string_to_int(const std::string&);
 		std::string		getToken(const std::string& str, int n);
 		int				countToken(const std::string& str);
 		bool			validate_cgi(const std::string& str);
@@ -211,6 +216,7 @@ class configParser {
 		void			create_default_error_map();
 		void			check_path_traversal(const std::string path);
 		bool			check_file(const std::string path);
+		bool			RequestedLocationExist();
 		std::string		remove_leading_character(const std::string str, char c);
 		std::string		remove_trailing_character(const std::string str, char c);
 		std::string		handle_redirection(const std::string route, Server& server);

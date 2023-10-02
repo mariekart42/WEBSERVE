@@ -31,7 +31,8 @@ configParser::configParser() : _context(GLOBAL), _directive_line_nbr(0)
 
 configParser::~configParser() {}
 
-bool	configParser::setData(const std::string& url, const std::string& host, const int port) {
+bool	configParser::setData(const std::string& url, const std::string& host, const int port)
+{
 	_request_data._url = url;
 	_request_data._url.empty() ? _request_data._url = "/" : _request_data._url = _request_data._url;
 	_request_data._host = host; // TODO VF do we process this?
@@ -137,43 +138,16 @@ bool configParser::validConfig(int argc, char **argv)
 
 // iterate through locations and check exact route for example </> or </index.html>
 // if requested url is "/index.html", the first location would already be a match. if </> is not defined, then </index.html> would match.
-const std::string	configParser::getUrl() {
+const std::string	configParser::getUrl()
+{
 
 	bool HasMatch = false;
 	bool IsRedirect = false;
 
-	// get Server based on requested Port
-	Server& server = getServer(_request_data._port);
-
-	// check if a route of the server matches against the requested URL (from the beginning of the string)
-	StringVector::iterator route;
-	std::string current_route;
-	for (route = server._routes_vector.begin(); route != server._routes_vector.end(); ++route)
-	{
-		current_route = *route;
-
-		// special case </> -> return true
-		if (_request_data._url == "/" && current_route == "/")
-		{
-			HasMatch = true;
-			break ;
-		}
-		// find current_route in url, if not found -> continue to next route
-		if (current_route.size() > 1 && _request_data._url.find(current_route.c_str(), 0, current_route.size()) == std::string::npos)
-			continue ;
-		// check for exact match without trailing characters in found url-block
-		if (current_route.size() > 1 && (_request_data._url.size() == current_route.size() \
-			|| (current_route.at(current_route.size() - 1) != '/' && _request_data._url.at(current_route.size()) == '/') \
-			|| current_route.at(current_route.size() - 1) == '/' ))
-		{
-			HasMatch = true;
-			break ;
-		}
-
-	}
+	HasMatch = RequestedLocationExist();
 
 	// check if route has redirect directive
-	if (HasMatch && !return_route(server, current_route)->second._redirect.empty())
+	if (HasMatch && !return_route(getServer(_request_data._port), _current_route)->second._redirect.empty())
 		IsRedirect = true;
 
 	#ifdef DEBUG
@@ -183,69 +157,85 @@ const std::string	configParser::getUrl() {
 
 	// return Url and make sure it starts with an "/"
 	if (IsRedirect)
-		return prepend_forward_slash(handle_redirection(*route, server));
+		return prepend_forward_slash(handle_redirection(_current_route, getServer(_request_data._port)));
 	return prepend_forward_slash(_request_data._url);
 }
 
-bool configParser::getAutoIndex() {
-	RouteIterator route;
-	bool result = true;
-	route = getServer(_request_data._port)._routes.find(_request_data._url);
-	if (route != getServer(_request_data._port)._routes.end() && !route->second._autoindex.empty())
+bool configParser::getAutoIndex()
+{
+	bool result = false;
+	if (RequestedLocationExist())
+	{
+		RouteIterator route = return_route(getServer(_request_data._port), _current_route);
 		route->second._autoindex == "true" ? result = true : result = false;
+	}
 	return result;
 }
 
-const std::string	configParser::getIndexFile() {
-	RouteIterator route;
-	route = getServer(_request_data._port)._routes.find(_request_data._url);
-	if (route != getServer(_request_data._port)._routes.end())
-    	return route->second._index;
+const std::string	configParser::getIndexFile()
+{
+	if (RequestedLocationExist())
+	{
+		RouteIterator route = return_route(getServer(_request_data._port), _current_route);
+		if (route != getServer(_request_data._port)._routes.end())
+    		return route->second._index;
+	}
 	return INDEX;
 }
 
-bool configParser::getPostAllowed() {
-	RouteIterator route;
-	route = getServer(_request_data._port)._routes.find(_request_data._url);
-	if (route != getServer(_request_data._port)._routes.end())
+bool configParser::getPostAllowed()
+{
+	if (RequestedLocationExist())
 	{
-		if (hasMethod(route->second._methods, "POST"))
-			return true;
-        return false;
+		RouteIterator route = return_route(getServer(_request_data._port), _current_route);
+		if (route != getServer(_request_data._port)._routes.end())
+		{
+			if (hasMethod(route->second._methods, "POST"))
+				return true;
+			return false;
+		}
 	}
 	return true;
 }
 
-bool configParser::getDeleteAllowed() {
-	RouteIterator route;
-	route = getServer(_request_data._port)._routes.find(_request_data._url);
-	if (route != getServer(_request_data._port)._routes.end())
+bool configParser::getDeleteAllowed()
+{
+	if (RequestedLocationExist())
 	{
-		if (hasMethod(route->second._methods, "DELETE"))
-			return true;
-        return false;
+		RouteIterator route = return_route(getServer(_request_data._port), _current_route);
+		if (route != getServer(_request_data._port)._routes.end())
+		{
+			if (hasMethod(route->second._methods, "DELETE"))
+				return true;
+			return false;
+		}
 	}
 	return true;
 }
 
-bool configParser::getGetAllowed() {
-	RouteIterator route;
-	route = getServer(_request_data._port)._routes.find(_request_data._url);
-	if (route != getServer(_request_data._port)._routes.end())
+bool configParser::getGetAllowed()
+{
+	if (RequestedLocationExist())
 	{
-		if (hasMethod(route->second._methods, "GET"))
-			return true;
-        return false;
+		RouteIterator route = return_route(getServer(_request_data._port), _current_route);
+		if (route != getServer(_request_data._port)._routes.end())
+		{
+			if (hasMethod(route->second._methods, "GET"))
+				return true;
+			return false;
+		}
 	}
 	return true;
 }
 
 StringVector&	configParser::getCgiExtensions()
 {
-	RouteIterator route;
-	route = getServer(_request_data._port)._routes.find(_request_data._url);
-	if (route != getServer(_request_data._port)._routes.end())
-		return route->second._cgi;
+	if (RequestedLocationExist())
+	{
+		RouteIterator route = return_route(getServer(_request_data._port), _current_route);
+		if (route != getServer(_request_data._port)._routes.end())
+			return route->second._cgi;
+	}
 	return _empty_string_vector;
 }
 
@@ -264,6 +254,21 @@ IntStringMap&	configParser::getErrorMap()
 	return getServer(_request_data._port)._error_map;
 }
 
+bool configParser::getHasRedirection()
+{
+	if (RequestedLocationExist())
+	{
+		RouteIterator route = return_route(getServer(_request_data._port), _current_route);
+		if (route != getServer(_request_data._port)._routes.end() && !route->second._redirect.empty())
+			return true;
+	}
+	return false;
+}
+
+const std::string& configParser::getCurrentRoute() const
+{
+	return _current_route;
+}
 
 int	configParser::get_timeout() const
 {
@@ -301,7 +306,8 @@ int	configParser::get_backlog() const
 
 
 
-Server & configParser::getServer(int port) {
+Server & configParser::getServer(int port)
+{
 	ServersMap::iterator it = _servers.find(port);
 	return it->second;
 }
@@ -324,7 +330,10 @@ void configParser::parse_request_data()
 
 	// save the filename
 	if (IsFile)
-		_request_data._filename = _request_data._url.substr(PosFile, _request_data._url.size());
+	{
+		_request_data._filename = _request_data._url;
+		_request_data._filename.substr(PosFile, _request_data._url.size());
+	}
 
 	// DEBUG
 	// std::cout << GREEN << "FILENAME " << _request_data._filename << " ROUTE " << _request_data._url <<  " HAS SUBFOLDERS " << HasSubfolder << RESET << std::endl;
@@ -734,7 +743,8 @@ void configParser::setRedirect(Server& server, const std::string& str, const std
 }
 
 // prepends '/' if not present
-std::string configParser::prepend_forward_slash(const std::string str) const {
+std::string configParser::prepend_forward_slash(const std::string str) const
+{
 	std::string temp = str;
 	if (!temp.empty() && temp.at(0) != '/')
 		temp.insert(temp.begin(), '/');
@@ -742,7 +752,8 @@ std::string configParser::prepend_forward_slash(const std::string str) const {
 }
 
 // appends '/' if not present
-std::string configParser::append_forward_slash(const std::string str) const {
+std::string configParser::append_forward_slash(const std::string str) const
+{
 	std::string new_str = str;
 	if (!new_str.empty() && new_str.at(new_str.size() - 1) != '/')
 		new_str.append("/");
@@ -774,7 +785,8 @@ bool configParser::hasRoute(Server& server, const std::string& route)
 	return true;
 }
 
-bool configParser::hasMethod(StringVector& methods, std::string method) const {
+bool configParser::hasMethod(StringVector& methods, std::string method) const
+{
 
 	for (size_t i = 0; i < methods.size(); ++i)
 	{
@@ -824,6 +836,42 @@ bool configParser::check_file(const std::string path)
 	}
 	file.close();
 	return true;
+}
+
+bool configParser::RequestedLocationExist()
+{
+	bool HasMatch = false;
+
+	// get Server based on requested Port
+	Server& server = getServer(_request_data._port);
+
+	// check if a route of the server matches against the requested URL (from the beginning of the string)
+	StringVector::iterator route;
+	for (route = server._routes_vector.begin(); route != server._routes_vector.end(); ++route)
+	{
+		_current_route = *route;
+
+		// special case </> -> return true
+		if (_request_data._url == "/" && _current_route == "/")
+		{
+			HasMatch = true;
+			break ;
+		}
+		// find _current_route in url, if not found -> continue to next route
+		if (_current_route.size() > 1 && _request_data._url.find(_current_route.c_str(), 0, _current_route.size()) == std::string::npos)
+			continue ;
+		// check for exact match without trailing characters in found url-block
+		if (_current_route.size() > 1 && (_request_data._url.size() == _current_route.size() \
+			|| (_current_route.at(_current_route.size() - 1) != '/' && _request_data._url.at(_current_route.size()) == '/') \
+			|| _current_route.at(_current_route.size() - 1) == '/' ))
+		{
+			HasMatch = true;
+			break ;
+		}
+	}
+	if (!HasMatch)
+		_current_route = "";
+	return HasMatch;
 }
 
 std::string configParser::remove_leading_character(const std::string str, char c)
