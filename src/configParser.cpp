@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   configParser.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vfuhlenb <vfuhlenb@student.42wolfsburg.    +#+  +:+       +#+        */
+/*   By: vfuhlenb <vfuhlenb@students.42wolfsburg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 23:17:00 by vfuhlenb          #+#    #+#             */
-/*   Updated: 2023/09/22 23:58:43 by vfuhlenb         ###   ########.fr       */
+/*   Updated: 2023/10/02 20:27:35 by vfuhlenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,7 @@ const std::string	configParser::getUrl()
 
 	#ifdef DEBUG
 	if (HasMatch && IsRedirect)
-		std::cout << BLUE << "ROUTE PATH MATCHED " << *route << "  with URL " << _request_data._url << RESET <<  std::endl; // DEBUG
+		std::cout << BLUE << "ROUTE PATH MATCHED " << _current_route << "  with URL " << _request_data._url << RESET <<  std::endl; // DEBUG
 	#endif
 
 	// return Url and make sure it starts with an "/"
@@ -163,7 +163,7 @@ const std::string	configParser::getUrl()
 
 bool configParser::getAutoIndex()
 {
-	bool result = false;
+	bool result = true;
 	if (RequestedLocationExist())
 	{
 		RouteIterator route = return_route(getServer(_request_data._port), _current_route);
@@ -852,11 +852,18 @@ bool configParser::RequestedLocationExist()
 		_current_route = *route;
 
 		// special case </> -> return true
+		size_t pos = _request_data._url.find("/");
 		if (_request_data._url == "/" && _current_route == "/")
 		{
 			HasMatch = true;
 			break ;
 		}
+		if (_request_data._url.find("/", pos + 1) == std::string::npos && _current_route == "/" && !_request_data._filename.empty())
+		{
+			HasMatch = true;
+			break ;
+		}
+
 		// find _current_route in url, if not found -> continue to next route
 		if (_current_route.size() > 1 && _request_data._url.find(_current_route.c_str(), 0, _current_route.size()) == std::string::npos)
 			continue ;
