@@ -3,7 +3,7 @@
 #include <sstream>
 
 Request::Request(const std::vector<uint8_t>& clientData):
-    _tmp(std::string(clientData.begin(), clientData.end())), _statusCode()
+    _tmp(std::string(clientData.begin(), clientData.end()))
 {}
 
 Request::~Request() {}
