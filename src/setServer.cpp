@@ -1,6 +1,4 @@
 #include "../header/setServer.hpp"
-#include <netdb.h>
-#include <sys/socket.h>
 
 SetServer::SetServer(){}
 SetServer::~SetServer() {}
@@ -12,7 +10,7 @@ int SetServer::setNewSocketFd(int port) const
     struct addrinfo *bindAddress;
 
     memset(&socketAddress, 0, sizeof(socketAddress));
-    socketAddress.ai_family = AF_UNSPEC;        // communicate over IPv4 // !CHANGED
+    socketAddress.ai_family = AF_UNSPEC;        // communicate over IPv4
     socketAddress.ai_socktype = SOCK_STREAM;  // TCP socket
     socketAddress.ai_flags = AI_PASSIVE;      // any available network interface
 
@@ -54,10 +52,7 @@ void SetServer::setServer(int ac, char **av)
 {
     configParser config;
     if (!config.validConfig(ac, av))
-    {
         exitWithError("Invalid Config File [EXIT]");
-        exit(1);
-    }
 
     fdList initList;
     _backlog = config.get_backlog();

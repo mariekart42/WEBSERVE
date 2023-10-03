@@ -13,7 +13,6 @@ void Logging::log(const std::string& message, int statusCode)
         #endif
         return;
     }
-//    logFile << " ======= ";
     time_t currentTime;
     currentTime = time(0); // Get current time
     tm* timeinfo = localtime(&currentTime);
@@ -27,6 +26,5 @@ void Logging::log(const std::string& message, int statusCode)
     }
     else if (statusCode > 200)
         logFile << "\n" << buffer << " === ERROR: " << message << std::endl;
-
     logFile.close();
 }

@@ -1,29 +1,12 @@
 #include "../header/connectClients.hpp"
-#include <sys/poll.h>
 
-#ifndef DEBUG_LEAKS
-volatile sig_atomic_t	g_shutdown_flag = 0;
-std::string g_cookieName = "globaltestmama";
+std::string g_cookieName = "mama";
+sig_atomic_t	g_shutdown_flag = 0;
 
-static void signalHandler(int sigNum)
-{
-	if (sigNum == SIGINT || sigNum == SIGTERM)
-	{
-		std::cout << "\nReceived shutdown signal. Terminating webserv..." << std::endl;
-		g_shutdown_flag = 1;
-	}
-}
-#endif
-#ifdef DEBUG_LEAKS
-int g_shutdown_flag = 0;
-#endif
-
-ConnectClients::ConnectClients(const fdList& initList):
+ConnectClients::ConnectClients(const fdList& initList): _x(),
         _fdPortList(initList), _clientAddressLen(sizeof(_clientAddress)),_clientAddress(),
-        _byteVector(),
-        _clientInfo()
+        _byteVector(), _clientInfo()
 {}
-
 
 ConnectClients::~ConnectClients()
 {}
@@ -40,17 +23,11 @@ void ConnectClients::initFdList()
             newSocket.events = POLLOUT;
             newSocket.revents = 0;
             _fdPortList._fds.push_back(newSocket);
-
         }
         for (int k = 0 + x; k < portSize; k++) {
             if (_fdPortList._fds[k].fd == -1) {
                 _fdPortList._fds[k].fd = _fdPortList._sockets.at(x);
-                if (setNonBlocking(_fdPortList._fds[k].fd == -1))
-                {
-                    #ifdef INFO
-                        std::cout << BOLDRED << "fcntl error, could not set flag to O_NONBLOCK" << RESET << std::endl;
-                    #endif
-                }
+                setNonBlocking(_fdPortList._fds[k].fd);
                 _fdPortList._fds[k].events = POLLIN;
                 _fdPortList._fds[k].revents = 0;
                 break;
@@ -58,7 +35,6 @@ void ConnectClients::initFdList()
         }
     }
 }
-
 
 void ConnectClients::initNewConnection()
 {
@@ -197,11 +173,8 @@ int ConnectClients::receiveData()
     char clientData[dataLen];
 
     memset(clientData, 0, sizeof(clientData));
-    ssize_t bytesRead = recv(_fdPortList._fds[_x].fd, clientData, sizeof(clientData), MSG_DONTWAIT); // MSG_DONTWAIT
+    ssize_t bytesRead = recv(_fdPortList._fds[_x].fd, clientData, sizeof(clientData), MSG_DONTWAIT);
 
-    #ifdef DEBUG
-    std::cout << "Client Data["<<bytesRead<<"]:\n"<<clientData<<std::endl;
-    #endif
     if (bytesRead < 0)
         return -1;
     if (bytesRead == 0)
@@ -226,7 +199,7 @@ void ConnectClients::closeConnection()
             return;
         close(_fdPortList._fds[_x].fd);
         _fdPortList._fds.erase(_fdPortList._fds.begin() + _x);
-        _x--; // This is necessary otherwise the webserver is unstable
+        _x--;
         return ;
     }
     #ifdef LOG
@@ -240,6 +213,8 @@ void ConnectClients::closeConnection()
 
 bool ConnectClients::newConnection()
 {
+	if (g_shutdown_flag != 0)
+		return false;
     int portSize = _fdPortList._sockets.size();
     for (int i = 0; i < portSize; i++)
     {
@@ -265,6 +240,15 @@ void ConnectClients::setPollEvent(int filePos)
     }
 }
 
+void ConnectClients::setFileData(clientInfo data)
+{
+	if (!data._isMultiPart)
+	{
+		data._postInfo._outfile->close();
+		delete data._postInfo._outfile;
+	}
+}
+
 void ConnectClients::handleData(configParser& config)
 {
     initClientInfo(config);
@@ -273,28 +257,20 @@ void ConnectClients::handleData(configParser& config)
     it = _clientInfo.find(_fdPortList._fds[_x].fd);
 
     if (it == _clientInfo.end())
-    {
-        // closeConnection(); // VF testing
         return ;
-    }
 
     Response response(_fdPortList._fds[_x].fd, it->second);
 
     switch (it->second._myHTTPMethod)
     {
         case M_GET:
-//            it->second._filePos = response.sendRequestedFile ();
             setPollEvent(response.sendRequestedFile());
             break;
         case M_POST:
             it->second._isMultiPart = response.uploadFile(it->second._contentType,
                                                           it->second._postInfo._boundary,
                                                           it->second._postInfo._outfile);
-            if (!it->second._isMultiPart)
-            {
-                it->second._postInfo._outfile->close();
-                delete it->second._postInfo._outfile;
-            }
+			setFileData(it->second);
             break;
         case M_DELETE:
             response.deleteFile();
@@ -309,20 +285,16 @@ void ConnectClients::handleData(configParser& config)
 
 void ConnectClients::clientConnected(configParser& config)
 {
-    // int fdListLen = _fdPortList._fds.size();
     for (_x = 0; _x < static_cast<int>(_fdPortList._fds.size()); _x++)
     {
         if (SOCKET_ERROR)
         {
-            #ifdef DEBUG
-            std::cout << BOLDRED << "SOCKET_ERROR" << RESET << std::endl;
-            #endif
             closeConnection();
             break ;
         }
         if (INCOMING_DATA)
         {
-            if (g_shutdown_flag == 0 && newConnection())
+            if (newConnection())
                 initNewConnection();
             else
             {
@@ -335,10 +307,10 @@ void ConnectClients::clientConnected(configParser& config)
                         closeConnection();
                         break;
                     default:
+                        closeConnection();
                         #ifdef LOG
                             Logging::log("Unable to read Data from connected Client", 500);
                         #endif
-                        closeConnection();
                         break;
                 }
             }
@@ -346,27 +318,34 @@ void ConnectClients::clientConnected(configParser& config)
     }
 }
 
+void ConnectClients::shutDownServer()
+{
+	for (size_t x = 0; x < _fdPortList._fds.size(); x++)
+	{
+		if (_fdPortList._fds[x].fd != -1)
+			close(_fdPortList._fds[x].fd);
+	}
+	for (size_t x = 0; x < _fdPortList._sockets.size(); x++)
+	{
+		if (_fdPortList._sockets[x] != -1)
+			close(_fdPortList._sockets[x]);
+	}
+}
+
 void ConnectClients::connectClients(configParser& config)
 {
     initFdList();
     std::cout << GRN " . . Server ready to connect Clients" RESET << std::endl;
-    #ifdef DEBUG_LEAKS
-    int counter = 0;
-    g_shutdown_flag = 0;
-    #endif
-    int ret = -1;
+
     while (69)
     {
-        #ifndef DEBUG_LEAKS
-        signal(SIGINT, signalHandler);
-	    signal(SIGTERM, signalHandler);
-        #endif
+		mySignals();
 
         // poll checks _fdList for read & write events at the same time
-        ret = poll(&_fdPortList._fds[0], (_fdPortList._fds.size()), config.get_timeout());
-        switch (ret)
+        switch (poll(&_fdPortList._fds[0], (_fdPortList._fds.size()), config.get_timeout()))
         {
             case -1:
+
                 #ifdef INFO
                 if (g_shutdown_flag == 0)
                 {
@@ -378,35 +357,12 @@ void ConnectClients::connectClients(configParser& config)
                 #endif
                 break;
             case 0:
-                #ifdef DEBUG
-                    Logging::log("waiting for client to connect", 200);
-                #endif
                 if (g_shutdown_flag == 1)
-                {
-                    // usleep(10000);
-                    for (size_t x = 0; x < _fdPortList._fds.size(); x++)
-                    {
-                        // usleep(1000);
-                        if (_fdPortList._fds[x].fd != -1)
-                            close(_fdPortList._fds[x].fd);
-                    }
-                    for (size_t x = 0; x < _fdPortList._sockets.size(); x++)
-                    {
-                        // usleep(1000);
-                        if (_fdPortList._sockets[x] != -1)
-                            close(_fdPortList._sockets[x]);
-                    }
-                    return ;
-                }
+                    return shutDownServer();
                 break;
             default:
                 clientConnected(config);
                 break;
         }
-        #ifdef DEBUG_LEAKS
-        counter++;
-        if (counter == 1000)
-            break;
-        #endif
     }
 }

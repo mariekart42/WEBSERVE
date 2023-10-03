@@ -1,5 +1,4 @@
 #include "../header/utils.h"
-#include <sys/fcntl.h>
 
 void logg(const std::string &message)
 {
@@ -17,11 +16,13 @@ void exitWithError(const std::string &msg)
 
 int setNonBlocking(int fd)
 {
-    // int flags = fcntl(fd, F_GETFL, 0); // not allowed
-    // if (flags == -1)
-    //     return -1;
     if (fcntl(fd, F_SETFL, O_NONBLOCK, FD_CLOEXEC) == -1)
+    {
+		#ifdef INFO
+			    std::cout << BOLDRED << "fcntl error, could not set flag to O_NONBLOCK" << RESET << std::endl;
+		#endif
         return -1;
+	}
     return 0;
 }
 
@@ -40,29 +41,21 @@ bool endsWith(const std::string& str, const std::string& end)
         return false;
 }
 
-//std::vector<uint8_t> readFile(const std::string &fileName)
-//{
-//    std::ifstream file;
-//    file.open(fileName, std::ios::binary);
-//
-//    if (!file)
-//    {
-//        #ifdef LOG
-//          Logging::log("Failed to open file: " + fileName, 500);
-//        #endif
-//        return static_cast<std::vector<uint8_t> >(0);
-//    }
-//    // Read the file content into a vector
-//    std::vector<uint8_t> content(
-//            (std::istreambuf_iterator<char>(file)),
-//            std::istreambuf_iterator<char>()
-//    );
-//
-//
-//
-//
-//    return content;
-//}
+void signalHandler(int sigNum)
+{
+	if (sigNum == SIGINT || sigNum == SIGTERM)
+	{
+		std::cout << "\nReceived shutdown signal. Terminating webserv ..." << std::endl;
+		g_shutdown_flag = 1;
+	}
+}
+
+void mySignals()
+{
+	signal(SIGINT, signalHandler);
+	signal(SIGTERM, signalHandler);
+}
+
 
 std::string generateList(const std::string& rootFolder, const std::string& currentFolder)
 {

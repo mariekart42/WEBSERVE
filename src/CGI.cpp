@@ -24,7 +24,8 @@ void Response::handleCookies(const std::string& data, size_t pos)
 	mySend(DEFAULTWEBPAGE);
 }
 
-int Response::validCGIextension()
+
+int Response::validCgiExtension()
 {
 	std::vector<std::string> allowed_ending;
 	allowed_ending.push_back(".py");
@@ -36,25 +37,23 @@ int Response::validCGIextension()
 		size_t		body = convert.find("\r\n\r\n");
 		if (convert.compare(body + 4, 9, "textData=") == 0)
 			return handleCookies(convert, body+13), IS_COOKIE;
-		_info._cgiInfo._body = convert.substr(body+4);
+		_info._cgiInfo._body = convert.substr(body + 4);
 	}
-	std::string	temp;
-	size_t		dot;
 	size_t pos = _info._url.find('?');
 
 	if (pos != std::string::npos)
 	{
 		_info._cgiInfo._cgiPath = _info._url.substr(0, pos);
-		_info._cgiInfo._query = _info._url.substr(pos+1);
+		_info._cgiInfo._query = _info._url.substr(pos + 1);
 	}
 	else
 		_info._cgiInfo._cgiPath = _info._url;
 
-	dot = _info._cgiInfo._cgiPath.find_last_of('.');
+	size_t dot = _info._cgiInfo._cgiPath.find_last_of('.');
 
 	if (dot != std::string::npos)
 	{
-		temp = _info._cgiInfo._cgiPath.substr(dot);
+		std::string temp = _info._cgiInfo._cgiPath.substr(dot);
 
 		for (size_t i = 0; i < allowed_ending.size(); i++)
 		{
@@ -70,7 +69,7 @@ int Response::validCGIextension()
 	return 69; // Return false if the file extension is not allowed or not found.
 }
 
-bool	Response::checkLanguage()
+bool	Response::checkLanguage() const
 {
 	int result = false;
 
@@ -138,7 +137,7 @@ int Response::callCGI()
 	char *cmd = (char*)_info._cgiInfo._cgiPath.c_str();
 	char *argv[] = {const_cast<char *>(exec.c_str()), cmd, 0};
 
-	int file = open(TEMP_CGI, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+	int file = open(TMP_CGI, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
 	gettimeofday(&start, 0);
 
 	if (pipe(pipefd) == -1)
@@ -157,7 +156,6 @@ int Response::callCGI()
 		#endif
 	}
 	else if (pid == 0)
-	
 	{
 		close(pipefd[0]);
 		dup2(file, STDOUT_FILENO);
@@ -173,6 +171,7 @@ int Response::callCGI()
 			}
 		}
 		else
+		{
 			if (execve("/usr/bin/perl", argv, env) == -1)
 			{
 				#ifdef DEBUG
@@ -181,6 +180,7 @@ int Response::callCGI()
 				close(file);
 				exit(1);
 			}
+		}
 		close(file);
 		close(pipefd[1]);
 	}
@@ -195,22 +195,20 @@ int Response::callCGI()
 	gettimeofday(&end, 0);
 
 	int diff = (end.tv_sec - start.tv_sec) * 1000.0 + (end.tv_usec - start.tv_usec) / 1000.0;
-	#ifdef DEBUG
-	std::cout << "Time out: " << diff  << "ms compared with " << CGI_TIMEOUT << "ms" << std::endl;
-	#endif
 	if (CGI_TIMEOUT > 0 && diff >= CGI_TIMEOUT )
 	{
-		remove(TEMP_CGI);
-		return -3;
+		remove(TMP_CGI);
+		return REQUEST_TIMEOUT;
 	}
 	return 0;
 }
 
-bool Response::CGIoutput(){
-	std::ifstream inputFile(TEMP_CGI);
+bool Response::cgiOutput()
+{
+	std::ifstream inputFile(TMP_CGI);
 	//error check if file is open
 	if (!inputFile.is_open())
-		return (mySend(500));
+		return mySend(INTERNAL_ERROR);
 	std::string header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: ";
 	std::string line;
 	std::string respooonse;
@@ -224,15 +222,15 @@ bool Response::CGIoutput(){
 	Logging::log("send Data:\n" + _info._cgiInfo._cgiPath, 200);
 	#endif
 
-	ssize_t check = send(_info._clientSocket, (respooonse).c_str(), respooonse.size(), MSG_DONTWAIT); // MSG_DONTWAIT
-	if (check <=0)
+	ssize_t check = send(_info._clientSocket, (respooonse).c_str(), respooonse.size(), MSG_DONTWAIT);
+	if (check <= 0)
 	{
 		#ifdef LOG
 		Logging::log("Failed to send Data to Client", 500);
 		#endif
 		inputFile.close();
 	}
-	remove(TEMP_CGI);
+	remove(TMP_CGI);
 	inputFile.close();
 	return false;
 }
