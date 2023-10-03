@@ -4,7 +4,8 @@
 #include "utils.h"
 
 
-enum httpMethod{
+enum httpMethod
+{
     M_GET,
     M_POST,
     M_DELETE,
@@ -15,7 +16,6 @@ class Request
 {
     private:
         std::string _tmp;
-        int _statusCode;
 
     public:
         Request(const std::vector<uint8_t>&);
@@ -24,7 +24,6 @@ class Request
         std::string getUrlString();
         int getPort();
         static std::string getFileContentType(const std::string&);
-        int getStatusCode() const;
         std::string getContentType();
         std::string getFileName(const std::string&, const std::string&, const std::string&);
         std::string getBoundary();
@@ -33,7 +32,6 @@ class Request
         static bool checkPathInFolder(std::string, const std::string&);
         static bool pathExists(const std::string&);
         int getContentLen();
-        bool badFileContentType(const std::string&);
         bool traversalAttack(const std::string &url);
 };
 
