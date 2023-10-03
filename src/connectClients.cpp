@@ -389,13 +389,18 @@ void ConnectClients::connectClients(configParser& config)
                 #endif
                 if (g_shutdown_flag == 1)
                 {
-                    for (size_t x = 0; x <= _fdPortList._fds.size(); x++)
+                    usleep(10000);
+                    for (size_t x = 0; x < _fdPortList._fds.size(); x++)
                     {
-                        close(_fdPortList._fds[x].fd);
+                        usleep(1000);
+                        if (_fdPortList._fds[x].fd != -1)
+                            close(_fdPortList._fds[x].fd);
                     }
-                    for (size_t x = 0; x <= _fdPortList._sockets.size(); x++)
+                    for (size_t x = 0; x < _fdPortList._sockets.size(); x++)
                     {
-                        close(_fdPortList._sockets[x]);
+                        usleep(1000);
+                        if (_fdPortList._sockets[x] != -1)
+                            close(_fdPortList._sockets[x]);
                     }
                 }
                 break;
