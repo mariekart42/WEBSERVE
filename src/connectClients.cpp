@@ -46,12 +46,12 @@ void ConnectClients::initFdList()
         for (int k = 0 + x; k < portSize; k++) {
             if (_fdPortList._fds[k].fd == -1) {
                 _fdPortList._fds[k].fd = _fdPortList._sockets.at(x);
-                // if (setNonBlocking(_fdPortList._fds[k].fd == -1))
-                // {
-                //     #ifdef INFO
-                //         std::cout << BOLDRED << "fcntl error, could not set flag to O_NONBLOCK" << RESET << std::endl;
-                //     #endif
-                // }
+                if (setNonBlocking(_fdPortList._fds[k].fd == -1))
+                {
+                    #ifdef INFO
+                        std::cout << BOLDRED << "fcntl error, could not set flag to O_NONBLOCK" << RESET << std::endl;
+                    #endif
+                }
                 _fdPortList._fds[k].events = POLLIN;
                 _fdPortList._fds[k].revents = 0;
                 break;
@@ -80,12 +80,12 @@ void ConnectClients::initNewConnection()
         if (_fdPortList._fds[j].fd == -1)
         {
             _fdPortList._fds[j].fd = newClientSocket;
-            // if (setNonBlocking(_fdPortList._fds[j].fd))
-            // {
-            //     #ifdef INFO
-            //         std::cout << BOLDRED << "fcntl error, could not set flag to O_NONBLOCK" << RESET << std::endl;
-            //     #endif
-            // }
+            if (setNonBlocking(_fdPortList._fds[j].fd))
+            {
+                #ifdef INFO
+                    std::cout << BOLDRED << "fcntl error, could not set flag to O_NONBLOCK" << RESET << std::endl;
+                #endif
+            }
             _fdPortList._fds[j].events = POLLIN;
             _fdPortList._fds[j].revents = 0;
             foundSlot = true;
@@ -384,16 +384,16 @@ void ConnectClients::connectClients(configParser& config)
                 #endif
                 if (g_shutdown_flag == 1)
                 {
-                    usleep(10000);
+                    // usleep(10000);
                     for (size_t x = 0; x < _fdPortList._fds.size(); x++)
                     {
-                        usleep(1000);
+                        // usleep(1000);
                         if (_fdPortList._fds[x].fd != -1)
                             close(_fdPortList._fds[x].fd);
                     }
                     for (size_t x = 0; x < _fdPortList._sockets.size(); x++)
                     {
-                        usleep(1000);
+                        // usleep(1000);
                         if (_fdPortList._sockets[x] != -1)
                             close(_fdPortList._sockets[x]);
                     }
