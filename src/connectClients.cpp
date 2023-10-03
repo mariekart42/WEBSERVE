@@ -38,7 +38,7 @@ void ConnectClients::initFdList()
         for (int i = 0; i < portSize; i++) {
             pollfd newSocket = {};
             newSocket.fd = -1;
-            newSocket.events = POLLOUT | POLLERR | POLLNVAL | POLLHUP;
+            newSocket.events = POLLOUT;
             newSocket.revents = 0;
             _fdPortList._fds.push_back(newSocket);
 
@@ -46,13 +46,13 @@ void ConnectClients::initFdList()
         for (int k = 0 + x; k < portSize; k++) {
             if (_fdPortList._fds[k].fd == -1) {
                 _fdPortList._fds[k].fd = _fdPortList._sockets.at(x);
-                if (setNonBlocking(_fdPortList._fds[k].fd == -1))
-                {
-                    #ifdef INFO
-                        std::cout << BOLDRED << "fcntl error, could not set flag to O_NONBLOCK" << RESET << std::endl;
-                    #endif
-                }
-                _fdPortList._fds[k].events = POLLIN | POLLERR | POLLNVAL | POLLHUP;
+                // if (setNonBlocking(_fdPortList._fds[k].fd == -1))
+                // {
+                //     #ifdef INFO
+                //         std::cout << BOLDRED << "fcntl error, could not set flag to O_NONBLOCK" << RESET << std::endl;
+                //     #endif
+                // }
+                _fdPortList._fds[k].events = POLLIN;
                 _fdPortList._fds[k].revents = 0;
                 break;
             }
@@ -80,13 +80,13 @@ void ConnectClients::initNewConnection()
         if (_fdPortList._fds[j].fd == -1)
         {
             _fdPortList._fds[j].fd = newClientSocket;
-            if (setNonBlocking(_fdPortList._fds[j].fd))
-            {
-                #ifdef INFO
-                    std::cout << BOLDRED << "fcntl error, could not set flag to O_NONBLOCK" << RESET << std::endl;
-                #endif
-            }
-            _fdPortList._fds[j].events = POLLIN | POLLERR | POLLNVAL | POLLHUP;
+            // if (setNonBlocking(_fdPortList._fds[j].fd))
+            // {
+            //     #ifdef INFO
+            //         std::cout << BOLDRED << "fcntl error, could not set flag to O_NONBLOCK" << RESET << std::endl;
+            //     #endif
+            // }
+            _fdPortList._fds[j].events = POLLIN;
             _fdPortList._fds[j].revents = 0;
             foundSlot = true;
             break;

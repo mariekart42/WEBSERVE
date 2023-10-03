@@ -17,10 +17,10 @@ void exitWithError(const std::string &msg)
 
 int setNonBlocking(int fd)
 {
-    int flags = fcntl(fd, F_GETFL, 0);
-    if (flags == -1)
-        return -1;
-    if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) == -1)
+    // int flags = fcntl(fd, F_GETFL, 0); // not allowed
+    // if (flags == -1)
+    //     return -1;
+    if (fcntl(fd, F_SETFL, O_NONBLOCK, FD_CLOEXEC) == -1)
         return -1;
     return 0;
 }
