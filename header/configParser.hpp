@@ -25,7 +25,7 @@
 #include "utils.h"
 
 // Global settings
-#define CGI_TIMEOUT		300
+#define CGI_TIMEOUT		500
 #define TIMEOUT			0
 #define MAX_CLIENTS		100
 #define BODY_SIZE		9000

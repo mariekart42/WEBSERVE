@@ -76,7 +76,6 @@ bool Response::validCGIextension() {
 int Response::callCGI(){
 	int pipefd[2];
 	int status;
-	int result;
 
 
 	struct timeval start;
@@ -135,8 +134,8 @@ int Response::callCGI(){
 	if (pid == -1) {
 		std::cerr << "Something went wrong with fork" << std::endl;
 	}
-
-	if (pid == 0) {
+	else if (pid == 0) 
+	{
 		close(pipefd[0]);
 		dup2(file, STDOUT_FILENO);
 		if (_cgiInfo._fileEnding == ".py")
@@ -154,20 +153,15 @@ int Response::callCGI(){
 				exit(1);
 			}
 		close(file);
+		close(pipefd[1]);
 	}
 	else
     {
 		close(pipefd[1]);
-		result = waitpid(pid, &status, 0);
-
-		if (result == 0)
-		{
-			#ifdef DEBUG
-			std::cout << RED << "CHILD ALIVE" << RESET << std::endl;
-			#endif
-		}
-
+		waitpid(pid, &status, 0);
+		close(pipefd[0]);
 	}
+
     close(file);
 	gettimeofday(&end, 0);
 
