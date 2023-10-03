@@ -57,9 +57,7 @@
 
 
 extern std::string g_cookieName;
-extern sig_atomic_t	g_shutdown_flag;
-
-
+extern volatile sig_atomic_t	g_shutdown_flag;
 
 void 		exitWithError(const std::string &);
 std::string comparerContentType(const std::string& fileExtension);

@@ -1,7 +1,7 @@
 #include "../header/connectClients.hpp"
 
 std::string g_cookieName = "mama";
-sig_atomic_t	g_shutdown_flag = 0;
+volatile sig_atomic_t g_shutdown_flag = 0;
 
 ConnectClients::ConnectClients(const fdList& initList): _x(),
         _fdPortList(initList), _clientAddressLen(sizeof(_clientAddress)),_clientAddress(),
