@@ -13,15 +13,6 @@
 #ifndef CONFIGPARSER_CLASS_H
 #define CONFIGPARSER_CLASS_H
 
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include <exception>
-#include <stdexcept>
-#include <string>
-#include <set>
-#include <map>
-#include <vector>
 #include "utils.h"
 
 // Global settings
@@ -50,7 +41,6 @@
 #define REQUEST_TOO_BIG		413
 #define INTERNAL_ERROR		500
 #define PATH_DEFAULTWEBPAGE		"root/index.html"
-#define PATH_DIRECTORY_LIST		""
 #define PATH_FILE_SAVED			"root/PATH_FILE_SAVED.html"
 #define PATH_FILE_DELETED		"root/PATH_FILE_DELETED.html"
 #define PATH_BAD_REQUEST		"error/400.html"
@@ -102,8 +92,6 @@ typedef struct Server{
 	StringIntMap		_status; // directive-key : line-value
 	int					_server_nbr;
 	int					_server_line_nbr;
-	int					_directive_line_nbr;
-	int					_fd;
 }Server;
 
 typedef std::map<int,Server> ServersMap;
@@ -157,12 +145,7 @@ class configParser {
 		const std::string&	getCurrentRoute() const;
 		// global settings
 		int			get_timeout() const;
-		int			get_max_clients() const;
-		int			get_body_size() const; // returns body-size of global settings
-		int			get_max_events() const;
 		int			get_backlog() const;
-		
-		// std::string			getRootFolder();
 
 
 	private:
@@ -207,10 +190,8 @@ class configParser {
 		void			setCGI(Server& server, const std::string &str, const std::string &route);
 		void			setRedirect(Server& server, const std::string &str, const std::string &route);
 		std::string		prepend_forward_slash(const std::string str) const;
-		std::string		append_forward_slash(const std::string str) const;
 		bool			check_route_exist(Server& server, const std::string& route);
 		RouteIterator	return_route(Server& server, const std::string& route);
-		bool			hasRoute(Server& server, const std::string& route);
 		bool			hasMethod(StringVector& methods, std::string method) const;
 		void			create_port_vector();
 		void			create_default_error_map();
@@ -218,7 +199,6 @@ class configParser {
 		bool			check_file(const std::string path);
 		bool			RequestedLocationExist();
 		std::string		remove_leading_character(const std::string str, char c);
-		std::string		remove_trailing_character(const std::string str, char c);
 		std::string		handle_redirection(const std::string route, Server& server);
 		void			printServerDetails();
 		void			printServerDetails(std::ofstream&);
@@ -230,22 +210,3 @@ class configParser {
 };
 
 #endif
-
-/*
-
-TODO`s
-
-location check.
-
-write a function that checks if port is part of a server, if not throw error and exit -> for getters
-
-NOTES
-
-Redirects and Location Headers: When an HTTP server sends a redirect response
-(e.g., HTTP status code 301 or 302), it typically includes an absolute URL in
-the "Location" header to specify the new location to which the client should navigate.
-
-HTTP/1.1 301 Moved Permanently
-Location: https://www.new-example.com/new-location
-
-*/

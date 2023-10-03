@@ -190,6 +190,11 @@ std::string comparerContentType(const std::string& fileExtension)
         extensionToType.insert(std::make_pair("opus", "audio/opus"));
         extensionToType.insert(std::make_pair("wav", "audio/wav"));
         extensionToType.insert(std::make_pair("weba", "audio/webm"));
+
+		// CGI
+        extensionToType.insert(std::make_pair("py", ".py"));
+        extensionToType.insert(std::make_pair("pl", ".pl"));
+
     }
 
     std::map<std::string, std::string>::const_iterator it = extensionToType.find(fileExtension);

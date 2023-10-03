@@ -6,16 +6,9 @@
 
 
 #define MAX_USERS 10
-#define DATA_TO_READ (_fdPortList._fds[i].revents & POLLIN)
 #define INCOMING_DATA (_fdPortList._fds[_x].revents & (POLLIN | POLLOUT))
 #define SOCKET_ERROR (_fdPortList._fds[_x].revents & (POLLERR | POLLHUP | POLLNVAL))
-#define CLIENTS (static_cast<int>(_fdPortList._fds.size()))
 #define CURRENT_FD (_fdPortList._fds[_x].fd)
-#define CURRENT_EVENT (_fdPortList._fds[_x].events)
-
-#define DATA_TO_SEND (_fdPortList._fds[_x].revents & POLLOUT)
-
-typedef std::map<int, clientInfo>::iterator ClientInfoMapIter;
 
 struct fdList
 {
@@ -43,7 +36,7 @@ class ConnectClients
         void    connectClients(configParser&);
         void    initNewConnection();
         void    initClientInfo(configParser&);
-        int     receiveData(configParser&);
+        int     receiveData();
         void    closeConnection();
         bool    newConnection();
         void    handleData(configParser&);

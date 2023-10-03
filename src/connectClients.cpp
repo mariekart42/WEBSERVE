@@ -1,10 +1,9 @@
 #include "../header/connectClients.hpp"
 #include <sys/poll.h>
-#include <sys/types.h>
-
 
 #ifndef DEBUG_LEAKS
 volatile sig_atomic_t	g_shutdown_flag = 0;
+std::string g_cookieName = "globaltestmama";
 
 static void signalHandler(int sigNum)
 {
@@ -144,6 +143,7 @@ void ConnectClients::initClientInfo(configParser& config)
         initNewInfo._isChunkedFile = false;
         initNewInfo._filePos = 0;
         initNewInfo._globalStatusCode = 200;
+		initNewInfo._cgiFileExtension = config.getCgiExtensions();
         if (initNewInfo._myHTTPMethod == M_POST)
         {
             initNewInfo._postInfo._input = input;
@@ -185,7 +185,7 @@ void ConnectClients::initClientInfo(configParser& config)
     }
 }
 
-int ConnectClients::receiveData(configParser& config)
+int ConnectClients::receiveData()
 {
     if (_fdPortList._fds[_x].revents & POLLOUT)
         return 69;
@@ -193,8 +193,7 @@ int ConnectClients::receiveData(configParser& config)
     if (_x >= len)
         return 0;
 
-(void)config;
-    int dataLen = 9000;
+    int dataLen = SEND_CHUNK_SIZE;
     char clientData[dataLen];
 
     memset(clientData, 0, sizeof(clientData));
@@ -327,7 +326,7 @@ void ConnectClients::clientConnected(configParser& config)
                 initNewConnection();
             else
             {
-                switch (receiveData(config))
+                switch (receiveData())
                 {
                     case 69:
                         handleData(config);
