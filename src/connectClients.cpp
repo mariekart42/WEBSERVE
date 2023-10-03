@@ -355,19 +355,15 @@ void ConnectClients::connectClients(configParser& config)
     int counter = 0;
     g_shutdown_flag = 0;
     #endif
+    int ret = -1;
     while (69)
     {
         #ifndef DEBUG_LEAKS
         signal(SIGINT, signalHandler);
 	    signal(SIGTERM, signalHandler);
         #endif
+
         // poll checks _fdList for read & write events at the same time
-        if (g_shutdown_flag == 1)
-        {
-            clientConnected(config);
-            break;
-        }
-        int ret = 0;
         ret = poll(&_fdPortList._fds[0], (_fdPortList._fds.size()), config.get_timeout());
         switch (ret)
         {
@@ -401,6 +397,7 @@ void ConnectClients::connectClients(configParser& config)
                         if (_fdPortList._sockets[x] != -1)
                             close(_fdPortList._sockets[x]);
                     }
+                    return ;
                 }
                 break;
             default:
