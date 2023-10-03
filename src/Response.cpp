@@ -209,7 +209,11 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
             #ifdef LOG
                 Logging::log("Failed to send Data to Client", 500);
             #endif
-            exit(69);
+            file.close();
+            #ifdef INFO
+            std::cout << BOLDRED << "Error: Failed to send Data to Client" << RESET << std::endl;
+            #endif
+            return static_cast<std::vector<uint8_t> >(0);
         }
 
         _info._filePos = file.tellg();
@@ -219,6 +223,7 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
     }
 
     _info._isChunkedFile = false;
+    file.close();
     return content;
 }
 
@@ -280,7 +285,10 @@ std::streampos Response::mySend(int statusCode)
         #ifdef LOG
             Logging::log("Failed to send Data to Client", 500);
         #endif
-        exit(69);
+        #ifdef INFO
+            std::cout << BOLDRED << "Error: Failed to send Data to Client" << RESET << std::endl;
+        #endif
+        return 0;
     }
 
     return 0;
@@ -298,6 +306,9 @@ void Response::sendShittyChunk(const std::string& fileName)
         #ifdef LOG
             Logging::log("Failed to open file: " + fileName, 500);
         #endif
+        #ifdef INFO
+            std::cout << BOLDRED << "Error: Failed to open file: " + fileName << RESET << std::endl;
+        #endif
         _info._filePos = 0;
         return ;
     }
@@ -313,7 +324,9 @@ void Response::sendShittyChunk(const std::string& fileName)
         #ifdef LOG
             Logging::log("Failed to send Data to Client", 500);
         #endif
-        exit(69);
+        #ifdef INFO
+            std::cout << BOLDRED << "Error: Failed to send Data to Client" << RESET << std::endl;
+        #endif
     }
 
     if (file.eof())
@@ -352,8 +365,8 @@ bool Response::uploadFile(const std::string& contentType, const std::string& bou
 {
     if (contentType == "multipart/form-data")
         return saveRequestToFile(*outfile, boundary);
-	else if (contentType == "application/x-www-form-urlencoded")
-	{
+    else if (contentType == "application/x-www-form-urlencoded")
+    {
         #ifdef DEBUG
 		std::cout << RED << "FOUND application/x-www-form-urlencoded" << RESET << std::endl;
         #endif
@@ -368,22 +381,22 @@ bool Response::uploadFile(const std::string& contentType, const std::string& bou
             #endif
 			switch (check)
 			{
-			case -1:
-				return(mySend(500));
-			case -2:
-				return (mySend(404));
-			case -3:
-				return (mySend(408));
-			case -4:
-				return (mySend(403));
-			case -5:
-				return (mySend(501));
-			default:
-            #ifdef DEBUG
-				std::cout << "Default case has been called" << std::endl;
-				std::cout << "Here" << std::endl;
-            #endif
-				return (CGIoutput());
+                case -1:
+                    return(mySend(500));
+                case -2:
+                    return (mySend(404));
+                case -3:
+                    return (mySend(408));
+                case -4:
+                    return (mySend(403));
+                case -5:
+                    return (mySend(501));
+                default:
+                    #ifdef DEBUG
+                        std::cout << "Default case has been called" << std::endl;
+                        std::cout << "Here" << std::endl;
+                    #endif
+                    return (CGIoutput());
 			}
 		}
 	}
