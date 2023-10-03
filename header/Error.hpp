@@ -17,6 +17,4 @@ class ErrorResponse
        static std::string getErrorMessage(int statusCode);
 };
 
-
-
 #endif
