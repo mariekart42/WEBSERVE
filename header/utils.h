@@ -24,6 +24,9 @@
 #include <csignal>
 #include <sys/time.h>
 #include <sys/wait.h>
+#include <exception>
+#include <stdexcept>
+#include <set>
 
 
 #include "logging.hpp"
@@ -35,6 +38,21 @@
 #define LOG
 #define DEBUG
 // #define DEBUG_LEAKS
+
+
+// Colour shit
+# define RED   "\x1B[31m"
+# define GRN   "\x1B[32m"
+# define YEL   "\x1B[33m"
+# define BLU   "\x1B[34m"
+# define RESET "\x1B[0m"
+
+#define RESET_COLOR	"\033[0m"
+#define BLUE		"\033[34m"
+#define BOLDRED		"\033[1m\033[31m"
+#define BOLDGREEN	"\033[1m\033[32m"
+#define BOLDWHITE	"\033[1m\033[37m"
+
 
 extern std::string g_cookieName;
 

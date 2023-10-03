@@ -64,7 +64,7 @@ bool configParser::validConfig(int argc, char **argv)
 			{
 				Server server;
 				server._server_nbr = count;
-				server._directive_line_nbr = _directive_line_nbr;
+//				server._directive_line_nbr = _directive_line_nbr;
 				server._server_line_nbr = _directive_line_nbr;
 				server._error_map = _default_error_map;
 				server._body_size = _settings.body_size;
@@ -270,21 +270,6 @@ IntStringMap&	configParser::getErrorMap()
 int	configParser::get_timeout() const
 {
 	return _settings.timeout;
-}
-
-int	configParser::get_max_clients() const
-{
-	return _settings.max_clients;
-}
-
-int	configParser::get_body_size() const
-{
-	return _settings.body_size;
-}
-
-int	configParser::get_max_events() const
-{
-	return _settings.max_events;
 }
 
 int	configParser::get_backlog() const
@@ -526,7 +511,6 @@ void configParser::setGlobal()
 
 void configParser::setDirective(Server& server, const std::string& _route)
 {
-	server._directive_line_nbr = _directive_line_nbr;
 	std::string line_first_token = getToken(_line, 1);
 	// server
 	if (line_first_token == "[server]")
@@ -556,16 +540,6 @@ void configParser::setDirective(Server& server, const std::string& _route)
 			server._body_size = size;
 			if (size < BODY_SIZE_MIN || size > BODY_SIZE_MAX)
 				std::cerr << BLUE << "Warning: body_size on line: " << _directive_line_nbr << " is set to " << size << " -> recommended range is between 2000-10000000 (2kb - 10MB)." << RESET_COLOR << std::endl;
-			// if (size < BODY_SIZE_MIN)
-			// {
-			// 	server._body_size = 2000;
-			// 	std::cerr << BLUE << "Warning: body_size on line: " << _directive_line_nbr << " is set to " << size << " -> recommended range is between 2000-8300000. Value has been set to " << BOLDGREEN "2000" << RESET_COLOR << std::endl;
-			// }
-			// else if (size > BODY_SIZE_MAX)
-			// {
-			// 	server._body_size = 8300000;
-			// 	std::cerr << BLUE << "Warning: body_size on line: " << _directive_line_nbr << " is set to " << size << " -> recommended range is between 2000-8300000. Value has been set to " << BOLDGREEN << "8300000" << RESET_COLOR << std::endl;
-			// }
 		}
 	}
 	else if (line_first_token == "error_page" && validate_directive_single(_line))
@@ -608,7 +582,7 @@ void configParser::setErrorPage(Server& server, const std::string& str)
 	std::string path = getToken(str, 4);
 	std::pair<IntStringMap::iterator,bool> ret;
 	ret = server._error_map.insert ( std::pair<int,std::string>(response_code,path));
-	if ( ret.second == false)
+	if (!ret.second)
 	{
 		std::string new_path = ROOT;
 		path = remove_leading_character(path, '/');
@@ -650,7 +624,7 @@ void configParser::setMethods(Server& server, const std::string& str, const std:
 		int count = countToken(str);
 		int i = 3;
 		server._status.insert ( std::pair<std::string,int const>("methods",_directive_line_nbr) );
-		while (i <= count && getToken(str, i).c_str()[0] != '#') // // TODO VF check for existing entries in Vector
+		while (i <= count && getToken(str, i).c_str()[0] != '#')
 		{
 			it->second._methods.push_back(getToken(str, i));
 			i++;
@@ -702,7 +676,7 @@ void configParser::setCGI(Server& server, const std::string& str, const std::str
 		int count = countToken(str);
 		int i = 3;
 		server._status.insert ( std::pair<std::string,int const>("cgi",_directive_line_nbr) );
-		while (i <= count && getToken(str, i).c_str()[0] != '#') // TODO VF check for existing entries in Vector
+		while (i <= count && getToken(str, i).c_str()[0] != '#')
 		{
 			it->second._cgi.push_back(getToken(str, i));
 			i++;
@@ -735,13 +709,6 @@ std::string configParser::prepend_forward_slash(const std::string str) const {
 	return temp;
 }
 
-// appends '/' if not present
-std::string configParser::append_forward_slash(const std::string str) const {
-	std::string new_str = str;
-	if (!new_str.empty() && new_str.at(new_str.size() - 1) != '/')
-		new_str.append("/");
-	return new_str;
-}
 
 bool configParser::check_route_exist(Server& server, const std::string& route)
 {
@@ -757,15 +724,6 @@ RouteIterator	configParser::return_route(Server& server, const std::string& rout
 {
 	RouteIterator it = server._routes.find(route);
 	return it;
-}
-
-bool configParser::hasRoute(Server& server, const std::string& route)
-{
-	StringLocationMap::iterator it;
-	it = server._routes.find(route);
-	if (it == server._routes.end())
-		return false;
-	return true;
 }
 
 bool configParser::hasMethod(StringVector& methods, std::string method) const {
@@ -825,14 +783,6 @@ std::string configParser::remove_leading_character(const std::string str, char c
 	std::string new_str = str;
 	if (!new_str.empty() && new_str.c_str()[0] == c)
 		new_str.erase(0,1);
-	return new_str;
-}
-
-std::string configParser::remove_trailing_character(const std::string str, char c)
-{
-	std::string new_str = str;
-	if (!new_str.empty() && new_str.at(new_str.size() - 1) == c)
-		new_str.erase(new_str.at(new_str.size() - 1),1);
 	return new_str;
 }
 

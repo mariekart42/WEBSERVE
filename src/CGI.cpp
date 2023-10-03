@@ -18,29 +18,8 @@ size_t Response::getContentLen(const std::string& data)
 void Response::handleCookies(const std::string& data, size_t pos)
 {
 	size_t contentLen = getContentLen(data);
-//	size_t end = data.find("\r\n", pos);
-//
-//	if (pos < data.size() && end <= data.size() && pos <= end) {
-//		// Calculate the length of the substring
-//		size_t length = end - pos;
-
-		// Create a substring from the data string
-		std::string substring = data.substr(pos, contentLen);
-		g_cookieName = substring;
-
-		std::cout << "new cookie value: " << g_cookieName<<std::endl;
-
-		mySend(DEFAULTWEBPAGE);
-//		std::string header = "HTTP/1.1 200 OK\r\n"
-//                             "Content-Type: "+_info._fileContentType + "\r\n"
-//                             "Set-Cookie: session_token="+g_cookieName+"; SameSite=None; Secure; HttpOnly\r\n"
-//                             "Content-Length: " + myItoS(content.size()) + "\r\n"
-//		                     "Connection: keep-alive\r\n"
-//		                     "\r\n";
-//
-
-		return ;
-//	}
+	g_cookieName = data.substr(pos, contentLen);
+	mySend(DEFAULTWEBPAGE);
 }
 
 

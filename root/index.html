@@ -1,43 +1,3 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-<!--    <link rel="stylesheet" href="styles/styles.css">-->
-<!--    <title>Welcome to Upload all u want</title>-->
-<!--</head>-->
-<!--<body>-->
-
-<!--<div class="background-image"></div>-->
-<!--    <div class="content">-->
-<!--        <h1>Welcome to Upload All You Want</h1>-->
-
-<!--    <div class="form-section"><br>-->
-<!--        <h3> Upload File</h3>-->
-<!--        <form class="upload-form" action="/upload" method="post" enctype="multipart/form-data">-->
-<!--            <input type="file" id="everything" name="evr" class="file-input">-->
-<!--            <button type="submit" class="submit-button">Upload</button>-->
-<!--        </form>-->
-<!--    </div>-->
-
-
-
-
-<!--    <div class="form-section"><br><br>-->
-<!--        <h3>Delete File</h3>-->
-<!--        <form id="deleteForm" class="delete-form">-->
-<!--            <label for="filePath" class="file-label">Enter File:</label>-->
-<!--            <input type="text" id="filePath" name="filePath" class="file-input" required>-->
-<!--            <button type="button" id="deleteButton" class="delete-button">Delete</button>-->
-<!--            <p id="resultMessage" class="result-message"></p>-->
-<!--        </form>-->
-<!--&lt;!&ndash;    <script src="scripts/script.js"></script>&ndash;&gt;-->
-<!--        <script src="scripts/deleteScript.js"></script>-->
-<!--    </div>-->
-<!--</div>-->
-<!--</body>-->
-<!--</html>-->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -96,13 +56,12 @@
         </div>
 
 
+<!--    PUT    -->
         <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
         <!--test that proofs that UNKNOWN requests should not result in a crash [PUT] -->
-        <div class="form-section"><br><br>
-        <h3>Test PUT method</h3>
+        <div class="form-section"><br><br><h3>Test PUT method</h3>
         <input type="text" id="data" class="text-input" placeholder="Enter data">
-        <button id="submitButton" class="submit-button">Submit PUT Request</button>
-        <script>
+        <button id="submitButton" class="submit-button">Submit PUT Request</button><script>
         document.getElementById("submitButton").addEventListener("click", function () {const data = document.getElementById("data").value;
         // Make a PUT request using the Fetch API
         fetch(`http://${hostname}:${port}/${encodeURIComponent(filePath)}`, {method: "PUT", body: JSON.stringify({ data }), // Convert data to JSON
@@ -115,6 +74,5 @@
         <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
 
     </div>
-
 </body>
 </html>

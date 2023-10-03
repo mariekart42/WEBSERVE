@@ -283,32 +283,17 @@ std::string Request::getUrlString()
 int Request::getPort()
 {
     int lineStart = _tmp.find("Host: ") + 6; // This is the starting position
-    std::string::size_type lineEnd = _tmp.find('\r', lineStart); // finds last char after startPos
+	size_t lineEnd = _tmp.find('\r', lineStart); // finds last char after startPos
     std::string hostLine = _tmp.substr(lineStart, lineEnd - lineStart);
 
-    std::string::size_type lastCharPos = hostLine.rfind(':') + 1;
+    size_t lastCharPos = hostLine.rfind(':');
 
     // If the last character is found, create a substring between startPos and lastCharPos
     if (lastCharPos != std::string::npos)
     {
+	    lastCharPos++;
         std::string resultStr = hostLine.substr(lastCharPos, lineEnd - lastCharPos);
         return atoi(resultStr.c_str());
     }
-    else
-    {
-        #ifdef INFO
-        std::cout << BOLDRED << "Error: unable to extract Port from request" << RESET << std::endl;
-        #endif
-        #ifdef LOG
-            Logging::log("Error: unable to extract Port from request", 500);
-        #endif
-    }
-    return -1;
+    return 80;
 }
-
-
-int Request::getStatusCode() const
-{
-    return _statusCode;
-}
-
