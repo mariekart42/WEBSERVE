@@ -1,4 +1,6 @@
- #include "../header/Response.hpp"
+#include "../header/Response.hpp"
+
+#define TEMP_CGI "root/tempCGI"
 
 size_t Response::getContentLen(const std::string& data)
 {
@@ -21,7 +23,6 @@ void Response::handleCookies(const std::string& data, size_t pos)
 	g_cookieName = data.substr(pos, contentLen);
 	mySend(DEFAULTWEBPAGE);
 }
-
 
 int Response::validCGIextension()
 {
@@ -83,12 +84,11 @@ bool	Response::checkLanguage()
 		return true;
 
 	#ifdef INFO
-		std::cout << "language is not installed." << std::endl;
+	std::cout << "language is not installed." << std::endl;
 	#endif
 
 	return false;
 }
-
 
 int Response::inputCheck()
 {
@@ -138,31 +138,36 @@ int Response::callCGI()
 	char *cmd = (char*)_info._cgiInfo._cgiPath.c_str();
 	char *argv[] = {const_cast<char *>(exec.c_str()), cmd, 0};
 
-	int file = open("root/tempCGI", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR); //TODO hardcoded. Do whatever for naming or keep it
+	int file = open(TEMP_CGI, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
 	gettimeofday(&start, 0);
-
-
-
 
 	if (pipe(pipefd) == -1)
 	{
-		std::cerr << "Something went wrong creating the pipe!" << std::endl;
-		exit(1); // TODO VF implement Exception
+		#ifdef INFO
+		std::cerr << BOLDRED << "Error CGI: Something went wrong creating the pipe!" << RESET << std::endl;
+		#endif
+		return -3;
 	}
 
 	int pid = fork();
 	if (pid == -1)
-		std::cerr << "Something went wrong with fork" << std::endl;
+	{
+		#ifdef INFO
+		std::cerr << BOLDRED << "Error CGI: Something went wrong with fork" << RESET << std::endl;
+		#endif
+	}
 	else if (pid == 0)
 	
 	{
 		close(pipefd[0]);
 		dup2(file, STDOUT_FILENO);
 		if (_info._cgiInfo._fileExtension == ".py")
-        {
+		{
 			if (execve("/usr/bin/python3", argv, env) == -1)
 			{
-				std::cerr << "what is wrong" << std::endl;
+				#ifdef DEBUG
+				std::cerr << BOLDRED << "Error CGI child: what is wrong" << RESET << std::endl;
+				#endif
 				close(file);
 				exit(1);
 			}
@@ -170,7 +175,9 @@ int Response::callCGI()
 		else
 			if (execve("/usr/bin/perl", argv, env) == -1)
 			{
-				std::cerr << "what is wrong" << std::endl;
+				#ifdef DEBUG
+				std::cerr << BOLDRED << "Error CGI child: what is wrong" << RESET << std::endl;
+				#endif
 				close(file);
 				exit(1);
 			}
@@ -178,33 +185,33 @@ int Response::callCGI()
 		close(pipefd[1]);
 	}
 	else
-    {
+	{
 		close(pipefd[1]);
 		waitpid(pid, &status, 0);
 		close(pipefd[0]);
 	}
 
-    close(file);
+	close(file);
 	gettimeofday(&end, 0);
 
 	int diff = (end.tv_sec - start.tv_sec) * 1000.0 + (end.tv_usec - start.tv_usec) / 1000.0;
 	#ifdef DEBUG
 	std::cout << "Time out: " << diff  << "ms compared with " << CGI_TIMEOUT << "ms" << std::endl;
 	#endif
-	if (CGI_TIMEOUT > 0 && diff >= CGI_TIMEOUT ) {
-		remove("root/tempCGI");//TODO here as well
+	if (CGI_TIMEOUT > 0 && diff >= CGI_TIMEOUT )
+	{
+		remove(TEMP_CGI);
 		return -3;
 	}
 	return 0;
 }
 
-
 bool Response::CGIoutput(){
-	std::ifstream inputFile("root/tempCGI");
+	std::ifstream inputFile(TEMP_CGI);
 	//error check if file is open
 	if (!inputFile.is_open())
 		return (mySend(500));
-	std::string header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: "; // little clean up here needed
+	std::string header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: ";
 	std::string line;
 	std::string respooonse;
 
@@ -214,18 +221,18 @@ bool Response::CGIoutput(){
 
 	std::string convert(_info._postInfo._input.begin(), _info._postInfo._input.end());
 	#ifdef LOG
-		Logging::log("send Data:\n" + _info._cgiInfo._cgiPath, 200);
-   	#endif
+	Logging::log("send Data:\n" + _info._cgiInfo._cgiPath, 200);
+	#endif
 
 	ssize_t check = send(_info._clientSocket, (respooonse).c_str(), respooonse.size(), MSG_DONTWAIT); // MSG_DONTWAIT
 	if (check <=0)
 	{
 		#ifdef LOG
-			Logging::log("Failed to send Data to Client", 500);
-   		#endif
+		Logging::log("Failed to send Data to Client", 500);
+		#endif
 		inputFile.close();
 	}
-	remove("root/tempCGI");
+	remove(TEMP_CGI);
 	inputFile.close();
 	return false;
 }
