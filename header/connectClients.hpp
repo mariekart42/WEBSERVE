@@ -5,7 +5,6 @@
 #include "configParser.hpp"
 
 
-#define MAX_USERS 10
 #define INCOMING_DATA (_fdPortList._fds[_x].revents & (POLLIN | POLLOUT))
 #define SOCKET_ERROR (_fdPortList._fds[_x].revents & (POLLERR | POLLHUP | POLLNVAL))
 #define CURRENT_FD (_fdPortList._fds[_x].fd)
