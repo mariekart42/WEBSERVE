@@ -21,19 +21,6 @@
 <!--    </div>-->
 
 
-<!--        &lt;!&ndash; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * &ndash;&gt;-->
-<!--        &lt;!&ndash;test that proofs that UNKNOWN requests should not result in a crash [PUT] &ndash;&gt;-->
-<!--            <div class="form-section"><h3>Test PUT method</h3>-->
-<!--            <input type="text" id="data" class="text-input" placeholder="Enter data">-->
-<!--            <button id="submitButton" class="submit-button">Submit PUT Request</button></div><script>-->
-<!--            document.getElementById("submitButton").addEventListener("click", function () {const data = document.getElementById("data").value;-->
-<!--            // Make a PUT request using the Fetch API-->
-<!--            fetch(`http://${hostname}:${port}/${encodeURIComponent(filePath)}`, {method: "PUT", body: JSON.stringify({ data }), // Convert data to JSON-->
-<!--            headers: {"Content-Type": "application/json",},})-->
-<!--            .then((response) => response.json())-->
-<!--            .then((result) => {console.log("Response from server:", result);})-->
-<!--            .catch((error) => {console.error("Error:", error);});});</script>-->
-<!--        &lt;!&ndash; * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * &ndash;&gt;-->
 
 
 <!--    <div class="form-section"><br><br>-->
@@ -107,6 +94,27 @@
                 <button onclick="goToIndexPage()">submit</button>
             </form>
         </div>
+
+
+        <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+        <!--test that proofs that UNKNOWN requests should not result in a crash [PUT] -->
+        <div class="form-section"><br><br>
+        <h3>Test PUT method</h3>
+        <input type="text" id="data" class="text-input" placeholder="Enter data">
+        <button id="submitButton" class="submit-button">Submit PUT Request</button>
+        <script>
+        document.getElementById("submitButton").addEventListener("click", function () {const data = document.getElementById("data").value;
+        // Make a PUT request using the Fetch API
+        fetch(`http://${hostname}:${port}/${encodeURIComponent(filePath)}`, {method: "PUT", body: JSON.stringify({ data }), // Convert data to JSON
+        headers: {"Content-Type": "application/json",},})
+        .then((response) => response.json())
+        .then((result) => {console.log("Response from server:", result);})
+        .catch((error) => {console.error("Error:", error);});});
+        </script>
+        </div>
+        <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+
     </div>
+
 </body>
 </html>
