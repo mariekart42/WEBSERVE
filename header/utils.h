@@ -27,6 +27,7 @@
 #include <exception>
 #include <stdexcept>
 #include <set>
+#include <sys/poll.h>
 
 
 #include "logging.hpp"
@@ -36,7 +37,6 @@
 #define INFO
 // #define LOG
 // #define DEBUG
-// #define DEBUG_LEAKS
 
 
 // Colour shit
@@ -54,6 +54,7 @@
 
 
 extern std::string g_cookieName;
+extern sig_atomic_t	g_shutdown_flag;
 
 
 void 		exitWithError(const std::string &);
@@ -62,5 +63,7 @@ std::string myItoS(int);
 bool 		endsWith(const std::string&, const std::string&);
 int			setNonBlocking(int fd);
 std::string	generateList(const std::string& rootFolder, const std::string& currentFolder);
+void        mySignals();
+void        signalHandler(int sigNum);
 
 #endif

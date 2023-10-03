@@ -26,6 +26,7 @@
 #define FORBIDDEN			403
 #define NOT_FOUND			404
 #define METHOD_NOT_ALLOWED	405
+#define REQUEST_TIMEOUT	    408
 #define REQUEST_TOO_BIG		413
 #define INTERNAL_ERROR		500
 #define PATH_DEFAULTWEBPAGE		"root/index.html"
@@ -35,6 +36,7 @@
 #define PATH_FORBIDDEN			"error/403.html"
 #define PATH_404_ERRORWEBSITE	"error/404.html"
 #define PATH_METHOD_NOT_ALLOWED	"error/405.html"
+#define PATH_REQUEST_TIMEOUT	"error/408.html"
 #define PATH_REQUEST_TOO_BIG	"error/413.html"
 #define PATH_500_ERRORWEBSITE	"error/500.html"
 
@@ -159,12 +161,12 @@ class configParser
 
 		Server & getServer(int port);
 		void			parse_request_data();
-		int				string_to_int(const std::string&);
-		std::string		getToken(const std::string& str, int n);
-		int				countToken(const std::string& str);
-		bool			validate_cgi(const std::string& str);
-		int				validate_directive_single(const std::string& str);
-		int				validate_directive_multi(const std::string& str);
+		static int				string_to_int(const std::string&);
+		static std::string		getToken(const std::string& str, int n);
+		static int				countToken(const std::string& str);
+		static bool			validate_cgi(const std::string& str);
+		static int				validate_directive_single(const std::string& str);
+		static int				validate_directive_multi(const std::string& str);
 		void			validate_minimal_server_configuration(Server& server);
 		bool			addStatus(Server& server, const std::string& str);
 		void			addLocation(Server& server, const std::string& path);
@@ -185,9 +187,9 @@ class configParser
 		void			create_port_vector();
 		void			create_default_error_map();
 		void			check_path_traversal(const std::string path);
-		bool			check_file(const std::string path);
+		bool			check_file(const std::string& path);
 		bool			RequestedLocationExist();
-		std::string		remove_leading_character(const std::string str, char c);
+		std::string		remove_leading_character(const std::string& str, char c);
 		std::string		handle_redirection(const std::string route, Server& server);
 		void			printServerDetails();
 		void			printServerDetails(std::ofstream&);

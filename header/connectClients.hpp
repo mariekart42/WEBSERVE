@@ -30,16 +30,19 @@ class ConnectClients
         ConnectClients(const fdList&);
         ~ConnectClients();
 
+        int     receiveData();
+        bool    newConnection();
         void    clientConnected(configParser&);
         void    initFdList();
         void    connectClients(configParser&);
         void    initNewConnection();
         void    initClientInfo(configParser&);
-        int     receiveData();
         void    closeConnection();
-        bool    newConnection();
         void    handleData(configParser&);
         void    setPollEvent(int);
+		void    shutDownServer();
+
+	void setFileData(clientInfo data);
 };
 
 #endif

@@ -65,14 +65,13 @@ bool configParser::validConfig(int argc, char **argv)
 			{
 				Server server;
 				server._server_nbr = count;
-//				server._directive_line_nbr = _directive_line_nbr;
 				server._server_line_nbr = _directive_line_nbr;
 				server._error_map = _default_error_map;
 				server._body_size = _settings.body_size;
 				std::string route;
 				std::string route_end;
 				std::string line_first_token;
-				while (getline(_file, _line) && getToken(_line, 1) != "[\\server]") // DONE VF handle open Server Block
+				while (getline(_file, _line) && getToken(_line, 1) != "[\\server]")
 				{
 					_directive_line_nbr++;
 					if (_line.empty())
@@ -106,10 +105,8 @@ bool configParser::validConfig(int argc, char **argv)
 				
 				std::pair<ServersMap::iterator,bool> ret;
 				ret = _servers.insert ( std::pair<int,Server>(server._port,server));
-				if (ret.second == false)
-				{
+				if (!ret.second)
 					throw std::invalid_argument("multiple configuration with same port not allowed");
-				}
 				else
 				{
 					_servers_index.push_back(server);
@@ -149,11 +146,6 @@ const std::string	configParser::getUrl()
 	// check if route has redirect directive
 	if (HasMatch && !return_route(getServer(_request_data._port), _current_route)->second._redirect.empty())
 		IsRedirect = true;
-
-	#ifdef DEBUG
-	if (HasMatch && IsRedirect)
-		std::cout << BLUE << "ROUTE PATH MATCHED " << _current_route << "  with URL " << _request_data._url << RESET <<  std::endl; // DEBUG
-	#endif
 
 	// return Url and make sure it starts with an "/"
 	if (IsRedirect)
@@ -284,7 +276,6 @@ Server & configParser::getServer(int port)
 void configParser::parse_request_data()
 {
 	bool IsFile = false;
-	// bool HasSubfolder = false;
 	std::size_t PosFile;
 
 	// check if url contains a file
@@ -293,19 +284,11 @@ void configParser::parse_request_data()
 	std::size_t PosLastSlash = _request_data._url.find_last_of('/');
 	PosLastSlash != std::string::npos ? PosFile = PosLastSlash + 1 : PosFile = 0;
 
-	// check if file is located in subfolder
-	// if (PosLastSlash != 0)
-	// 	HasSubfolder = true;
-
-	// save the filename
 	if (IsFile)
 	{
 		_request_data._filename = _request_data._url;
 		_request_data._filename.substr(PosFile, _request_data._url.size());
 	}
-
-	// DEBUG
-	// std::cout << GREEN << "FILENAME " << _request_data._filename << " ROUTE " << _request_data._url <<  " HAS SUBFOLDERS " << HasSubfolder << RESET << std::endl;
 }
 
 int	configParser::string_to_int(const std::string& str)
@@ -328,7 +311,6 @@ std::string configParser::getToken(const std::string& str, int n)
 		if (!(line >> token))
 			return "";
 	}
-
 	return token;
 }
 
@@ -398,11 +380,6 @@ void configParser::validate_minimal_server_configuration(Server& server)
 	it = server._status.find("port");
 	if (it == server._status.end())
 		throw std::invalid_argument("missing port directive in this server block");
-	// {
-	// 	// if (addStatus(server, "port"))
-	// 	// 	server._port = string_to_int("8080"); // setting default value
-	// 	// std::cerr << BLUE << "Warning: port missing on server " << server._server_nbr << " [" << server._server_line_nbr << "] -> default value of 8080 is set." << RESET_COLOR << std::endl;
-	// }
 
 	it = server._status.find("host");
 	if (it == server._status.end())
@@ -441,7 +418,7 @@ void configParser::addLocation(Server& server, const std::string& path)
 
 	std::pair<StringLocationMap::iterator,bool> ret;
 	ret = server._routes.insert ( std::pair<std::string,location>(path,newLocation) );
-	if (ret.second==false)
+	if (!ret.second)
     	std::cerr << BLUE << "Warning: location with: " << path << " already exist" << RESET_COLOR << std::endl;
 	else
 		server._routes_vector.push_back(path);
@@ -478,9 +455,6 @@ void configParser::setGlobal()
 			std::cerr << BLUE << "Warning: directive \"" << line_first_token << "\" already set, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 		else
 		{
-			// int size = string_to_int(getToken(_line, 3));
-			// if (size < BODY_SIZE_MIN || size > BODY_SIZE_MAX)
-			// 	std::cerr << BLUE << "Warning: body_size on line: " << _directive_line_nbr << " is set to " << size << " -> recommended range is between 2000-1000000" << RESET_COLOR << std::endl;
 			_settings.body_size = string_to_int(getToken(_line, 3));
 			_settings_check.body_size = true;
 		}
@@ -564,7 +538,7 @@ void configParser::setServerName(Server& server, const std::string& str)
 	int count = countToken(str);
 	int i = 3;
 	server._status.insert ( std::pair<std::string,int const>("server_name",_directive_line_nbr) );
-	while (i <= count && getToken(str, i) != "#") // // TODO VF check for existing entries in Vector
+	while (i <= count && getToken(str, i) != "#")
 	{
 		server._server_name.push_back(getToken(str, i));
 		i++;
@@ -585,16 +559,11 @@ void configParser::setErrorPage(Server& server, const std::string& str)
 		std::string new_path = ROOT;
 		path = remove_leading_character(path, '/');
 		new_path.append(path);
-		#ifdef DEBUG
-			std::cout << "Custom Error: " << new_path << std::endl;
-		#endif
 		check_file(new_path);
 		ret.first->second = new_path;
 	}
 	else
-	{
 		server._status.insert ( std::pair<std::string,int const>("error_page",_directive_line_nbr) );
-	}
 }
 
 void configParser::setRoot(Server& server, const std::string& str, const std::string& route)
@@ -755,6 +724,7 @@ void	configParser::create_default_error_map()
 	_default_error_map.insert ( std::pair<int,std::string>(METHOD_NOT_ALLOWED, PATH_METHOD_NOT_ALLOWED) );
 	_default_error_map.insert ( std::pair<int,std::string>(REQUEST_TOO_BIG, PATH_REQUEST_TOO_BIG) );
 	_default_error_map.insert ( std::pair<int,std::string>(INTERNAL_ERROR, PATH_500_ERRORWEBSITE) );
+	_default_error_map.insert ( std::pair<int,std::string>(REQUEST_TIMEOUT, PATH_REQUEST_TIMEOUT) );
 }
 
 void configParser::check_path_traversal(const std::string path)
@@ -765,7 +735,7 @@ void configParser::check_path_traversal(const std::string path)
     	throw std::invalid_argument("path traversal not allowed.");
 }
 
-bool configParser::check_file(const std::string path)
+bool configParser::check_file(const std::string& path)
 {
 	std::ifstream file;
 	file.open(path.c_str());
@@ -793,13 +763,13 @@ bool configParser::RequestedLocationExist()
 		_current_route = *route;
 
 		// special case </> -> return true
-		size_t pos = _request_data._url.find("/");
+		size_t pos = _request_data._url.find('/');
 		if (_request_data._url == "/" && _current_route == "/")
 		{
 			HasMatch = true;
 			break ;
 		}
-		if (_request_data._url.find("/", pos + 1) == std::string::npos && _current_route == "/" && !_request_data._filename.empty())
+		if (_request_data._url.find('/', pos + 1) == std::string::npos && _current_route == "/" && !_request_data._filename.empty())
 		{
 			HasMatch = true;
 			break ;
@@ -822,7 +792,7 @@ bool configParser::RequestedLocationExist()
 	return HasMatch;
 }
 
-std::string configParser::remove_leading_character(const std::string str, char c)
+std::string configParser::remove_leading_character(const std::string& str, char c)
 {
 	std::string new_str = str;
 	if (!new_str.empty() && new_str.c_str()[0] == c)

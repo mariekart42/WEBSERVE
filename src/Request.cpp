@@ -3,7 +3,7 @@
 #include <sstream>
 
 Request::Request(const std::vector<uint8_t>& clientData):
-    _tmp(std::string(clientData.begin(), clientData.end())), _statusCode()
+    _tmp(std::string(clientData.begin(), clientData.end()))
 {}
 
 Request::~Request() {}
@@ -42,14 +42,10 @@ bool Request::pathExists(const std::string& path)
 
 bool Request::checkPathInFolder(std::string filePath, const std::string& rootFolder)
 {
-    if (!filePath.empty() && filePath[0] != '/') {
+    if (!filePath.empty() && filePath[0] != '/')
         filePath = "/" + filePath;
-    }
     if (filePath.find('/') != std::string::npos)
-    {
-        std::string fullPath = rootFolder + filePath;
-        return pathExists(fullPath);
-    }
+        return pathExists(rootFolder + filePath);
     else
         return pathExists(rootFolder + filePath);
 }
@@ -89,7 +85,7 @@ std::string Request::getNewFilename(const std::string& checkFilename, const std:
     if (lastDotPos == std::string::npos) // If dot is found
     {
         #ifdef INFO
-        std::cout << BOLDRED << "Error: could not getNewFilename" << RESET << std::endl;
+            std::cout << BOLDRED << "Error: could not getNewFilename" << RESET << std::endl;
         #endif
         #ifdef LOG
             Logging::log("unexpected Error: could not getNewFilename", 500);

@@ -13,6 +13,7 @@
 #define IS_FOLDER (s.st_mode & S_IFDIR)
 #define IS_FILE (s.st_mode & S_IFREG)
 #define UPLOAD_FOLDER "root/upload/"
+#define TMP_CGI "root/tempCGI"
 
 
 class Request;
@@ -80,23 +81,23 @@ class Response
 		std::streampos          mySend(int);
         int                     initFile(int);
         int                     getDirectoryIndexPage(const std::string&);
-		int                     validCGIextension();
+		int                     validCgiExtension();
 		int	                    callCGI();
 		int                     inputCheck();
         int                     getRightResponse() const;
         bool                    uploadFile(const std::string&, const std::string&, std::ofstream*);
         bool                    saveRequestToFile(std::ofstream&, const std::string&);
-		bool                    checkLanguage();
-		bool                    CGIoutput();
+		bool                    checkLanguage() const;
+		bool                    cgiOutput();
 		bool                    isCgi();
         void                    deleteFile();
         void                    initHeader();
         void                    sendIndexPage();
         void                    sendShittyChunk(const std::string&);
-		void                    handleCookies(const std::string &data, size_t pos);
-		size_t                  getContentLen(const std::string& data);
+		void                    handleCookies(const std::string&, size_t);
+		static size_t           getContentLen(const std::string&);
         std::string             getContentType();
-        std::vector<uint8_t>    readFile(const std::string &fileName);
+        std::vector<uint8_t>    readFile(const std::string&);
 };
 
 #endif

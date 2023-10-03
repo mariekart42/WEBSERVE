@@ -67,7 +67,7 @@ void Response::sendIndexPage()
 
 bool Response::isCgi()
 {
-	switch (validCGIextension())
+	switch (validCgiExtension())
 	{
 		case 69:
 			return false;
@@ -75,6 +75,8 @@ bool Response::isCgi()
 			return false;
 		case METHOD_NOT_ALLOWED:
 			return mySend(METHOD_NOT_ALLOWED), true;
+		case REQUEST_TIMEOUT:
+			return mySend(REQUEST_TIMEOUT), true;
 		case NOT_FOUND:
 			return mySend(NOT_FOUND), true;
 		case FORBIDDEN:
@@ -82,7 +84,7 @@ bool Response::isCgi()
 		case INTERNAL_ERROR:
 			return mySend(INTERNAL_ERROR), true;
 		default:
-			return CGIoutput(), true;
+			return cgiOutput(), true;
 	}
 }
 
@@ -258,6 +260,8 @@ int Response::initFile(int statusCode)
             return _file = readFile(_info._errorMap.at(NOT_FOUND)), _localStatusCode = 404;
         case METHOD_NOT_ALLOWED:
             return _file = readFile(_info._errorMap.at(METHOD_NOT_ALLOWED)), _localStatusCode = 405;
+	    case REQUEST_TIMEOUT:
+		    return _file = readFile(_info._errorMap.at(REQUEST_TIMEOUT)), _localStatusCode = 408;
         case REQUEST_TOO_BIG:
             return _file = readFile(_info._errorMap.at(REQUEST_TOO_BIG)), _localStatusCode = 413;
         default:
@@ -365,15 +369,7 @@ void Response::initHeader()
 
 // v v v  POST  v v v
 
-//bool Response::isCookie()
-//{
-//	if (_info._url == "/cookie-set")
-//	{
-//		std::cout << "COOOOOKIEEEEE"<<std::endl;
-//		return true;
-//	}
-//	return false;
-//}
+
 
 bool Response::uploadFile(const std::string& contentType, const std::string& boundary, std::ofstream *outfile)
 {
