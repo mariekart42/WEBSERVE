@@ -18,15 +18,12 @@
         background-color: #f0f0f0;
     }
 
-    .background-image {
-        /* Your background image styling */
-    }
+    .background-image {}
 
     .content {
         text-align: center;
         margin-top: -500px; /* Adjust this value to move the content further up */
     }
-
 
     .custom-gohome-button {
         background-color: #abaaaa;
@@ -53,23 +50,24 @@
         margin-right: 10px; /* Adjust this value to increase the distance between text and button */
     }
     </style>
-</head>
-<body>
-<div class="background-image"></div>
-<div class="content">
-    <h1>400</h1>
-    <p>Bad Request - We don't support your shitty file type</p>
-    <div class="button-container">
-        <span>GO </span>
-        <button class="custom-gohome-button" onclick="goToIndexPage()"> HOME</button>
-    </div>
 
-    <script>
-        function goToIndexPage() {
-            window.location.href = '/'; // Change this URL to your index page's URL
-        }
-    </script>
-</div>
-</body>
+</head>
+    <body>
+        <div class="background-image"></div>
+        <div class="content">
+            <h1>400</h1>
+            <p>Bad Request - We don't support your shitty file type</p>
+            <div class="button-container">
+                <span>GO </span>
+                <button class="custom-gohome-button" onclick="goToIndexPage()"> HOME</button>
+            </div>
+
+            <script>
+                function goToIndexPage() {
+                    window.location.href = '/'; // Change this URL to your index page's URL
+                }
+            </script>
+        </div>
+    </body>
 </html>
 
