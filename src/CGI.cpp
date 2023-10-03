@@ -1,21 +1,63 @@
  #include "../header/Response.hpp"
-#include <cstddef>
-#include <cstdio>
-#include <cstdlib>
-#include <iostream>
-#include <sstream>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <sys/time.h>
-#include <sys/wait.h>
+
+size_t Response::getContentLen(const std::string& data)
+{
+	size_t foundPos = data.find("Content-Length: ") + 16;
+	if (foundPos != std::string::npos)
+	{
+		size_t endPos = data.find('\r', foundPos);
+		if (endPos != std::string::npos)
+		{
+			std::string contentLen = data.substr(foundPos, endPos - (foundPos));
+			return atoi(contentLen.c_str());
+		}
+	}
+	return -1;
+}
+
+void Response::handleCookies(const std::string& data, size_t pos)
+{
+	size_t contentLen = getContentLen(data);
+//	size_t end = data.find("\r\n", pos);
+//
+//	if (pos < data.size() && end <= data.size() && pos <= end) {
+//		// Calculate the length of the substring
+//		size_t length = end - pos;
+
+		// Create a substring from the data string
+		std::string substring = data.substr(pos, contentLen);
+		g_cookieName = substring;
+
+		std::cout << "new cookie value: " << g_cookieName<<std::endl;
+
+		mySend(DEFAULTWEBPAGE);
+//		std::string header = "HTTP/1.1 200 OK\r\n"
+//                             "Content-Type: "+_info._fileContentType + "\r\n"
+//                             "Set-Cookie: session_token="+g_cookieName+"; SameSite=None; Secure; HttpOnly\r\n"
+//                             "Content-Length: " + myItoS(content.size()) + "\r\n"
+//		                     "Connection: keep-alive\r\n"
+//		                     "\r\n";
+//
+
+		return ;
+//	}
+}
 
 
 int Response::validCGIextension()
 {
-	std::vector<std::string> allowed_ending;// = _info._cgiFileExtension;
+	std::vector<std::string> allowed_ending;
 	allowed_ending.push_back(".py");
-//	allowed_ending.push_back(".pl");
+	allowed_ending.push_back(".pl");
 
+	if (_info._myHTTPMethod == M_POST)
+	{
+		std::string	convert(_info._postInfo._input.begin(), _info._postInfo._input.end());
+		size_t		body = convert.find("\r\n\r\n");
+		if (convert.compare(body + 4, 9, "textData=") == 0)
+			return handleCookies(convert, body+13), IS_COOKIE;
+		_info._cgiInfo._body = convert.substr(body+4);
+	}
 	std::string	temp;
 	size_t		dot;
 	size_t pos = _info._url.find('?');

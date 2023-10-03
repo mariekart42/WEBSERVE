@@ -31,50 +31,6 @@ filePaths.forEach(filePath => {
     fileItemsContainer.appendChild(fileItem);
 });
 
-// let currentPath = ""; // Initialize the current path
-// filePaths.forEach(filePath => {
-//     const fileItem = document.createElement("div");
-//     fileItem.className = "file-item";
-//
-//     const isFolder = filePath.endsWith('/'); // Check if it's a folder
-//
-//     const fileLink = document.createElement("a");
-//
-//     if (isFolder) {
-//         // For folders, display the full path as the link text
-//         fileLink.href = filePath;
-//         fileLink.textContent = filePath;
-//         currentPath = filePath; // Update the current path
-//     } else {
-//         // For files, display only the filename and set the link to the current path
-//         fileLink.href = currentPath + filePath;
-//         fileLink.textContent = filePath.split('/').pop();
-//     }
-//
-//     fileLink.className = "file-link";
-//
-//     const spacer = document.createElement("span");
-//     spacer.className = "spacer";
-//
-//     const deleteButton = document.createElement("button");
-//     deleteButton.className = "delete-button";
-//     deleteButton.textContent = "Delete";
-//
-//     deleteButton.addEventListener("click", function() {
-//         confirmDelete(filePath);
-//     });
-//
-//     const resultMessage = document.createElement("div");
-//     resultMessage.className = "index-result-message";
-//
-//     fileItem.appendChild(fileLink);
-//     fileItem.appendChild(spacer); // Add spacer
-//     fileItem.appendChild(deleteButton);
-//     fileItem.appendChild(resultMessage);
-//     fileItemsContainer.appendChild(fileItem);
-// });
-
-
 function confirmDelete(filePath) {
     const confirmation = confirm(`Are you sure you want to delete the file at path: ${filePath}?`);
     if (confirmation) {
@@ -102,7 +58,5 @@ function confirmDelete(filePath) {
         });
     }
 }
-
 function customEncodeURIComponent(uri) {
-    return encodeURIComponent(uri).replace(/%2F/g, "/");//.replace(/^upload\//, "");
-}
+    return encodeURIComponent(uri).replace(/%2F/g, "/");}

@@ -6,6 +6,7 @@
 #include "configParser.hpp"
 
 #define SEND_CHUNK_SIZE 9000
+#define IS_COOKIE 111
 
 #define NO_DATA_TO_UPLOAD (convert.find("POST") == 0 && convert.find(startBoundary) == std::string::npos)
 #define IS_FOLDER_OR_FILE (stat((_info._configInfo._rootFolder +"/"+ _info._url).c_str(), &s) == 0)
@@ -13,10 +14,6 @@
 #define IS_FILE (s.st_mode & S_IFREG)
 #define UPLOAD_FOLDER "root/upload/"
 
-
-// TODO implement in config:
-//#define REQUEST_TOO_BIG 413
-//#define PATH_REQUEST_TOO_BIG "error/400.html"
 
 class Request;
 
@@ -63,6 +60,7 @@ struct clientInfo
 	std::vector<std::string> _cgiFileExtension;
     int _globalStatusCode;
     bool _isChunkedFile;
+//	std::string _cookieName;
 };
 
 
@@ -83,10 +81,10 @@ class Response
         std::string getContentType();
         void        initHeader();
         int         initFile(int);
-    std::streampos        mySend(int);
+		std::streampos        mySend(int);
         int         getDirectoryIndexPage(const std::string&);
         void        sendIndexPage();
-    std::streampos        sendRequestedFile();
+        std::streampos        sendRequestedFile();
         bool        uploadFile(const std::string&, const std::string&, std::ofstream*);
         bool        saveRequestToFile(std::ofstream&, const std::string&);
         void        deleteFile();
@@ -98,9 +96,15 @@ class Response
 		bool isCgi();
 		int inputCheck();
 
+		bool isCookie();
+
         std::vector<uint8_t> readFile(const std::string &fileName);
         int getRightResponse() const;
-    void sendShittyChunk(const std::string&);
+        void sendShittyChunk(const std::string&);
+
+	void handleCookies(const std::string &data, size_t pos);
+
+	size_t getContentLen(const std::string& data);
 };
 
 #endif

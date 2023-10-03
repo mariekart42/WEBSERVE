@@ -40,7 +40,7 @@ int Response::getDirectoryIndexPage(const std::string& directory)
     htmlFile = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\">"
                           "<meta name=\"viewport\" content=\"\"width=device-width, initial-scale=1.0\"\"><title>Index of /</title>\n"
                           "<link rel=\"stylesheet\" href=\"styles/styleIndex.css\"></head><body><div class=\"background-image\"></div>\n"
-                          "<div class=\"container\"><h1>Index of  /</h1><br><div id=\"fileItems\"></div></div><script>const filePaths = [";
+                          "<div class=\"container\"><h1>Hey "+g_cookieName+" :) <br><br> Index of  /</h1><br><div id=\"fileItems\"></div></div><script>const filePaths = [";
     htmlFile += generateList(_info._configInfo._rootFolder, directory);
     htmlFile += "];</script><script src=\"scripts/script.js\"></script></body></html>";
     for (size_t i = 0; i < htmlFile.length(); ++i)
@@ -71,6 +71,8 @@ bool Response::isCgi()
 	{
 		case 69:
 			return false;
+		case IS_COOKIE:
+			return false;
 		case METHOD_NOT_ALLOWED:
 			return mySend(METHOD_NOT_ALLOWED), true;
 		case NOT_FOUND:
@@ -92,43 +94,15 @@ std::streampos Response::sendRequestedFile()
     #endif
     #ifdef LOG
         Logging::log("Received Data  --  GET  " + _info._url, 200);
-    #endif
+	#endif
 
     if (!_info._configInfo._getAllowed)
         return mySend(METHOD_NOT_ALLOWED);
     if (_info._url == "/")
-        return sendIndexPage(), 0;
-
+		return sendIndexPage(), 0;
 
 	if (isCgi())
 		return 0;
-
-//	// HEEERE
-//	if (validCGIextension())
-//	{
-//		if (_info._myHTTPMethod == M_POST)
-//		{
-//			std::string	convert(_info._postInfo._input.begin(), _info._postInfo._input.end());
-//			size_t		body = convert.find("\r\n\r\n");
-//			_info._cgiInfo._body = convert.substr(body+4);
-//		}
-//		switch (callCGI())
-//		{
-//			case -1:
-//				return mySend(500), false;
-//			case -2:
-//				return mySend(404), false;
-//			case -3:
-//				return mySend(408), false;
-//			case -4:
-//				return mySend(403), false;
-//			case -5:
-//				return mySend(501), false;
-//			default:
-//				return CGIoutput(), false;
-//		}
-//	}
-
 
     struct stat s = {};
     if IS_FOLDER_OR_FILE
@@ -214,9 +188,12 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
         _info._fileContentType = getContentType();
 
         std::string header = "HTTP/1.1 200 " +
-                             ErrorResponse::getErrorMessage(200) + "\r\nConnection: keep-alive\r\n"
-                             "Content-Type: "+_info._fileContentType+"\r\n"
-                             "Content-Length: " + myItoS(content.size()) + "\r\n\r\n";
+                             ErrorResponse::getErrorMessage(200) + "\r\n"
+                             "Content-Type: "+_info._fileContentType + "\r\n"
+							 "Set-Cookie: session_token="+g_cookieName+"; SameSite=None; Secure; HttpOnly\r\n"
+                             "Content-Length: " + myItoS(content.size()) + "\r\n"
+					         "Connection: keep-alive\r\n"
+						     "\r\n";
 
         #ifdef LOG
             Logging::log("send Data:\n" + header, 200);
@@ -360,9 +337,12 @@ void Response::sendShittyChunk(const std::string& fileName)
 void Response::initHeader()
 {
     _header = "HTTP/1.1 " + myItoS(_localStatusCode) + " " +
-            ErrorResponse::getErrorMessage(_localStatusCode) + "\r\nConnection: close\r\n"
-                                                         "Content-Type: "+_info._fileContentType+"\r\n"
-                                                                                           "Content-Length: " + myItoS(_file.size()) + "\r\n\r\n";
+            ErrorResponse::getErrorMessage(_localStatusCode) + "\r\n"
+            "Content-Type: "+_info._fileContentType+"\r\n"
+            "Set-Cookie: session_token="+g_cookieName+"; SameSite=None; Secure; HttpOnly\r\n"
+            "Content-Length: " + myItoS(_file.size()) + "\r\n"
+		    "Connection: close\r\n"
+			"\r\n";
 }
 
 
@@ -372,14 +352,25 @@ void Response::initHeader()
 
 // v v v  POST  v v v
 
-
+//bool Response::isCookie()
+//{
+//	if (_info._url == "/cookie-set")
+//	{
+//		std::cout << "COOOOOKIEEEEE"<<std::endl;
+//		return true;
+//	}
+//	return false;
+//}
 
 bool Response::uploadFile(const std::string& contentType, const std::string& boundary, std::ofstream *outfile)
 {
     if (contentType == "multipart/form-data")
         return saveRequestToFile(*outfile, boundary);
 	else if (contentType == "application/x-www-form-urlencoded")
-		isCgi();
+    {
+//		if (!isCookie())
+			isCgi();
+	}
 	return false;
 }
 

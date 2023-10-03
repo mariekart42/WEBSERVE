@@ -2,7 +2,6 @@ const hostname = window.location.hostname;
 const port = window.location.port;
 const resultMessage = document.getElementById("resultMessage"); // Get the result message element
 
-
 document.getElementById("deleteButton").addEventListener("click", function() {
     const filePath = document.getElementById("filePath").value;
     const confirmation = confirm(`Are you sure you want to delete the file at path: ${filePath}?`);
@@ -22,7 +21,5 @@ document.getElementById("deleteButton").addEventListener("click", function() {
             });
     }
 });
-
 function customEncodeURIComponent(uri) {
-    return encodeURIComponent(uri).replace(/%2F/g, "/");//.replace(/^upload\//, "");
-}
+    return encodeURIComponent(uri).replace(/%2F/g, "/");}

@@ -22,6 +22,9 @@
 #include <cstdio>
 #include <netdb.h>
 #include <csignal>
+#include <sys/time.h>
+#include <sys/wait.h>
+
 
 #include "logging.hpp"
 #include "colors.h"
@@ -33,12 +36,13 @@
 #define DEBUG
 // #define DEBUG_LEAKS
 
+extern std::string g_cookieName;
+
 void 		exitWithError(const std::string &);
 std::string comparerContentType(const std::string& fileExtension);
 std::string myItoS(int);
 bool 		endsWith(const std::string&, const std::string&);
 int			setNonBlocking(int fd);
 std::string	generateList(const std::string& rootFolder, const std::string& currentFolder);
-//std::vector<uint8_t> readFile(const std::string&);
 
 #endif
