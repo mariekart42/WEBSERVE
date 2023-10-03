@@ -263,7 +263,10 @@ int	configParser::get_backlog() const
 	return _settings.backlog;
 }
 
-
+const std::string& configParser::getCurrentRoute() const
+{
+	return _current_route;
+}
 
 
 
@@ -576,6 +579,7 @@ void configParser::setErrorPage(Server& server, const std::string& str)
 	{
 		std::string new_path = ROOT;
 		path = remove_leading_character(path, '/');
+		new_path.append("/");
 		new_path.append(path);
 		#ifdef DEBUG
 			std::cout << "Custom Error: " << new_path << std::endl;
