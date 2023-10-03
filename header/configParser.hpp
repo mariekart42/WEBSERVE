@@ -4,7 +4,7 @@
 #include "utils.h"
 
 // Global settings
-#define CGI_TIMEOUT		1500
+#define CGI_TIMEOUT		5500
 #define TIMEOUT			0
 #define MAX_CLIENTS		100
 #define BODY_SIZE		9000
@@ -133,6 +133,7 @@ class configParser
 		int					getBodySize(int incoming_port); // returns body-size from server with port
 		IntVector&			getPortVector();
 		IntStringMap&		getErrorMap();
+		const std::string&	getCurrentRoute() const; // necessary for debug
 		// global settings
 		int			get_timeout() const;
 		int			get_backlog() const;
