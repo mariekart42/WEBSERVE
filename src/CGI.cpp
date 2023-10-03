@@ -1,7 +1,5 @@
 #include "../header/Response.hpp"
 
-#define TEMP_CGI "root/tempCGI"
-
 size_t Response::getContentLen(const std::string& data)
 {
 	size_t foundPos = data.find("Content-Length: ") + 16;
