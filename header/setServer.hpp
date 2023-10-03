@@ -8,15 +8,15 @@ class configParser;
 class SetServer
 {
     private:
-        int setNewSocketFd(int) const;
-        fdList _fdList;
-        int _backlog;
+        fdList  _fdList;
+        int     _backlog;
+        int     setNewSocketFd(int) const;
 
     public:
         SetServer();
         ~SetServer();
 
-        void setServer(int, char**);
+        void    setServer(int, char**);
 };
 
 #endif

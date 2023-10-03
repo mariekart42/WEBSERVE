@@ -55,6 +55,7 @@
 
 extern std::string g_cookieName;
 
+
 void 		exitWithError(const std::string &);
 std::string comparerContentType(const std::string& fileExtension);
 std::string myItoS(int);
