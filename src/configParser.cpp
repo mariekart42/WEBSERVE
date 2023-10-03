@@ -35,7 +35,7 @@ bool	configParser::setData(const std::string& url, const std::string& host, cons
 {
 	_request_data._url = url;
 	_request_data._url.empty() ? _request_data._url = "/" : _request_data._url = _request_data._url;
-	_request_data._host = host; // TODO VF do we process this?
+	_request_data._host = host;
 	_request_data._port = port;
 	parse_request_data();
 	return true;
@@ -49,7 +49,7 @@ bool configParser::validConfig(int argc, char **argv)
 	try
 	{
 		if (!_file)
-			throw std::invalid_argument("invalid configuration file"); // TODO VF new exception overload
+			throw std::invalid_argument("invalid configuration file");
 		int count = 0;
 		while (getline(_file, _line))
 		{
@@ -65,14 +65,13 @@ bool configParser::validConfig(int argc, char **argv)
 			{
 				Server server;
 				server._server_nbr = count;
-//				server._directive_line_nbr = _directive_line_nbr;
 				server._server_line_nbr = _directive_line_nbr;
 				server._error_map = _default_error_map;
 				server._body_size = _settings.body_size;
 				std::string route;
 				std::string route_end;
 				std::string line_first_token;
-				while (getline(_file, _line) && getToken(_line, 1) != "[\\server]") // DONE VF handle open Server Block
+				while (getline(_file, _line) && getToken(_line, 1) != "[\\server]")
 				{
 					_directive_line_nbr++;
 					if (_line.empty())
@@ -284,7 +283,6 @@ Server & configParser::getServer(int port)
 void configParser::parse_request_data()
 {
 	bool IsFile = false;
-	// bool HasSubfolder = false;
 	std::size_t PosFile;
 
 	// check if url contains a file
@@ -293,10 +291,6 @@ void configParser::parse_request_data()
 	std::size_t PosLastSlash = _request_data._url.find_last_of('/');
 	PosLastSlash != std::string::npos ? PosFile = PosLastSlash + 1 : PosFile = 0;
 
-	// check if file is located in subfolder
-	// if (PosLastSlash != 0)
-	// 	HasSubfolder = true;
-
 	// save the filename
 	if (IsFile)
 	{
@@ -304,8 +298,9 @@ void configParser::parse_request_data()
 		_request_data._filename.substr(PosFile, _request_data._url.size());
 	}
 
-	// DEBUG
-	// std::cout << GREEN << "FILENAME " << _request_data._filename << " ROUTE " << _request_data._url <<  " HAS SUBFOLDERS " << HasSubfolder << RESET << std::endl;
+	#ifdef DEBUG
+	std::cout << GREEN << "FILENAME " << _request_data._filename << " ROUTE " << _request_data._url <<  " HAS SUBFOLDERS " << HasSubfolder << RESET << std::endl;
+	#endif
 }
 
 int	configParser::string_to_int(const std::string& str)
@@ -315,7 +310,7 @@ int	configParser::string_to_int(const std::string& str)
 	if (stream >> number)
 		return number;
 	else
-		throw std::invalid_argument("not a valid int");
+		throw std::invalid_argument("not a valid integer");
 }
 
 std::string configParser::getToken(const std::string& str, int n)
@@ -478,9 +473,6 @@ void configParser::setGlobal()
 			std::cerr << BLUE << "Warning: directive \"" << line_first_token << "\" already set, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 		else
 		{
-			// int size = string_to_int(getToken(_line, 3));
-			// if (size < BODY_SIZE_MIN || size > BODY_SIZE_MAX)
-			// 	std::cerr << BLUE << "Warning: body_size on line: " << _directive_line_nbr << " is set to " << size << " -> recommended range is between 2000-1000000" << RESET_COLOR << std::endl;
 			_settings.body_size = string_to_int(getToken(_line, 3));
 			_settings_check.body_size = true;
 		}
