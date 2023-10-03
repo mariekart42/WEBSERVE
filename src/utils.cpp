@@ -135,6 +135,7 @@ std::string comparerContentType(const std::string& fileExtension)
         extensionToType.insert(std::make_pair("js", "text/javascript"));
         extensionToType.insert(std::make_pair("mjs", "text/javascript"));
         extensionToType.insert(std::make_pair("txt", "text/plain"));
+        extensionToType.insert(std::make_pair("md", "text/plain"));
 
         extensionToType.insert(std::make_pair("abw", "application/x-abiword")); // dunno how to download
         extensionToType.insert(std::make_pair("arc", "application/x-freearc")); // dunno how to download
