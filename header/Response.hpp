@@ -19,92 +19,84 @@ class Request;
 
 struct configInfo
 {
-    std::string _indexFile;
-    std::string _rootFolder;
-    bool _autoIndex;
-    bool _postAllowed;
-    bool _getAllowed;
-    bool _deleteAllowed;
+    bool                    _autoIndex;
+    bool                    _postAllowed;
+    bool                    _getAllowed;
+    bool                    _deleteAllowed;
+    std::string             _indexFile;
+    std::string             _rootFolder;
 };
 
 struct postInfo
 {
-    std::vector<uint8_t> _input;
-    std::string     _filename;
-    std::string     _boundary;
-    std::ofstream*  _outfile;
-    int _contentLen;
+    int                     _contentLen;
+    std::string             _filename;
+    std::string             _boundary;
+    std::ofstream*          _outfile;
+    std::vector<uint8_t>    _input;
 };
 
 struct cgiInfo
 {
-	std::string _cgiPath;
-	std::string _query;
-	std::string _fileExtension;
-	std::string _body;
+	std::string             _cgiPath;
+	std::string             _query;
+	std::string             _fileExtension;
+	std::string             _body;
 };
 
 struct clientInfo
 {
-    int         _clientSocket;
-    httpMethod  _myHTTPMethod;
-    std::string _url;
-    std::string _fileContentType;
-    std::string _contentType;
-    bool        _isMultiPart;
-    postInfo    _postInfo;
-    configInfo  _configInfo;
-	cgiInfo _cgiInfo;
-    std::streampos _filePos;
-    std::map<int,std::string> _errorMap;
-	std::vector<std::string> _cgiFileExtension;
-    int _globalStatusCode;
-    bool _isChunkedFile;
-//	std::string _cookieName;
+    bool                        _isMultiPart;
+    int                         _clientSocket;
+    int                         _globalStatusCode;
+    bool                        _isChunkedFile;
+    postInfo                    _postInfo;
+    configInfo                  _configInfo;
+	cgiInfo                     _cgiInfo;
+    httpMethod                  _myHTTPMethod;
+    std::string                 _url;
+    std::string                 _fileContentType;
+    std::string                 _contentType;
+    std::streampos              _filePos;
+    std::map<int,std::string>   _errorMap;
+	std::vector<std::string>    _cgiFileExtension;
 };
-
 
 class Response
 {
     private:
-        int _localStatusCode;
-        clientInfo  _info;
-        std::string _header;
-        std::vector<uint8_t> _file;
-        std::map<int, std::ofstream> _fileStreams;
+        int                             _localStatusCode;
+        clientInfo                      _info;
+        std::string                     _header;
+        std::vector<uint8_t>            _file;
+        std::map<int, std::ofstream>    _fileStreams;
 
 
     public:
         Response(int, const clientInfo&);
         ~Response();
 
-        std::string getContentType();
-        void        initHeader();
-        int         initFile(int);
-		std::streampos        mySend(int);
-        int         getDirectoryIndexPage(const std::string&);
-        void        sendIndexPage();
-        std::streampos        sendRequestedFile();
-        bool        uploadFile(const std::string&, const std::string&, std::ofstream*);
-        bool        saveRequestToFile(std::ofstream&, const std::string&);
-        void        deleteFile();
-
-		bool	checkLanguage();
-		int	validCGIextension();
-		int		callCGI();
-		bool	CGIoutput();
-		bool isCgi();
-		int inputCheck();
-
-		bool isCookie();
-
-        std::vector<uint8_t> readFile(const std::string &fileName);
-        int getRightResponse() const;
-        void sendShittyChunk(const std::string&);
-
-	void handleCookies(const std::string &data, size_t pos);
-
-	size_t getContentLen(const std::string& data);
+        std::streampos          sendRequestedFile();
+		std::streampos          mySend(int);
+        int                     initFile(int);
+        int                     getDirectoryIndexPage(const std::string&);
+		int                     validCGIextension();
+		int	                    callCGI();
+		int                     inputCheck();
+        int                     getRightResponse() const;
+        bool                    uploadFile(const std::string&, const std::string&, std::ofstream*);
+        bool                    saveRequestToFile(std::ofstream&, const std::string&);
+		bool                    checkLanguage();
+		bool                    CGIoutput();
+		bool                    isCgi();
+        void                    deleteFile();
+        void                    initHeader();
+        void                    sendIndexPage();
+        void                    sendShittyChunk(const std::string&);
+		void                    handleCookies(const std::string &data, size_t pos);
+		size_t                  getContentLen(const std::string& data);
+        std::string             getContentType();
+        std::vector<uint8_t>    readFile(const std::string &fileName);
 };
 
 #endif

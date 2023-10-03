@@ -1,22 +1,10 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   configParser.hpp                                   :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: vfuhlenb <vfuhlenb@student.42wolfsburg.    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/13 23:16:58 by vfuhlenb          #+#    #+#             */
-/*   Updated: 2023/09/22 23:59:51 by vfuhlenb         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef CONFIGPARSER_CLASS_H
 #define CONFIGPARSER_CLASS_H
 
 #include "utils.h"
 
 // Global settings
-#define CGI_TIMEOUT		500
+#define CGI_TIMEOUT		1500
 #define TIMEOUT			0
 #define MAX_CLIENTS		100
 #define BODY_SIZE		9000
@@ -50,21 +38,23 @@
 #define PATH_REQUEST_TOO_BIG	"error/413.html"
 #define PATH_500_ERRORWEBSITE	"error/500.html"
 
+
 typedef std::vector<std::string> StringVector;
 typedef std::map<int,std::string> IntStringMap;
 typedef std::map<std::string,int> StringIntMap;
 typedef std::vector<int> IntVector;
-
 typedef std::set<int> IntSet;
 
-enum context {
+
+enum context
+{
 	GLOBAL,
 	SERVER,
 	LOCATION
 };
 
-typedef struct location{
-
+typedef struct location
+{
 		std::string		_path;
 		std::string		_root;
 		StringVector	_methods;
@@ -97,7 +87,8 @@ typedef struct Server{
 typedef std::map<int,Server> ServersMap;
 typedef std::vector<Server> ServersIndex;
 
-typedef struct global_settings {
+typedef struct global_settings
+{
 	int	timeout;
 	int	max_clients;
 	int	body_size;
@@ -105,7 +96,8 @@ typedef struct global_settings {
 	int	backlog;
 }global_settings;
 
-typedef struct settings_check {
+typedef struct settings_check
+{
 	bool	timeout;
 	bool	max_clients;
 	bool	body_size;
@@ -113,17 +105,17 @@ typedef struct settings_check {
 	bool	backlog;
 }settings_check;
 
-typedef struct RequestData {
+typedef struct RequestData
+{
 	std::string	_host;
 	int			_port;
 	std::string	_url;
 	std::string	_filename;
 }RequestData;
 
-class configParser {
-
+class configParser
+{
 	public:
-
 		configParser();
 		~configParser();
 
@@ -131,7 +123,7 @@ class configParser {
 		bool				validConfig(int argc, char **argv);
 
 		// server specific
-		const std::string	getUrl(); // TODO VF do i expect only an absolute path starting with a forward slash? so without the protocol and possible domain name
+		const std::string	getUrl();
 		bool				getAutoIndex();
 		const std::string	getIndexFile(); // returns empty string if not set
 		bool				getPostAllowed();
@@ -141,15 +133,12 @@ class configParser {
 		int					getBodySize(int incoming_port); // returns body-size from server with port
 		IntVector&			getPortVector();
 		IntStringMap&		getErrorMap();
-		bool				getHasRedirection();
-		const std::string&	getCurrentRoute() const;
 		// global settings
 		int			get_timeout() const;
 		int			get_backlog() const;
 
 
 	private:
-
 		int				_context;
 		int				_directive_line_nbr;
 		global_settings	_settings;
