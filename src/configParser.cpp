@@ -404,7 +404,7 @@ void configParser::validate_minimal_server_configuration(Server& server)
 	{
 		if (addStatus(server, "host"))
 			server._host = "0.0.0.0"; // setting default value
-		std::cerr << BLUE << "Warning: host missing on server " << server._server_nbr << " [" << server._server_line_nbr << "] -> default value of " << BOLDGREEN <<  "0.0.0.0" << BLUE << " has been set" << RESET_COLOR << std::endl;
+		std::cerr << BLUE << "Warning: host missing on server " << BOLDRED << server._server_nbr << BLUE << " [" << server._server_line_nbr << "] -> default value of " << BOLDGREEN <<  "0.0.0.0" << BLUE << " has been set" << RESET_COLOR << std::endl;
 	}
 
 	it = server._status.find("body_size");
@@ -412,7 +412,7 @@ void configParser::validate_minimal_server_configuration(Server& server)
 	{
 		if (addStatus(server, "body_size"))
 			server._body_size = BODY_SIZE; // setting default value
-		std::cerr << BLUE << "Warning: body_size missing on server " << server._server_nbr << " [" << server._server_line_nbr << "] -> default value of " << BOLDGREEN << BODY_SIZE << BLUE << " has been set" << RESET_COLOR << std::endl;
+		std::cerr << BLUE << "Warning: body_size missing on server " << BOLDRED << server._server_nbr << BLUE << " [" << server._server_line_nbr << "] -> default value of " << BOLDGREEN << BODY_SIZE << BLUE << " has been set" << RESET_COLOR << std::endl;
 	}
 }
 
@@ -422,7 +422,7 @@ bool configParser::addStatus(Server& server, const std::string& str)
 	ret = server._status.insert ( std::pair<std::string,int const>(str,_directive_line_nbr) );
 	if (ret.second==false)
 	{
-    	std::cerr << BLUE << "Warning: directive \"" << str << "\" already set, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
+    	std::cerr << BLUE << "Warning: directive \"" << BOLDRED << str << BLUE << "\" already set, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 		return 0;
 	}
 	return 1;
@@ -437,7 +437,7 @@ void configParser::addLocation(Server& server, const std::string& path)
 	std::pair<StringLocationMap::iterator,bool> ret;
 	ret = server._routes.insert ( std::pair<std::string,location>(path,newLocation) );
 	if (ret.second==false)
-    	std::cerr << BLUE << "Warning: location with: " << path << " already exist" << RESET_COLOR << std::endl;
+    	std::cerr << BLUE << "Warning: location with: " << BOLDRED << path << BLUE << " already exist" << RESET_COLOR << std::endl;
 	else
 		server._routes_vector.push_back(path);
 }
@@ -448,19 +448,19 @@ void configParser::setGlobal()
 	if ((line_first_token == "timeout") && validate_directive_single(_line))
 	{
 		if (_settings_check.timeout)
-			std::cerr << BLUE << "Warning: directive \"" << line_first_token << "\" already set. skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
+			std::cerr << BLUE << "Warning: directive \"" << BOLDRED << line_first_token << BLUE << "\" already set. skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 		else
 		{
 			_settings.timeout = string_to_int(getToken(_line, 3));
 			if (_settings.timeout >= 1 && _settings.timeout < 60)
-				std::cerr << BLUE << "Warning: timeout set to \"" << _settings.timeout << "\" in line: " << _directive_line_nbr << " -> Values under 60 might lead to unstable up and download" << RESET_COLOR << std::endl;
+				std::cerr << BLUE << "Warning: timeout set to \"" << BOLDRED << _settings.timeout << BLUE << "\" in line: " << _directive_line_nbr << " -> Values under 60 might lead to unstable up and download" << RESET_COLOR << std::endl;
 			_settings_check.timeout = true;
 		}
 	}
 	else if ((line_first_token == "max_clients") && validate_directive_single(_line))
 	{
 		if (_settings_check.max_clients)
-			std::cerr << BLUE << "Warning: directive \"" << line_first_token << "\" already set, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
+			std::cerr << BLUE << "Warning: directive \"" << BOLDRED << line_first_token << BLUE << "\" already set, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 		else
 		{
 			_settings.max_clients = string_to_int(getToken(_line, 3));
@@ -470,7 +470,7 @@ void configParser::setGlobal()
 	else if ((line_first_token == "body_size") && validate_directive_single(_line))
 	{
 		if (_settings_check.body_size)
-			std::cerr << BLUE << "Warning: directive \"" << line_first_token << "\" already set, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
+			std::cerr << BLUE << "Warning: directive \"" << BOLDRED << line_first_token << BLUE << "\" already set, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 		else
 		{
 			_settings.body_size = string_to_int(getToken(_line, 3));
@@ -480,7 +480,7 @@ void configParser::setGlobal()
 	else if ((line_first_token == "max_events") && validate_directive_single(_line))
 	{
 		if (_settings_check.max_events)
-			std::cerr << BLUE << "Warning: directive \"" << line_first_token << "\" already set, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
+			std::cerr << BLUE << "Warning: directive \"" << BOLDRED << line_first_token << BLUE << "\" already set, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 		else
 		{
 			_settings.max_events = string_to_int(getToken(_line, 3));
@@ -490,7 +490,7 @@ void configParser::setGlobal()
 	else if ((line_first_token == "backlog") && validate_directive_single(_line))
 	{
 		if (_settings_check.backlog)
-			std::cerr << BLUE << "Warning: directive \"" << line_first_token << "\" already set, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
+			std::cerr << BLUE << "Warning: directive \"" << BOLDRED << line_first_token << BLUE << "\" already set, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 		else
 		{
 			_settings.backlog = string_to_int(getToken(_line, 3));
@@ -511,7 +511,7 @@ void configParser::setDirective(Server& server, const std::string& _route)
 		if (port < 0 || port > 65535)
 			throw std::invalid_argument("port outside of valid range");
 		if (port < 1024)
-			std::cerr << BLUE << "Warning: port \"" << getToken(_line, 3) << "\" in line: " << _directive_line_nbr << " -> Ports under 1024 need extended permissions, binding might fail" << RESET_COLOR << std::endl;
+			std::cerr << BLUE << "Warning: port \"" << BOLDRED << getToken(_line, 3) << BLUE << "\" in line: " << _directive_line_nbr << " -> Ports under 1024 need extended permissions, binding might fail" << RESET_COLOR << std::endl;
 		if (addStatus(server, "port"))
 			server._port = port;
 	}
@@ -529,7 +529,7 @@ void configParser::setDirective(Server& server, const std::string& _route)
 			int size = string_to_int(getToken(_line, 3));
 			server._body_size = size;
 			if (size < BODY_SIZE_MIN || size > BODY_SIZE_MAX)
-				std::cerr << BLUE << "Warning: body_size on line: " << _directive_line_nbr << " is set to " << size << " -> recommended range is between 2000-10000000 (2kb - 10MB)." << RESET_COLOR << std::endl;
+				std::cerr << BLUE << "Warning: body_size on line: " << _directive_line_nbr << " is set to " << BOLDRED << size << BLUE << " -> recommended range is between 2000-10000000 (2kb - 10MB)." << RESET_COLOR << std::endl;
 		}
 	}
 	else if (line_first_token == "error_page" && validate_directive_single(_line))
@@ -548,7 +548,7 @@ void configParser::setDirective(Server& server, const std::string& _route)
 	else if (line_first_token == "redirect" && validate_directive_single(_line))
 		setRedirect(server, _line, _route);
 	else if (line_first_token != "[\\server]" && line_first_token != "#" && line_first_token != ";")
-		std::cerr << BLUE << "Warning: invalid key \"" << line_first_token << "\" skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
+		std::cerr << BLUE << "Warning: invalid key \"" << BOLDRED << line_first_token << BLUE <<  "\" skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 }
 
 void configParser::setServerName(Server& server, const std::string& str)
@@ -599,10 +599,10 @@ void configParser::setRoot(Server& server, const std::string& str, const std::st
 		if (it->second._root.empty())
 			it->second._root = getToken(str, 3);
 		else
-			std::cerr << BLUE << "Warning: directive \"" << getToken(str, 1) << "\" already set, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
+			std::cerr << BLUE << "Warning: directive \"" << BOLDRED << getToken(str, 1) << BLUE << "\" already set, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 	}
 	else
-		std::cerr << BLUE << "Warning: directive \"" << getToken(str, 1) << "\" needs to be in locationblock, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
+		std::cerr << BLUE << "Warning: directive \"" << BOLDRED << getToken(str, 1) << BLUE << "\" needs to be in locationblock, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 }
 
 void configParser::setMethods(Server& server, const std::string& str, const std::string& route)
@@ -621,7 +621,7 @@ void configParser::setMethods(Server& server, const std::string& str, const std:
 		}
 	}
 	else
-		std::cerr << BLUE << "Warning: directive \"" << getToken(str, 1) << "\" needs to be in locationblock, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
+		std::cerr << BLUE << "Warning: directive \"" << BOLDRED << getToken(str, 1) << BLUE << "\" needs to be in locationblock, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 }
 
 void configParser::setAutoindex(Server& server, const std::string& str, const std::string& route)
@@ -638,7 +638,7 @@ void configParser::setAutoindex(Server& server, const std::string& str, const st
 			it->second._autoindex = "false";
 	}
 	else
-		std::cerr << BLUE << "Warning: directive \"" << getToken(str, 1) << "\" needs to be in locationblock, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
+		std::cerr << BLUE << "Warning: directive \"" << BOLDRED << getToken(str, 1) << BLUE << "\" needs to be in locationblock, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 }
 
 void configParser::setIndex(Server& server, const std::string& str, const std::string& route)
@@ -651,10 +651,10 @@ void configParser::setIndex(Server& server, const std::string& str, const std::s
 		if (it->second._index.empty())
 			it->second._index = getToken(str, 3);
 		else
-			std::cerr << BLUE << "Warning: directive \"" << getToken(str, 1) << "\" already set, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
+			std::cerr << BLUE << "Warning: directive \"" << BOLDRED << getToken(str, 1) << BLUE << "\" already set, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 	}
 	else
-		std::cerr << BLUE << "Warning: directive \"" << getToken(str, 1) << "\" needs to be in locationblock, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
+		std::cerr << BLUE << "Warning: directive \"" << BOLDRED << getToken(str, 1) << BLUE << "\" needs to be in locationblock, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 }
 
 void configParser::setCGI(Server& server, const std::string& str, const std::string& route)
@@ -674,7 +674,7 @@ void configParser::setCGI(Server& server, const std::string& str, const std::str
 		}
 	}
 	else
-		std::cerr << BLUE << "Warning: directive \"" << getToken(str, 1) << "\" needs to be in locationblock, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
+		std::cerr << BLUE << "Warning: directive \"" << BOLDRED << getToken(str, 1) << BLUE << "\" needs to be in locationblock, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 }
 
 void configParser::setRedirect(Server& server, const std::string& str, const std::string& route)
@@ -686,10 +686,10 @@ void configParser::setRedirect(Server& server, const std::string& str, const std
 		if (it->second._redirect.empty())
 			it->second._redirect = getToken(str, 3);
 		else
-			std::cerr << BLUE << "Warning: directive \"" << getToken(str, 1) << "\" already set, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
+			std::cerr << BLUE << "Warning: directive \"" << BOLDRED << getToken(str, 1) << BLUE << "\" already set, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 	}
 	else
-		std::cerr << BLUE << "Warning: directive \"" << getToken(str, 1) << "\" needs to be in locationblock, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
+		std::cerr << BLUE << "Warning: directive \"" << BOLDRED << getToken(str, 1) << BLUE << "\" needs to be in locationblock, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 }
 
 // prepends '/' if not present
