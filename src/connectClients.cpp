@@ -368,8 +368,7 @@ void ConnectClients::connectClients(configParser& config)
             break;
         }
         int ret = 0;
-        if (g_shutdown_flag == 0)
-            ret = poll(&_fdPortList._fds[0], (_fdPortList._fds.size()), config.get_timeout());
+        ret = poll(&_fdPortList._fds[0], (_fdPortList._fds.size()), config.get_timeout());
         switch (ret)
         {
             case -1:
