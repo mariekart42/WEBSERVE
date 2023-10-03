@@ -1,6 +1,4 @@
 #include "../header/Response.hpp"
-#include <sys/fcntl.h>
-#include <sys/socket.h>
 
 Response::Response(int clientSocket, const clientInfo& cInfo):
        _localStatusCode(-1), _info(cInfo), _header()
@@ -151,7 +149,7 @@ std::string Response::getContentType()
            fileExtension = _info._url.substr(startPos);
        std::string contentType = comparerContentType(fileExtension);
        if (contentType == FAILURE)
-           mySend(404);
+           mySend(NOT_FOUND);
        return contentType;
     }
     #ifdef LOG
@@ -186,7 +184,6 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
 
     if (_info._myHTTPMethod == M_GET && content.size() > SEND_CHUNK_SIZE)
     {
-
         _info._fileContentType = getContentType();
 
         std::string header = "HTTP/1.1 200 " +
@@ -196,7 +193,6 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
                              "Content-Length: " + myItoS(content.size()) + "\r\n"
 					         "Connection: keep-alive\r\n"
 						     "\r\n";
-
         #ifdef LOG
             Logging::log("send Data:\n" + header, 200);
         #endif
@@ -209,7 +205,7 @@ std::vector<uint8_t> Response::readFile(const std::string &fileName)
         int len = response.size();
 
         int check = send(_info._clientSocket, response.data(), len, MSG_DONTWAIT);
-        if (check <=0)
+        if (check <= 0)
         {
             #ifdef LOG
                 Logging::log("Failed to send Data to Client", 500);
@@ -287,7 +283,7 @@ std::streampos Response::mySend(int statusCode)
     int len = response.size();
 
     int check = send(_info._clientSocket, response_data, len, MSG_DONTWAIT);
-    if (check <=0)
+    if (check <=0 )
     {
         #ifdef LOG
             Logging::log("Failed to send Data to Client", 500);
@@ -295,9 +291,7 @@ std::streampos Response::mySend(int statusCode)
         #ifdef INFO
             std::cout << BOLDRED << "Error: Failed to send Data to Client" << RESET << std::endl;
         #endif
-        return 0;
     }
-
     return 0;
 }
 
@@ -342,13 +336,11 @@ void Response::sendShittyChunk(const std::string& fileName)
         _info._filePos = 0;
         return;
     }
-
     _info._filePos = file.tellg();
     _info._isChunkedFile = true;
     file.close();
     return ;
 }
-
 
 
 void Response::initHeader()
@@ -376,10 +368,7 @@ bool Response::uploadFile(const std::string& contentType, const std::string& bou
     if (contentType == "multipart/form-data")
         return saveRequestToFile(*outfile, boundary);
 	else if (contentType == "application/x-www-form-urlencoded")
-    {
-//		if (!isCookie())
-			isCgi();
-	}
+		isCgi();
 	return false;
 }
 

@@ -1,5 +1,4 @@
 #include "../header/utils.h"
-#include <sys/fcntl.h>
 
 void logg(const std::string &message)
 {
@@ -18,7 +17,12 @@ void exitWithError(const std::string &msg)
 int setNonBlocking(int fd)
 {
     if (fcntl(fd, F_SETFL, O_NONBLOCK, FD_CLOEXEC) == -1)
+    {
+		#ifdef INFO
+			    std::cout << BOLDRED << "fcntl error, could not set flag to O_NONBLOCK" << RESET << std::endl;
+		#endif
         return -1;
+	}
     return 0;
 }
 
@@ -41,7 +45,7 @@ void signalHandler(int sigNum)
 {
 	if (sigNum == SIGINT || sigNum == SIGTERM)
 	{
-		std::cout << "\nReceived shutdown signal. Terminating webserv..." << std::endl;
+		std::cout << "\nReceived shutdown signal. Terminating webserv ..." << std::endl;
 		g_shutdown_flag = 1;
 	}
 }

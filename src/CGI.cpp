@@ -136,7 +136,7 @@ int Response::callCGI()
 	char *cmd = (char*)_info._cgiInfo._cgiPath.c_str();
 	char *argv[] = {const_cast<char *>(exec.c_str()), cmd, 0};
 
-	int file = open(TMP_CGI, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR); //TODO hardcoded. Do whatever for naming or keep it
+	int file = open(TMP_CGI, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
 	gettimeofday(&start, 0);
 
 	if (pipe(pipefd) == -1)

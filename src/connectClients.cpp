@@ -27,12 +27,7 @@ void ConnectClients::initFdList()
         for (int k = 0 + x; k < portSize; k++) {
             if (_fdPortList._fds[k].fd == -1) {
                 _fdPortList._fds[k].fd = _fdPortList._sockets.at(x);
-                if (setNonBlocking(_fdPortList._fds[k].fd == -1))
-                {
-                    #ifdef INFO
-                        std::cout << BOLDRED << "fcntl error, could not set flag to O_NONBLOCK" << RESET << std::endl;
-                    #endif
-                }
+                setNonBlocking(_fdPortList._fds[k].fd);
                 _fdPortList._fds[k].events = POLLIN;
                 _fdPortList._fds[k].revents = 0;
                 break;

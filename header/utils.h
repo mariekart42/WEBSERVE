@@ -2,41 +2,44 @@
 #define UTILS_H
 
 
-#include <iostream>
-#include <fstream>          // ifstream
-#include <sstream>          // stringstream
-#include <unistd.h>         // read()
-#include <sys/socket.h>     // send()
-#include <sys/stat.h>       // stat struct -> check for File/Folder
-#include <fcntl.h>          // nonblock macro
+#include <set>
 #include <map>
-#include <string>
-#include <vector>
-#include <poll.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <dirent.h>
 #include <ctime>
+#include <vector>
+#include <cstdio>
+#include <string>
+#include <poll.h>
+#include <fstream>
+#include <sstream>
 #include <cstring>
 #include <cstdlib>
-#include <cstdio>
 #include <netdb.h>
 #include <csignal>
-#include <sys/time.h>
-#include <sys/wait.h>
+#include <fcntl.h>
+#include <iostream>
+#include <unistd.h>
+#include <dirent.h>
 #include <exception>
 #include <stdexcept>
-#include <set>
+#include <sys/time.h>
+#include <sys/wait.h>
+#include <sys/stat.h>
 #include <sys/poll.h>
+#include <sys/fcntl.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 
 
 #include "logging.hpp"
 
+
 #define FAILURE "FAILURE"
 #define BAD_CONTENT_TYPE "bad_contentType"
+
+
 #define INFO
 // #define LOG
-// #define DEBUG
 
 
 // Colour shit

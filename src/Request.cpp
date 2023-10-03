@@ -1,6 +1,4 @@
-
 #include "../header/Request.hpp"
-#include <sstream>
 
 Request::Request(const std::vector<uint8_t>& clientData):
     _tmp(std::string(clientData.begin(), clientData.end()))
@@ -123,32 +121,19 @@ std::string Request::getFileName(const std::string& contentType, const std::stri
                 if (fileName.rfind('.') == std::string::npos) // no file with .
                     return (FAILURE);
                 if (fileExists(fileName, uploadFolder))
-                {
                     fileName = getNewFilename(fileName, uploadFolder);
 
-                }
-                #ifdef DEBUG
-                    std::cout << GRN << "DEBUG: filename: " << fileName << "" << RESET << std::endl;
-                #endif
                 if (getFileContentType(fileName) == FAILURE)
                     return BAD_CONTENT_TYPE;
                 return fileName;
             }
-            #ifdef DEBUG
-                std::cout << "DEBUG: no filename found in POST request" << std::endl;
-            #endif
             return (&"tmpFileForSocket_" [ random()]);
         }
-        #ifdef DEBUG
-            std::cout << "prolly first chunk of multipart, wait for filename"<<std::endl;
-        #endif
-        return "not_found_yet";  // error
+        return "not_found_yet";
     }
 
     return FAILURE; // not failure but we don't consider filename if not POST
 }
-
-
 
 
 /* only for POST 
@@ -164,13 +149,9 @@ std::string Request::getContentType()
         if (specialEnd != std::string::npos)
         {
             std::string specialType = "application/x-www-form-urlencoded";
-            #ifdef DEBUG
-                std::cout << GRN << "DEBUG: Content-Type: " << specialType << "" << RESET << std::endl;
-            #endif
             return specialType;
 		}
 	}
-	
 
     if (foundPos != std::string::npos)
     {
@@ -178,9 +159,6 @@ std::string Request::getContentType()
         if (endPos != std::string::npos)
         {
             std::string contentType = _tmp.substr(foundPos + 14, endPos - (foundPos + 14));
-            #ifdef DEBUG
-                std::cout << GRN << "DEBUG: Content-Type: " << contentType << "" << RESET << std::endl;
-            #endif
             return contentType;
         }
     }
@@ -198,20 +176,8 @@ int Request::getContentLen()
         if (endPos != std::string::npos)
         {
             std::string contentLen = _tmp.substr(foundPos, endPos - (foundPos));
-            #ifdef DEBUG
-                        std::cout << GRN"DEBUG: Content-Length: " << contentLen << "" << RESET << std::endl;
-            #endif
             return atoi(contentLen.c_str());
         }
-    }
-    else
-    {
-        #ifdef INFO
-        std::cout << BOLDRED << "Error: unable to extract Content-Length" << RESET << std::endl;
-        #endif
-        #ifdef LOG
-            Logging::log("Error: unable to extract Content-Length", 500);
-        #endif
     }
     return -1;
 }
@@ -291,5 +257,5 @@ int Request::getPort()
         std::string resultStr = hostLine.substr(lastCharPos, lineEnd - lastCharPos);
         return atoi(resultStr.c_str());
     }
-    return 80;
+    return 80; // 80 cause if no port provided -> default port 80
 }
