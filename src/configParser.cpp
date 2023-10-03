@@ -6,7 +6,7 @@
 /*   By: vfuhlenb <vfuhlenb@students.42wolfsburg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 23:17:00 by vfuhlenb          #+#    #+#             */
-/*   Updated: 2023/10/03 14:35:47 by vfuhlenb         ###   ########.fr       */
+/*   Updated: 2023/10/03 14:37:21 by vfuhlenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -724,15 +724,6 @@ RouteIterator	configParser::return_route(Server& server, const std::string& rout
 {
 	RouteIterator it = server._routes.find(route);
 	return it;
-}
-
-bool configParser::hasRoute(Server& server, const std::string& route)
-{
-	StringLocationMap::iterator it;
-	it = server._routes.find(route);
-	if (it == server._routes.end())
-		return false;
-	return true;
 }
 
 bool configParser::hasMethod(StringVector& methods, std::string method) const

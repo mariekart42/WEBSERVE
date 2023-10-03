@@ -30,7 +30,6 @@
 
 
 #include "logging.hpp"
-#include "colors.h"
 
 #define FAILURE "FAILURE"
 #define BAD_CONTENT_TYPE "bad_contentType"
