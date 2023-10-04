@@ -187,7 +187,6 @@ int Response::callCGI()
 
 	if (WIFSIGNALED(status))
 	{
-		std::cout << "IN LOL"<<std::endl;
 		close(file);
 		remove(TMP_CGI);
 		return GATEWAY_TIMEOUT;
