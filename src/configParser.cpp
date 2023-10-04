@@ -35,6 +35,7 @@ bool	configParser::setData(const std::string& url, const std::string& host, cons
 {
 	_request_data._url = url;
 	_request_data._url.empty() ? _request_data._url = "/" : _request_data._url = _request_data._url;
+	_request_data._url = prepend_forward_slash(_request_data._url);
 	_request_data._host = host;
 	_request_data._port = port;
 	parse_request_data();
