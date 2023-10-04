@@ -16,7 +16,7 @@ class SetServer
         SetServer();
         ~SetServer();
 
-        void    setServer(int, char**);
+        bool    setServer(int, char**);
 };
 
 #endif

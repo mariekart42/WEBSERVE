@@ -48,11 +48,11 @@ int SetServer::setNewSocketFd(int port) const
     return (newSocketFd);
 }
 
-void SetServer::setServer(int ac, char **av)
+bool SetServer::setServer(int ac, char **av)
 {
     configParser config;
     if (!config.validConfig(ac, av))
-        exitWithError("Invalid Config File [EXIT]");
+        return false;
 
     fdList initList;
     _backlog = config.get_backlog();
@@ -66,4 +66,5 @@ void SetServer::setServer(int ac, char **av)
     }
     ConnectClients connect(initList);
     connect.connectClients(config);
+    return true;
 }
