@@ -10,8 +10,22 @@ Webserv is a web server implementation project for the 42 school curriculum. Thi
 
 ## Table of Contents
 
+- [Key features](#key-feautures)
 - [Getting Started](#getting-started)
 - [Screenshots](#screenshots)
+
+
+## Key Feautures
+
+__Multi-Threaded:__ Handles multiple client connections concurrently.
+
+**Configurable:** Supports configuration files to customize server behavior.
+
+**Static & Dynamic Content:** Serves static files and processes dynamic content using server-side scripting.
+
+**HTTP Protocol:** Implements basic HTTP methods like GET, POST, etc.
+
+**Scalable:** Designed for scalability and optimal performance.
 
 
 ## Getting Started
