@@ -140,7 +140,8 @@ int Response::callCGI()
 		#ifdef INFO
 		std::cerr << BOLDRED << "Error CGI: Something went wrong creating the pipe!" << RESET << std::endl;
 		#endif
-		return -3;
+		close(file);
+		return INTERNAL_ERROR;
 	}
 
 	int pid = fork();
@@ -149,34 +150,22 @@ int Response::callCGI()
 		#ifdef INFO
 		std::cerr << BOLDRED << "Error CGI: Something went wrong with fork" << RESET << std::endl;
 		#endif
+		close(file);
+		return INTERNAL_ERROR;
 	}
 	else if (pid == 0)
 	{
 		close(pipefd[0]);
 		dup2(file, STDOUT_FILENO);
 		alarm(CGI_TIMEOUT/1000);
+
 		if (_info._cgiInfo._fileExtension == ".py")
-		{
-			if (execve("/usr/bin/python3", argv, env) == -1)
-			{
-				#ifdef DEBUG
-				std::cerr << BOLDRED << "Error CGI child: what is wrong" << RESET << std::endl;
-				#endif
-				close(file);
-				exit(1);
-			}
-		}
+			execve("/usr/bin/python3", argv, env);
 		else
-		{
-			if (execve("/usr/bin/perl", argv, env) == -1)
-			{
-				#ifdef DEBUG
-				std::cerr << BOLDRED << "Error CGI child: what is wrong" << RESET << std::endl;
-				#endif
-				close(file);
-				exit(1);
-			}
-		}
+			execve("/usr/bin/perl", argv, env);
+
+		close(file);
+		exit(1);
 	}
 	else
 	{
@@ -185,25 +174,22 @@ int Response::callCGI()
 		close(pipefd[0]);
 	}
 
+	close(file);
 	if (WIFSIGNALED(status))
 	{
-		close(file);
 		remove(TMP_CGI);
 		return GATEWAY_TIMEOUT;
 	}
-
-	close(file);
 	return 0;
 }
 
 bool Response::cgiOutput()
 {
-
-
 	std::ifstream inputFile(TMP_CGI);
 	//error check if file is open
 	if (!inputFile.is_open())
 		return mySend(INTERNAL_ERROR);
+
 	std::string header = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: ";
 	std::string line;
 	std::string respooonse;
