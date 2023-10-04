@@ -111,8 +111,6 @@ int Response::callCGI()
 {
 	int pipefd[2];
 	int status;
-	struct timeval start;
-	struct timeval end;
 
 	if (int check = inputCheck() < 0)
 		return check;
@@ -136,7 +134,6 @@ int Response::callCGI()
 	char *argv[] = {const_cast<char *>(exec.c_str()), cmd, 0};
 
 	int file = open(TMP_CGI, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
-	gettimeofday(&start, 0);
 
 	if (pipe(pipefd) == -1)
 	{
@@ -157,6 +154,7 @@ int Response::callCGI()
 	{
 		close(pipefd[0]);
 		dup2(file, STDOUT_FILENO);
+		alarm(CGI_TIMEOUT/1000);
 		if (_info._cgiInfo._fileExtension == ".py")
 		{
 			if (execve("/usr/bin/python3", argv, env) == -1)
@@ -179,8 +177,6 @@ int Response::callCGI()
 				exit(1);
 			}
 		}
-		close(file);
-		close(pipefd[1]);
 	}
 	else
 	{
@@ -189,20 +185,22 @@ int Response::callCGI()
 		close(pipefd[0]);
 	}
 
-	close(file);
-	gettimeofday(&end, 0);
-
-	int diff = (end.tv_sec - start.tv_sec) * 1000.0 + (end.tv_usec - start.tv_usec) / 1000.0;
-	if (CGI_TIMEOUT > 0 && diff >= CGI_TIMEOUT )
+	if (WIFSIGNALED(status))
 	{
+		std::cout << "IN LOL"<<std::endl;
+		close(file);
 		remove(TMP_CGI);
-		return REQUEST_TIMEOUT;
+		return GATEWAY_TIMEOUT;
 	}
+
+	close(file);
 	return 0;
 }
 
 bool Response::cgiOutput()
 {
+
+
 	std::ifstream inputFile(TMP_CGI);
 	//error check if file is open
 	if (!inputFile.is_open())

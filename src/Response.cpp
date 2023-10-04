@@ -73,8 +73,8 @@ bool Response::isCgi()
 			return false;
 		case METHOD_NOT_ALLOWED:
 			return mySend(METHOD_NOT_ALLOWED), true;
-		case REQUEST_TIMEOUT:
-			return mySend(REQUEST_TIMEOUT), true;
+		case GATEWAY_TIMEOUT:
+			return mySend(GATEWAY_TIMEOUT), true;
 		case NOT_FOUND:
 			return mySend(NOT_FOUND), true;
 		case FORBIDDEN:
@@ -256,8 +256,8 @@ int Response::initFile(int statusCode)
             return _file = readFile(_info._errorMap.at(NOT_FOUND)), _localStatusCode = 404;
         case METHOD_NOT_ALLOWED:
             return _file = readFile(_info._errorMap.at(METHOD_NOT_ALLOWED)), _localStatusCode = 405;
-	    case REQUEST_TIMEOUT:
-		    return _file = readFile(_info._errorMap.at(REQUEST_TIMEOUT)), _localStatusCode = 408;
+	    case GATEWAY_TIMEOUT:
+		    return _file = readFile(_info._errorMap.at(GATEWAY_TIMEOUT)), _localStatusCode = 504;
         case REQUEST_TOO_BIG:
             return _file = readFile(_info._errorMap.at(REQUEST_TOO_BIG)), _localStatusCode = 413;
         default:

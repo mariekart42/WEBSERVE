@@ -728,7 +728,7 @@ void	configParser::create_default_error_map()
 	_default_error_map.insert ( std::pair<int,std::string>(METHOD_NOT_ALLOWED, PATH_METHOD_NOT_ALLOWED) );
 	_default_error_map.insert ( std::pair<int,std::string>(REQUEST_TOO_BIG, PATH_REQUEST_TOO_BIG) );
 	_default_error_map.insert ( std::pair<int,std::string>(INTERNAL_ERROR, PATH_500_ERRORWEBSITE) );
-	_default_error_map.insert ( std::pair<int,std::string>(REQUEST_TIMEOUT, PATH_REQUEST_TIMEOUT) );
+	_default_error_map.insert ( std::pair<int,std::string>(GATEWAY_TIMEOUT, PATH_GATEWAY_TIMEOUT) );
 }
 
 void configParser::check_path_traversal(const std::string path)

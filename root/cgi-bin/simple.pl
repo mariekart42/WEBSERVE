@@ -6,6 +6,10 @@ my $query_string = $ENV{'QUERY_STRING'};  # Get the entire query string
 
 my $name;  # Declare the $name variable
 
+# while (1) {}
+
+# sleep(1);
+
 # Parse the query string to extract the 'name' parameter
 if ($query_string =~ /name=([^&]*)/) {
     $name = $1;  # Store the 'name' parameter value in $name

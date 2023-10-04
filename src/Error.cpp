@@ -17,10 +17,10 @@ void ErrorResponse::initializeErrorMessages()
     errorMessages[403] = "Forbidden";
     errorMessages[404] = "Not Found";
     errorMessages[405] = "Method not allowed";
-    errorMessages[408] = "Request Timeout";
     errorMessages[409] = "Conflict";
     errorMessages[413] = "Request Entity Too Large";
     errorMessages[500] = "Internal Server Error";
+    errorMessages[504] = "Gateway Timeout";
 }
 
 std::string ErrorResponse::getErrorMessage(int statusCode)

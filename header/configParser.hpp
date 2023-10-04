@@ -4,7 +4,7 @@
 #include "utils.h"
 
 // Global settings
-#define CGI_TIMEOUT		5500
+#define CGI_TIMEOUT		1000
 #define TIMEOUT			0
 #define MAX_CLIENTS		100
 #define BODY_SIZE		9000
@@ -26,9 +26,9 @@
 #define FORBIDDEN			403
 #define NOT_FOUND			404
 #define METHOD_NOT_ALLOWED	405
-#define REQUEST_TIMEOUT	    408
 #define REQUEST_TOO_BIG		413
 #define INTERNAL_ERROR		500
+#define GATEWAY_TIMEOUT	    504
 #define PATH_DEFAULTWEBPAGE		"root/index.html"
 #define PATH_FILE_SAVED			"root/PATH_FILE_SAVED.html"
 #define PATH_FILE_DELETED		"root/PATH_FILE_DELETED.html"
@@ -36,9 +36,9 @@
 #define PATH_FORBIDDEN			"error/403.html"
 #define PATH_404_ERRORWEBSITE	"error/404.html"
 #define PATH_METHOD_NOT_ALLOWED	"error/405.html"
-#define PATH_REQUEST_TIMEOUT	"error/408.html"
 #define PATH_REQUEST_TOO_BIG	"error/413.html"
 #define PATH_500_ERRORWEBSITE	"error/500.html"
+#define PATH_GATEWAY_TIMEOUT	"error/504.html"
 
 
 typedef std::vector<std::string> StringVector;
