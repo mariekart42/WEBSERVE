@@ -5,7 +5,7 @@
     <img src="root/images/yeee.jpg" alt="yeeee" width="4608">
 </p>
 
-In great collaboration with **[Valentin](https://github.com/minthe)** and **[Trung](https://github.com/Alohakaloha)** :)<br>
+In great collaboration with **[Valentin](https://github.com/minthe)**, **[Abir](https://github.com/mdabir1203)**, **[Dragos](https://github.com/Dragoshiz)** and **[Trung](https://github.com/Alohakaloha)** :)<br>
 
 ## WEBSERVE - 42 Project
 
