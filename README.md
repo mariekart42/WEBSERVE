@@ -64,7 +64,7 @@ Install _Python_ and _Perl_ on your device (**CGI**)
 ## Configuration
 In the nginx like configuration File, you can change the Server Settings depending on your needs.
 <p align="center">
-    <img src="root/images/sample-config-left.png" alt="sample config" width="461">
+    <img src="root/images/sample-config-left.png" alt="sample config" width="460">
     <img src="root/images/sample-config-right.png" alt="sample config" width="460">
 </p>
 
