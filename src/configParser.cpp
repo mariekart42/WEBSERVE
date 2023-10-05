@@ -14,7 +14,7 @@
 #include <algorithm>
 #include <stdexcept>
 
-configParser::configParser() : _context(GLOBAL), _directive_line_nbr(0)
+configParser::configParser() : _directive_line_nbr(0), _context(GLOBAL), _settings_check(), _settings()
 {
 	_settings.timeout = TIMEOUT;
 	_settings.max_clients = MAX_CLIENTS;
@@ -116,7 +116,7 @@ bool configParser::validConfig(int argc, char **argv)
 			}
 			setGlobal();
 		}
-		if (!_servers_index.size())
+		if (_servers_index.empty())
 			throw std::runtime_error("no server configuration declared");
 		_file.close();
 	}
@@ -136,9 +136,8 @@ bool configParser::validConfig(int argc, char **argv)
 
 // iterate through locations and check exact route for example </> or </index.html>
 // if requested url is "/index.html", the first location would already be a match. if </> is not defined, then </index.html> would match.
-const std::string	configParser::getUrl()
+std::string	configParser::getUrl()
 {
-
 	bool HasMatch = false;
 	bool IsRedirect = false;
 
@@ -165,7 +164,7 @@ bool configParser::getAutoIndex()
 	return result;
 }
 
-const std::string	configParser::getIndexFile()
+std::string	configParser::getIndexFile()
 {
 	if (RequestedLocationExist())
 	{
@@ -406,7 +405,7 @@ bool configParser::addStatus(Server& server, const std::string& str)
 {
 	std::pair<StringIntMap::iterator,bool> ret;
 	ret = server._status.insert ( std::pair<std::string,int const>(str,_directive_line_nbr) );
-	if (ret.second==false)
+	if (!ret.second)
 	{
     	std::cerr << BLUE << "Warning: directive \"" << BOLDRED << str << BLUE << "\" already set, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 		return 0;
@@ -537,7 +536,7 @@ void configParser::setDirective(Server& server, const std::string& _route)
 		std::cerr << BLUE << "Warning: invalid key \"" << BOLDRED << line_first_token << BLUE <<  "\" skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 }
 
-void configParser::setServerName(Server& server, const std::string& str)
+void configParser::setServerName(Server& server, const std::string& str) const
 {
 	int count = countToken(str);
 	int i = 3;
@@ -587,7 +586,7 @@ void configParser::setRoot(Server& server, const std::string& str, const std::st
 		std::cerr << BLUE << "Warning: directive \"" << BOLDRED << getToken(str, 1) << BLUE << "\" needs to be in locationblock, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 }
 
-void configParser::setMethods(Server& server, const std::string& str, const std::string& route)
+void configParser::setMethods(Server& server, const std::string& str, const std::string& route) const
 {
 	StringLocationMap::iterator it;
 	it = server._routes.find(route);
@@ -606,7 +605,7 @@ void configParser::setMethods(Server& server, const std::string& str, const std:
 		std::cerr << BLUE << "Warning: directive \"" << BOLDRED << getToken(str, 1) << BLUE << "\" needs to be in locationblock, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 }
 
-void configParser::setAutoindex(Server& server, const std::string& str, const std::string& route)
+void configParser::setAutoindex(Server& server, const std::string& str, const std::string& route) const
 {
 	StringLocationMap::iterator it;
 	it = server._routes.find(route);
@@ -639,7 +638,7 @@ void configParser::setIndex(Server& server, const std::string& str, const std::s
 		std::cerr << BLUE << "Warning: directive \"" << BOLDRED << getToken(str, 1) << BLUE << "\" needs to be in locationblock, skipping line: " << _directive_line_nbr << RESET_COLOR << std::endl;
 }
 
-void configParser::setCGI(Server& server, const std::string& str, const std::string& route)
+void configParser::setCGI(Server& server, const std::string& str, const std::string& route) const
 {
 	StringLocationMap::iterator it;
 	it = server._routes.find(route);
@@ -675,7 +674,7 @@ void configParser::setRedirect(Server& server, const std::string& str, const std
 }
 
 // prepends '/' if not present
-std::string configParser::prepend_forward_slash(const std::string str) const
+std::string configParser::prepend_forward_slash(const std::string& str)
 {
 	std::string temp = str;
 	if (!temp.empty() && temp.at(0) != '/')
@@ -700,7 +699,7 @@ RouteIterator	configParser::return_route(Server& server, const std::string& rout
 	return it;
 }
 
-bool configParser::hasMethod(StringVector& methods, std::string method) const
+bool configParser::hasMethod(StringVector& methods, const std::string& method)
 {
 
 	for (size_t i = 0; i < methods.size(); ++i)
@@ -732,7 +731,7 @@ void	configParser::create_default_error_map()
 	_default_error_map.insert ( std::pair<int,std::string>(GATEWAY_TIMEOUT, PATH_GATEWAY_TIMEOUT) );
 }
 
-void configParser::check_path_traversal(const std::string path)
+void configParser::check_path_traversal(const std::string& path)
 {
 	std::size_t f1 = path.find("../");
 	std::size_t f2 = path.find("/../");
@@ -805,16 +804,13 @@ std::string configParser::remove_leading_character(const std::string& str, char 
 	return new_str;
 }
 
-std::string configParser::handle_redirection(const std::string route, Server& server)
+std::string configParser::handle_redirection(const std::string route, Server& server) const
 {
 	std::string redirected_url = _request_data._url;
 	redirected_url.erase(0,route.size());
 	redirected_url = remove_leading_character(redirected_url, '/');
 	redirected_url = prepend_forward_slash(redirected_url);
 	redirected_url.insert(0, return_route(server, route)->second._redirect);
-	#ifdef DEBUG
-		std::cout << RED << "REDIRECTED URL " << redirected_url << RESET << std::endl;
-	#endif
 	return redirected_url;
 }
 
@@ -842,14 +838,14 @@ void configParser::printServerDetails(std::ofstream& file)
 		printServer(_servers_index[i], file);
 }
 
-void configParser::printGlobalSettings()
+void configParser::printGlobalSettings() const
 {
 	std::cout << BOLDWHITE << "\nGLOBAL SETTINGS:" << RESET_COLOR << " timeout = " << _settings.timeout << ", max_clients = " << _settings.max_clients;
 	std::cout << ", body_size = " << _settings.body_size << ", max_events = " << _settings.max_events;
 	std::cout << ", backlog = " << _settings.backlog << std::endl;
 }
 
-void configParser::printGlobalSettings(std::ofstream& file)
+void configParser::printGlobalSettings(std::ofstream& file) const
 {
 	file << "\nGLOBAL SETTINGS" << "\n\ttimeout = " << _settings.timeout << "\n\tmax_clients = " << _settings.max_clients;
 	file << "\n\tbody_size = " << _settings.body_size << "\n\tmax_events = " << _settings.max_events;

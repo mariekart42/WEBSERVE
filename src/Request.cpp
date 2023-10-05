@@ -82,9 +82,6 @@ std::string Request::getNewFilename(const std::string& checkFilename, const std:
 
     if (lastDotPos == std::string::npos) // If dot is found
     {
-        #ifdef INFO
-            std::cout << BOLDRED << "Error: could not getNewFilename" << RESET << std::endl;
-        #endif
         #ifdef LOG
             Logging::log("unexpected Error: could not getNewFilename", 500);
         #endif

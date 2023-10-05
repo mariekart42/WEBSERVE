@@ -3,7 +3,7 @@
 
 #include "connectClients.hpp"
 
-class configParser;
+//class configParser;
 
 class SetServer
 {

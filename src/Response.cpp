@@ -10,9 +10,7 @@ Response::~Response() {}
 
 void Response::deleteFile()
 {
-    #ifdef INFO
-        std::cout << RED " . . . Received Data  --  DELETE  " <<_info._url<< "" << RESET << std::endl;
-    #endif
+	std::cout << RED " . . . Received Data  --  DELETE  " <<_info._url<< "" << RESET << std::endl;
     #ifdef LOG
         Logging::log("Received Data  --  DELETE  " + _info._url, 200);
     #endif

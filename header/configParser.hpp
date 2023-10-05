@@ -57,14 +57,14 @@ enum context
 
 typedef struct location
 {
+		StringVector	_cgi;
 		std::string		_path;
 		std::string		_root;
-		StringVector	_methods;
-		std::string		_autoindex;
 		std::string		_index;
-		StringVector	_cgi;
-		std::string		_redirect;
 		StringIntMap	_status;
+		StringVector	_methods;
+		std::string		_redirect;
+		std::string		_autoindex;
 
 }location;
 
@@ -77,13 +77,13 @@ typedef struct Server{
 	std::string			_host;
 	StringVector		_server_name;
 	IntStringMap		_error_map; // response-code : path
-	StringLocationMap	_routes; // route : location_struct
 	StringVector		_routes_vector; // unsorted
+	StringLocationMap	_routes; // route : location_struct
 
 	// internal
-	StringIntMap		_status; // directive-key : line-value
 	int					_server_nbr;
 	int					_server_line_nbr;
+	StringIntMap		_status; // directive-key : line-value
 }Server;
 
 typedef std::map<int,Server> ServersMap;
@@ -92,25 +92,25 @@ typedef std::vector<Server> ServersIndex;
 typedef struct global_settings
 {
 	int	timeout;
-	int	max_clients;
+	int	backlog;
 	int	body_size;
 	int	max_events;
-	int	backlog;
+	int	max_clients;
 }global_settings;
 
 typedef struct settings_check
 {
 	bool	timeout;
-	bool	max_clients;
+	bool	backlog;
 	bool	body_size;
 	bool	max_events;
-	bool	backlog;
+	bool	max_clients;
 }settings_check;
 
 typedef struct RequestData
 {
-	std::string	_host;
 	int			_port;
+	std::string	_host;
 	std::string	_url;
 	std::string	_filename;
 }RequestData;
@@ -125,80 +125,81 @@ class configParser
 		bool				validConfig(int argc, char **argv);
 
 		// server specific
-		const std::string	getUrl();
 		bool				getAutoIndex();
-		const std::string	getIndexFile(); // returns empty string if not set
 		bool				getPostAllowed();
 		bool				getDeleteAllowed();
 		bool				getGetAllowed();
-		StringVector&		getCgiExtensions();
 		int					getBodySize(int incoming_port); // returns body-size from server with port
 		IntVector&			getPortVector();
+		std::string	        getUrl();
+		std::string	        getIndexFile(); // returns empty string if not set
 		IntStringMap&		getErrorMap();
+		StringVector&		getCgiExtensions();
 		const std::string&	getCurrentRoute() const; // necessary for debug
+
 		// global settings
 		int			get_timeout() const;
 		int			get_backlog() const;
 
 
 	private:
-		int				_context;
 		int				_directive_line_nbr;
-		global_settings	_settings;
-		settings_check	_settings_check;
-		std::ifstream	_file;
-		std::string		_file_path;
-		std::string		_line;
-		ServersMap		_servers;
-		ServersIndex	_servers_index;
+		int				_context;
 		IntSet			_unique_ports_sorted;
 		IntVector		_unique_ports;
+		ServersMap		_servers;
+		std::string		_line;
+		std::string		_file_path;
 		RequestData		_request_data;
+		ServersIndex	_servers_index;
 		IntStringMap	_default_error_map;
 		StringVector	_empty_string_vector;
+		std::ifstream	_file;
+		settings_check	_settings_check;
+		global_settings	_settings;
 
 		// temp
 		std::string		_current_route;
 
-		Server & getServer(int port);
-		void			parse_request_data();
+		void			        parse_request_data();
+		void			        validate_minimal_server_configuration(Server&);
+		bool			        addStatus(Server&, const std::string&);
+		void			        addLocation(Server&, const std::string&);
+		void			        setGlobal();
+		void			        setDirective(Server&, const std::string&);
+		void			        setServerName(Server&, const std::string&) const;
+		void			        setErrorPage(Server&, const std::string&);
+		void			        setRoot(Server&, const std::string&, const std::string&);
+		void			        setMethods(Server&, const std::string&, const std::string&) const;
+		void			        setAutoindex(Server&, const std::string&, const std::string&) const;
+		void			        setIndex(Server&, const std::string&, const std::string&);
+		void			        setCGI(Server&, const std::string&, const std::string&) const;
+		void			        setRedirect(Server&, const std::string&, const std::string&);
+		bool			        check_route_exist(Server&, const std::string&);
+		void			        create_port_vector();
+		void			        create_default_error_map();
+		bool			        RequestedLocationExist();
+		void			        printServerDetails();
+		void			        printServerDetails(std::ofstream&);
+		void			        printGlobalSettings() const;
+		void			        printLog();
+		void			        printGlobalSettings(std::ofstream&) const;
+		Server&                 getServer(int);
 		static int				string_to_int(const std::string&);
-		static std::string		getToken(const std::string& str, int n);
-		static int				countToken(const std::string& str);
-		static bool			validate_cgi(const std::string& str);
-		static int				validate_directive_single(const std::string& str);
-		static int				validate_directive_multi(const std::string& str);
-		void			validate_minimal_server_configuration(Server& server);
-		bool			addStatus(Server& server, const std::string& str);
-		void			addLocation(Server& server, const std::string& path);
-		void			setGlobal();
-		void			setDirective(Server&, const std::string&);
-		void			setServerName(Server& server, const std::string& str);
-		void			setErrorPage(Server& server, const std::string& str);
-		void			setRoot(Server& server, const std::string& str, const std::string &route);
-		void			setMethods(Server& server, const std::string &str, const std::string &route);
-		void			setAutoindex(Server& server, const std::string &str, const std::string &route);
-		void			setIndex(Server& server, const std::string &str, const std::string &route);
-		void			setCGI(Server& server, const std::string &str, const std::string &route);
-		void			setRedirect(Server& server, const std::string &str, const std::string &route);
-		std::string		prepend_forward_slash(const std::string str) const;
-		bool			check_route_exist(Server& server, const std::string& route);
-		RouteIterator	return_route(Server& server, const std::string& route);
-		bool			hasMethod(StringVector& methods, std::string method) const;
-		void			create_port_vector();
-		void			create_default_error_map();
-		void			check_path_traversal(const std::string path);
-		bool			check_file(const std::string& path);
-		bool			RequestedLocationExist();
-		std::string		remove_leading_character(const std::string& str, char c);
-		std::string		handle_redirection(const std::string route, Server& server);
-		void			printServerDetails();
-		void			printServerDetails(std::ofstream&);
-		void			printGlobalSettings();
-		void			printGlobalSettings(std::ofstream&);
-		void			printServer(Server& server);
-		void			printServer(Server& server, std::ofstream& file);
-		void			printLog();
+		static int				countToken(const std::string&);
+		static int				validate_directive_single(const std::string&);
+		static int				validate_directive_multi(const std::string&);
+		static bool			    validate_cgi(const std::string&);
+		static bool			    hasMethod(StringVector&, const std::string&) ;
+		static bool			    check_file(const std::string&);
+		static void			    check_path_traversal(const std::string&);
+		static void			    printServer(Server&);
+		static void			    printServer(Server&, std::ofstream&);
+		std::string		        handle_redirection(std::string, Server&) const;
+		static std::string		getToken(const std::string&, int);
+		static std::string		prepend_forward_slash(const std::string&) ;
+		static std::string	    remove_leading_character(const std::string&, char c);
+		static RouteIterator	return_route(Server&, const std::string&);
 };
 
 #endif

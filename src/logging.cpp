@@ -7,12 +7,7 @@ void Logging::log(const std::string& message, int statusCode)
 {
     std::ofstream logFile(LOG_PATH, std::ios::app);
     if (!logFile)
-    {
-        #ifdef INFO
-        std::cout << RED << "Unable to open Logfile" << RESET << std::endl;
-        #endif
         return;
-    }
     time_t currentTime;
     currentTime = time(0); // Get current time
     tm* timeinfo = localtime(&currentTime);
@@ -21,9 +16,7 @@ void Logging::log(const std::string& message, int statusCode)
     strftime(buffer, 80, time_format.c_str(), timeinfo);
 
     if (statusCode == 200)
-    {
         logFile << "\n=== " << buffer << " === " << message << std::endl;
-    }
     else if (statusCode > 200)
         logFile << "\n" << buffer << " === ERROR: " << message << std::endl;
     logFile.close();

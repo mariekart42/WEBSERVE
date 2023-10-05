@@ -17,15 +17,18 @@ void ConnectClients::initFdList()
     int portSize = _fdPortList._sockets.size();
     for (int x = 0; x < portSize; x++)
     {
-        for (int i = 0; i < portSize; i++) {
+        for (int i = 0; i < portSize; i++)
+		{
             pollfd newSocket = {};
             newSocket.fd = -1;
             newSocket.events = POLLOUT;
             newSocket.revents = 0;
             _fdPortList._fds.push_back(newSocket);
         }
-        for (int k = 0 + x; k < portSize; k++) {
-            if (_fdPortList._fds[k].fd == -1) {
+        for (int k = 0 + x; k < portSize; k++)
+		{
+            if (_fdPortList._fds[k].fd == -1)
+			{
                 _fdPortList._fds[k].fd = _fdPortList._sockets.at(x);
                 setNonBlocking(_fdPortList._fds[k].fd);
                 _fdPortList._fds[k].events = POLLIN;
@@ -57,8 +60,8 @@ void ConnectClients::initNewConnection()
             _fdPortList._fds[j].fd = newClientSocket;
             if (setNonBlocking(_fdPortList._fds[j].fd))
             {
-                #ifdef INFO
-                    std::cout << BOLDRED << "fcntl error, could not set flag to O_NONBLOCK" << RESET << std::endl;
+                #ifdef LOG
+	                Logging::log("fcntl error, could not set flag to O_NONBLOCK", 500);
                 #endif
             }
             _fdPortList._fds[j].events = POLLIN;
@@ -126,7 +129,6 @@ void ConnectClients::initClientInfo(configParser& config)
             initNewInfo._postInfo._contentLen = request.getContentLen();
             if (initNewInfo._postInfo._contentLen > config.getBodySize(request.getPort()))
                 initNewInfo._globalStatusCode = REQUEST_TOO_BIG;
-
             initNewInfo._configInfo._postAllowed = config.getPostAllowed();
             initNewInfo._postInfo._filename = request.getFileName(initNewInfo._contentType, initNewInfo._postInfo._filename, UPLOAD_FOLDER);
             std::string temp_filename = UPLOAD_FOLDER + initNewInfo._postInfo._filename;
@@ -345,16 +347,7 @@ void ConnectClients::connectClients(configParser& config)
         switch (poll(&_fdPortList._fds[0], (_fdPortList._fds.size()), config.get_timeout()))
         {
             case -1:
-
-                #ifdef INFO
-                if (g_shutdown_flag == 0)
-                {
-                    std::cout << RED << "Error: Poll function returned Error" << RESET << std::endl;
-                }
-                #endif
-                #ifdef LOG
-                    Logging::log("Error: Poll function returned Error", 500);
-                #endif
+				printError();
                 break;
             case 0:
                 if (g_shutdown_flag == 1)

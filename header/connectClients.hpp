@@ -11,9 +11,9 @@
 
 struct fdList
 {
-    std::vector<int> _ports;
+    std::vector<int>    _ports;
     std::vector<pollfd> _fds;
-    std::vector<int> _sockets;
+    std::vector<int>    _sockets;
 };
 
 class ConnectClients
@@ -32,17 +32,16 @@ class ConnectClients
 
         int     receiveData();
         bool    newConnection();
-        void    clientConnected(configParser&);
         void    initFdList();
-        void    connectClients(configParser&);
-        void    initNewConnection();
-        void    initClientInfo(configParser&);
-        void    closeConnection();
-        void    handleData(configParser&);
-        void    setPollEvent(int);
 		void    shutDownServer();
-
-	void setFileData(clientInfo data);
+        void    closeConnection();
+        void    setPollEvent(int);
+        void    initNewConnection();
+        void    handleData(configParser&);
+		static void    setFileData(clientInfo data);
+        void    clientConnected(configParser&);
+        void    connectClients(configParser&);
+        void    initClientInfo(configParser&);
 };
 
 #endif

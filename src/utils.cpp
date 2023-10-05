@@ -1,4 +1,4 @@
-#include "../header/utils.h"
+#include "utils.h"
 
 void logg(const std::string &message)
 {
@@ -8,7 +8,7 @@ void logg(const std::string &message)
 void exitWithError(const std::string &msg)
 {
     #ifdef LOG
-	logg(RED"ERROR: " + msg + RESET);
+		logg(RED"ERROR: " + msg + RESET);
     #endif
     std::cout << BOLDRED << msg << RESET << std::endl;
 	exit(1);
@@ -18,12 +18,25 @@ int setNonBlocking(int fd)
 {
     if (fcntl(fd, F_SETFL, O_NONBLOCK, FD_CLOEXEC) == -1)
     {
-		#ifdef INFO
-			    std::cout << BOLDRED << "fcntl error, could not set flag to O_NONBLOCK" << RESET << std::endl;
+		#ifdef LOG
+			Logging::log("fcntl error, could not set flag to O_NONBLOCK", 500);
 		#endif
         return -1;
 	}
     return 0;
+}
+
+void printError()
+{
+	if (g_shutdown_flag == 0)
+	{
+		#ifdef INFO
+				std::cout << RED << "Error: Poll function returned Error" << RESET << std::endl;
+		#endif
+		#ifdef LOG
+				Logging::log("Error: Poll function returned Error", 500);
+		#endif
+	}
 }
 
 std::string myItoS(int val)

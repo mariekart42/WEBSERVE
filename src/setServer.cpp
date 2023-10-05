@@ -1,4 +1,4 @@
-#include "../header/setServer.hpp"
+#include "setServer.hpp"
 
 SetServer::SetServer(){}
 SetServer::~SetServer() {}
@@ -25,20 +25,10 @@ int SetServer::setNewSocketFd(int port) const
 
     int reuse = 1;
     if (setsockopt(newSocketFd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse)) == -1)
-    {
-        #ifdef INFO
-            std::cout << BOLDRED << "setsockopt failed" << RESET << std::endl;
-        #endif
         exitWithError("setsockopt failed [EXIT]");
-    }
 
     if (setNonBlocking(newSocketFd == -1))
-    {
-        #ifdef INFO
-            std::cout << BOLDRED << "fcntl failed" << RESET << std::endl;
-        #endif
         exitWithError("fcntl failed [EXIT]");
-    }
 
     if (bind(newSocketFd, bindAddress->ai_addr, bindAddress->ai_addrlen) < 0)
         exitWithError("Failed to connect, Port already in use [EXIT]");

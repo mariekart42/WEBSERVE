@@ -200,14 +200,14 @@ bool Response::cgiOutput()
 
 	std::string convert(_info._postInfo._input.begin(), _info._postInfo._input.end());
 	#ifdef LOG
-	Logging::log("send Data:\n" + _info._cgiInfo._cgiPath, 200);
+		Logging::log("send Data:\n" + _info._cgiInfo._cgiPath, 200);
 	#endif
 
 	ssize_t check = send(_info._clientSocket, (respooonse).c_str(), respooonse.size(), MSG_DONTWAIT);
 	if (check <= 0)
 	{
 		#ifdef LOG
-		Logging::log("Failed to send Data to Client", 500);
+			Logging::log("Failed to send Data to Client", 500);
 		#endif
 		inputFile.close();
 	}
