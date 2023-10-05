@@ -1,15 +1,19 @@
 # WEBSERVE
 
+
 <p align=>
     <img src="root/images/yeee.jpg" alt="yeeee" width="4608">
 </p>
 
-# WEBSERVE - 42 Project
+In great collaboration with **[Valentin](https://github.com/minthe)** and **[Trung](https://github.com/Alohakaloha)** :)<br>
+
+## WEBSERVE - 42 Project
 
 Webserv is a web server implementation project for the 42 school curriculum. <br>
 This project aims to create a basic HTTP server capable of handling multiple client <br>
 connections and serving static and dynamic content over HTTP.
 <br><br>
+In great collaboration with **[Valentin](https://github.com/minthe)** and **[Trung](https://github.com/Alohakaloha)** :)
 ## Table of Contents
 
 - [**Key features**](#key-feautures)
