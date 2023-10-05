@@ -18,11 +18,11 @@ connections and serving static and dynamic content over HTTP.
 - [**Key features**](#key-feautures)
 - [**Requirements**](#requirements)
 - [**Getting Started**](#getting-started)
-- [**Configuration**](#config)
+- [**Configuration**](#configuration)
 - [**Screenshots**](#screenshots)
   <br><br>
 ## Requirements
-Install _Python_ and _Perl_ on your device (**CGI**)
+Install **[Python](https://www.python.org/)** and **[Perl](https://www.perl.org/)** on your device (**CGI**)
 1. **Python**
    ```sh
    sudo apt-get install python
@@ -35,15 +35,15 @@ Install _Python_ and _Perl_ on your device (**CGI**)
 
 ## Key Feautures
 
-- **Multi-Threaded:**&nbsp;&nbsp; *Handles multiple client connections concurrently.*
+- **Multi-Threaded:**&nbsp;&nbsp; Handles multiple client connections concurrently.
 
-- **Configurable:**&nbsp;&nbsp; *Supports configuration files to customize server behavior.*
+- **Configurable:**&nbsp;&nbsp; Supports configuration files to customize server behavior.
 
-- **Static & Dynamic Content:**&nbsp;&nbsp; *Serves static files and processes dynamic content using server-side scripting.*
+- **Static & Dynamic Content:**&nbsp;&nbsp; Serves static files and processes dynamic content using server-side scripting.
 
-- **HTTP Protocol:**&nbsp;&nbsp; *Implements basic HTTP methods like GET, POST, DELETE.*
+- **HTTP Protocol:**&nbsp;&nbsp; Implements basic HTTP methods like GET, POST, DELETE.
 
-- **Scalable:**&nbsp;&nbsp; *Designed for scalability and optimal performance.*
+- **Scalable:**&nbsp;&nbsp; Designed for scalability and optimal performance.
 
   <br><br>
 ## Getting Started
