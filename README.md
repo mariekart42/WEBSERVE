@@ -35,7 +35,7 @@ Install **[Python](https://www.python.org/)** and **[Perl](https://www.perl.org/
 
 ## Key Feautures
 
-- **Multi-Threaded:**&nbsp;&nbsp; Handles multiple client connections concurrently.
+- **Asynchronous I/O:**&nbsp;&nbsp; Handles multiple client connections concurrently without blocking.
 
 - **Configurable:**&nbsp;&nbsp; Supports configuration files to customize server behavior.
 
